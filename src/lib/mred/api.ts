@@ -76,22 +76,22 @@ class MLSGridService {
         }
 
         // Add field selection
-        if (params.select?.length) {
-            queryParams.append('$select', params.select.join(','));
-        } else {
-            // Always include essential fields including Media
-            queryParams.append('$select', [
-                'ListingId',
-                'ListPrice',
-                'City',
-                'StateOrProvince',
-                'BedroomsTotal',
-                'BathroomsTotalInteger',
-                'LivingArea',
-                'StandardStatus',
-                'Media'
-            ].join(','));
-        }
+        const defaultFields = [
+            'ListingId',
+            'ListPrice',
+            'City',
+            'StateOrProvince',
+            'BedroomsTotal',
+            'BathroomsTotalInteger',
+            'LivingArea',
+            'StandardStatus',
+            'Media'
+        ];
+
+        queryParams.append('$select', params.select?.length ? params.select.join(',') : defaultFields.join(','));
+        queryParams.append('$expand', 'Media'); // Add explicit expand for Media
+
+        console.log('API Request URL:', `${MRED_CONFIG.API_BASE_URL}/Property?${queryParams.toString()}`);
 
         interface MLSGridResponse {
             value: Property[];
@@ -100,6 +100,7 @@ class MLSGridService {
         }
 
         const data = await this.fetchFromAPI<MLSGridResponse>('Property', queryParams);
+        console.log('API Response:', data);
         return data.value;
     }
 }
