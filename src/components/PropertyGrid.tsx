@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { Property } from '@/lib/mred/types';
 import { mlsGridService } from '@/lib/mred/api';
 import { PropertyGridSkeleton } from './PropertyLoading';
@@ -87,10 +88,11 @@ export function PropertyGrid({ city, minPrice, maxPrice, beds, baths, propertyTy
                 <div key={property.ListingId} className="bg-white rounded-lg shadow-md overflow-hidden">
                     <div className="relative h-48 bg-gray-100">
                         {property.Media?.[0]?.MediaURL ? (
-                            <img
+                            <Image
                                 src={property.Media[0].MediaURL}
                                 alt={`Property in ${property.City}`}
-                                className="w-full h-full object-cover"
+                                fill
+                                className="object-cover"
                                 onError={(e) => {
                                     const target = e.target as HTMLImageElement;
                                     console.error('Failed to load image:', target.src);
@@ -99,10 +101,11 @@ export function PropertyGrid({ city, minPrice, maxPrice, beds, baths, propertyTy
                                 }}
                             />
                         ) : (
-                            <img
+                            <Image
                                 src="/property-1.jpg"
                                 alt="Property placeholder"
-                                className="w-full h-full object-cover"
+                                fill
+                                className="object-cover"
                             />
                         )}
                     </div>
