@@ -5,28 +5,13 @@ import { Property } from '@/lib/mred/types';
 import { mlsGridService } from '@/lib/mred/api';
 import { PropertyGridSkeleton } from './PropertyLoading';
 
-interface PropertyGridProps {
-    city?: string;
-    minPrice?: number;
-    maxPrice?: number;
-    beds?: number;
-    baths?: number;
-    propertyType?: string;
-}
-
-export function PropertyGrid({ city, minPrice, maxPrice, beds, baths, propertyType }: PropertyGridProps) {
+export function PropertyGrid({ city, minPrice, maxPrice, beds, baths, propertyType }: any) {
     const [properties, setProperties] = useState<Property[]>([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
 
     useEffect(() => {
         const loadProperties = async () => {
             try {
-                setLoading(true);
-                setError(null);
-                setImageErrors(new Set());
-
                 const results = await mlsGridService.searchProperties({
                     city,
                     minPrice,
@@ -39,11 +24,12 @@ export function PropertyGrid({ city, minPrice, maxPrice, beds, baths, propertyTy
                     status: 'Active'
                 });
 
-                console.log('Raw property results:', results);
+                // Log the first property's media URL for debugging
+                if (results[0]?.Media?.[0]) {
+                    console.log('First property media URL:', results[0].Media[0].MediaURL);
+                }
+
                 setProperties(results);
-            } catch (err) {
-                console.error('Error loading properties:', err);
-                setError(err instanceof Error ? err.message : 'Failed to load properties');
             } finally {
                 setLoading(false);
             }
@@ -52,62 +38,24 @@ export function PropertyGrid({ city, minPrice, maxPrice, beds, baths, propertyTy
         loadProperties();
     }, [city, minPrice, maxPrice, beds, baths, propertyType]);
 
-    const handleImageError = (propertyId: string) => {
-        setImageErrors(prev => new Set([...prev, propertyId]));
-    };
+    if (loading) return <div>Loading...</div>;
 
-    if (loading) {
-        return <PropertyGridSkeleton />;
-    }
-
-    if (error) {
-        return (
-            <div className="bg-red-50 text-red-700 p-4 rounded-lg">
-                <h3 className="font-bold">Error Loading Properties</h3>
-                <p>{error}</p>
-            </div>
-        );
-    }
-
-    if (properties.length === 0) {
-        return (
-            <div className="text-center py-8 text-gray-500">
-                No properties found matching your criteria.
-            </div>
-        );
-    }
+    // Just render the first property's image for testing
+    const firstProperty = properties[0];
+    const imageUrl = firstProperty?.Media?.[0]?.MediaURL;
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {properties.map(property => (
-                <div key={property.ListingId} className="bg-white rounded-lg shadow-md overflow-hidden">
-                    <div className="relative h-48 bg-gray-100">
-                        <img
-                            src={!imageErrors.has(property.ListingId) ? property.Media?.[0]?.MediaURL : '/property-1.jpg'}
-                            alt={`Property in ${property.City}`}
-                            className="absolute inset-0 w-full h-full object-cover"
-                            onError={() => handleImageError(property.ListingId)}
-                            loading="lazy"
-                        />
-                    </div>
-                    <div className="p-4">
-                        <div className="flex justify-between items-start mb-2">
-                            <h3 className="text-xl font-semibold">${property.ListPrice.toLocaleString()}</h3>
-                            <span className="px-2 py-1 text-sm rounded bg-blue-100 text-blue-800">
-                                {property.StandardStatus}
-                            </span>
-                        </div>
-                        <p className="text-gray-600 mb-2">
-                            {property.City}, {property.StateOrProvince}
-                        </p>
-                        <div className="flex justify-between text-sm text-gray-500">
-                            <span>{property.BedroomsTotal} beds</span>
-                            <span>{property.BathroomsTotalInteger} baths</span>
-                            <span>{property.LivingArea?.toLocaleString()} sqft</span>
-                        </div>
-                    </div>
+        <div className="p-4">
+            <div>Debug URL: {imageUrl}</div>
+            {imageUrl && (
+                <div className="mt-4">
+                    <img 
+                        src={imageUrl} 
+                        style={{ maxWidth: '300px', height: 'auto' }}
+                        alt="Test property"
+                    />
                 </div>
-            ))}
+            )}
         </div>
     );
 } 
