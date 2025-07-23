@@ -3,10 +3,15 @@ import { Property, SearchParams } from './types';
 
 class MLSGridService {
     private formatImageUrl(mediaUrl: string): string {
-        // Remove any existing proxy prefix if present
-        const cleanUrl = mediaUrl.replace(/^https:\/\/grandview-realty\.jphamm2001\.workers\.dev\/proxy\?url=/, '');
-        // Return the direct S3 URL without proxy
-        return cleanUrl;
+        // If it's already a proxy URL, return as is
+        if (mediaUrl.startsWith('https://grandview-realty.jphamm2001.workers.dev/proxy')) {
+            return mediaUrl;
+        }
+        
+        // Otherwise, construct the proxy URL
+        const proxyBaseUrl = 'https://grandview-realty.jphamm2001.workers.dev/proxy';
+        const encodedUrl = encodeURIComponent(mediaUrl);
+        return `${proxyBaseUrl}?url=${encodedUrl}`;
     }
 
     private async fetchFromAPI<T>(endpoint: string, params?: URLSearchParams): Promise<T> {

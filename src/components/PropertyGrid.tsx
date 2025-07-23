@@ -98,6 +98,7 @@ export function PropertyGrid({ city, minPrice, maxPrice, beds, baths, propertyTy
                             onError={() => {
                                 console.error('Failed to load image:', property.Media?.[0]?.MediaURL);
                             }}
+                            unoptimized // Add this to bypass Next.js image optimization
                         />
                     </div>
                     <div className="p-4">
