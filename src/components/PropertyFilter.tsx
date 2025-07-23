@@ -84,8 +84,32 @@ export default function PropertyFilter({ initialProperties }: FilterProps) {
     setFilters(clearedFilters);
   };
 
+  // Debug: Log environment variable and first property media
+  useEffect(() => {
+    console.log('NEXT_PUBLIC_CLOUDFLARE_URL:', process.env.NEXT_PUBLIC_CLOUDFLARE_URL);
+    if (initialProperties.length > 0) {
+      console.log('First property media:', initialProperties[0].Media);
+      if (initialProperties[0].Media?.[0]?.MediaURL) {
+        const imageUrl = `${process.env.NEXT_PUBLIC_CLOUDFLARE_URL}/proxy?url=${encodeURIComponent(initialProperties[0].Media[0].MediaURL)}`;
+        console.log('Constructed image URL:', imageUrl);
+      }
+    }
+  }, [initialProperties]);
+
   return (
     <div>
+      {/* Debug Info */}
+      <div className="mb-4 p-4 bg-blue-100 rounded">
+        <h3 className="font-bold mb-2">Debug Information:</h3>
+        <div className="text-sm">
+          <p>Cloudflare URL: {process.env.NEXT_PUBLIC_CLOUDFLARE_URL || 'Not set'}</p>
+          <p>Properties with media: {initialProperties.filter(p => p.Media && p.Media.length > 0).length}</p>
+          {initialProperties.length > 0 && (
+            <p>First property media URL: {initialProperties[0].Media?.[0]?.MediaURL || 'No media'}</p>
+          )}
+        </div>
+      </div>
+
       {/* Filter Controls */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
         <h2 className="text-xl font-semibold mb-4">Filter Properties</h2>
@@ -234,6 +258,9 @@ export default function PropertyFilter({ initialProperties }: FilterProps) {
                     fill
                     style={{ objectFit: "cover" }}
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    onError={(e) => {
+                      console.error('Image failed to load:', e);
+                    }}
                   />
                 ) : (
                   <div className="w-full h-full bg-gray-200 flex items-center justify-center">
