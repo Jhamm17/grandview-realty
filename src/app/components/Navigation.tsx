@@ -33,7 +33,7 @@ function NavDropdown({ title, items }: { title: string; items: { name: string; h
     <div className="relative" ref={dropdownRef}>
       <button 
         className={`flex items-center text-white hover:text-white/80 transition-colors py-4 px-3 text-base font-medium ${
-          isActive ? 'bg-[#1a4a7a]' : ''
+          isActive ? 'text-[#60a5fa]' : ''
         }`}
         onClick={(e) => {
           e.stopPropagation();
@@ -61,7 +61,7 @@ function NavDropdown({ title, items }: { title: string; items: { name: string; h
               key={item.href}
               href={item.href}
               className={`block px-4 py-2 text-sm text-white hover:bg-white/10 transition-colors ${
-                pathname === item.href ? 'bg-[#1a4a7a]' : ''
+                pathname === item.href ? 'text-[#60a5fa]' : ''
               }`}
               onClick={() => setIsOpen(false)}
             >
@@ -117,15 +117,15 @@ export function Header() {
 
   return (
     <header className="bg-[#081d36] shadow-sm sticky top-0 z-50">
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+      <nav className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
+        <div className="flex items-center justify-between h-24">
           <Link href="/" className="flex items-center hover:opacity-90 transition-opacity">
             <Image
               src="/logo.png"
               alt="Grandview Realty"
               width={1200}
               height={300}
-              className="h-16 w-auto"
+              className="h-28 w-auto"
               priority
             />
             <span className="sr-only">Grandview Realty</span>
@@ -136,7 +136,7 @@ export function Header() {
             <Link 
               href="/" 
               className={`text-white hover:text-white/80 transition-colors text-base font-medium py-4 px-3 ${
-                pathname === '/' ? 'bg-[#1a4a7a]' : ''
+                pathname === '/' ? 'text-[#60a5fa]' : ''
               }`}
             >
               Home
@@ -147,7 +147,7 @@ export function Header() {
             <Link 
               href="/careers" 
               className={`text-white hover:text-white/80 transition-colors text-base font-medium py-4 px-3 ${
-                pathname === '/careers' ? 'bg-[#1a4a7a]' : ''
+                pathname === '/careers' ? 'text-[#60a5fa]' : ''
               }`}
             >
               Careers
@@ -155,7 +155,7 @@ export function Header() {
             <Link 
               href="/contact" 
               className={`text-white hover:text-white/80 transition-colors text-base font-medium py-4 px-3 ${
-                pathname === '/contact' ? 'bg-[#1a4a7a]' : ''
+                pathname === '/contact' ? 'text-[#60a5fa]' : ''
               }`}
             >
               Contact
@@ -189,7 +189,7 @@ export function Header() {
               <Link 
                 href="/" 
                 className={`text-white hover:text-white/80 transition-colors py-2 px-3 rounded ${
-                  pathname === '/' ? 'bg-[#1a4a7a]' : ''
+                  pathname === '/' ? 'text-[#60a5fa]' : ''
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
@@ -218,7 +218,7 @@ export function Header() {
                           key={item.href}
                           href={item.href}
                           className={`block text-white/90 hover:text-white transition-colors text-sm py-2 px-3 rounded ${
-                            pathname === item.href ? 'bg-[#1a4a7a] text-white' : ''
+                            pathname === item.href ? 'text-[#60a5fa]' : ''
                           }`}
                           onClick={() => {
                             setIsMobileMenuOpen(false);
@@ -235,7 +235,7 @@ export function Header() {
               <Link 
                 href="/careers" 
                 className={`text-white hover:text-white/80 transition-colors text-base py-2 px-3 rounded ${
-                  pathname === '/careers' ? 'bg-[#1a4a7a]' : ''
+                  pathname === '/careers' ? 'text-[#60a5fa]' : ''
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
@@ -244,7 +244,7 @@ export function Header() {
               <Link 
                 href="/contact" 
                 className={`text-white hover:text-white/80 transition-colors text-base py-2 px-3 rounded ${
-                  pathname === '/contact' ? 'bg-[#1a4a7a]' : ''
+                  pathname === '/contact' ? 'text-[#60a5fa]' : ''
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
