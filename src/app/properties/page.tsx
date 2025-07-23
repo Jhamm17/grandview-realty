@@ -60,6 +60,7 @@ async function getProperties() {
       totalCount: data['@odata.count'],
       nextLink: data['@odata.nextLink'],
       resultCount: data.value?.length,
+      hasNextLink: !!data['@odata.nextLink'],
       statusBreakdown: data.value?.reduce((acc: Record<string, number>, prop: Property) => {
         acc[prop.StandardStatus] = (acc[prop.StandardStatus] || 0) + 1;
         return acc;
@@ -83,8 +84,15 @@ async function getProperties() {
     console.log('Filtered Properties:', {
       totalProperties: data.value.length,
       activeProperties: filteredProperties.length,
-      statuses: [...new Set(data.value.map((p: Property) => p.StandardStatus))]
+      statuses: [...new Set(data.value.map((p: Property) => p.StandardStatus))],
+      expectedTotal: data['@odata.count'],
+      missingCount: (data['@odata.count'] || 0) - filteredProperties.length
     });
+
+    // If we have a nextLink and we're missing properties, we need to handle pagination
+    if (data['@odata.nextLink'] && filteredProperties.length < (data['@odata.count'] || 0)) {
+      console.warn('Missing properties detected - pagination may be needed');
+    }
 
     return filteredProperties;
   } catch (error) {

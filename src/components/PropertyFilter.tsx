@@ -228,8 +228,9 @@ export default function PropertyFilter({ initialProperties }: FilterProps) {
               {/* Property Image */}
               <div className="relative h-64">
                 {(() => {
-                  // Get the first image (Order: 1) which should be the exterior shot
-                  const firstImage = property.Media?.find(media => media.Order === 1) || property.Media?.[0];
+                  // Sort media by Order to ensure proper sequence, then get the first image
+                  const sortedMedia = property.Media?.sort((a, b) => (a.Order || 0) - (b.Order || 0));
+                  const firstImage = sortedMedia?.[0];
                   
                   if (firstImage?.MediaURL) {
                     return (
