@@ -2,6 +2,16 @@
 
 import { useState } from 'react';
 import { PropertyGrid } from './PropertyGrid';
+import { ErrorBoundary } from './ErrorBoundary';
+
+function ErrorFallback({ error }: { error: Error }) {
+    return (
+        <div className="p-4 bg-red-100 text-red-700 rounded">
+            <h3 className="font-bold mb-2">Error in Property Search:</h3>
+            <pre className="text-sm whitespace-pre-wrap">{error.message}</pre>
+        </div>
+    );
+}
 
 export default function PropertySearch() {
     const [filters, setFilters] = useState({
@@ -12,6 +22,8 @@ export default function PropertySearch() {
         baths: undefined as number | undefined,
         propertyType: undefined as string | undefined
     });
+
+    console.log('PropertySearch rendering with filters:', filters);
 
     return (
         <div className="container-padding py-8">
@@ -88,8 +100,18 @@ export default function PropertySearch() {
                 </div>
             </div>
 
-            {/* Property Grid */}
-            <PropertyGrid {...filters} />
+            {/* Property Grid with Error Boundary */}
+            <ErrorBoundary fallback={ErrorFallback}>
+                <PropertyGrid {...filters} />
+            </ErrorBoundary>
+
+            {/* Debug Info */}
+            <div className="mt-8 p-4 bg-gray-100 rounded">
+                <h3 className="font-bold mb-2">Debug Info:</h3>
+                <pre className="text-sm whitespace-pre-wrap">
+                    {JSON.stringify(filters, null, 2)}
+                </pre>
+            </div>
         </div>
     );
 } 
