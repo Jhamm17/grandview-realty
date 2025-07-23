@@ -71,7 +71,7 @@ export function Header() {
   
   const navItems = {
     properties: [
-      { name: "Active Listings", href: "/properties/active" },
+      { name: "Active Listings", href: "/properties" },
       { name: "Price Changes", href: "/properties/price-changes" },
       { name: "Under Contract", href: "/properties/under-contract" },
     ],
