@@ -227,19 +227,28 @@ export default function PropertyFilter({ initialProperties }: FilterProps) {
             <div key={property.ListingId} className="bg-white rounded-lg shadow-md overflow-hidden">
               {/* Property Image */}
               <div className="relative h-64">
-                {property.Media?.[0]?.MediaURL ? (
-                  <Image
-                    src={property.Media[0].MediaURL}
-                    alt={`${property.UnparsedAddress || 'Property'} in ${property.City}`}
-                    fill
-                    style={{ objectFit: "cover" }}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-400">No image available</span>
-                  </div>
-                )}
+                {(() => {
+                  // Get the first image (Order: 1) which should be the exterior shot
+                  const firstImage = property.Media?.find(media => media.Order === 1) || property.Media?.[0];
+                  
+                  if (firstImage?.MediaURL) {
+                    return (
+                      <Image
+                        src={firstImage.MediaURL}
+                        alt={`${property.UnparsedAddress || 'Property'} in ${property.City}`}
+                        fill
+                        style={{ objectFit: "cover" }}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
+                    );
+                  } else {
+                    return (
+                      <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                        <span className="text-gray-400">No image available</span>
+                      </div>
+                    );
+                  }
+                })()}
               </div>
 
               {/* Property Details */}

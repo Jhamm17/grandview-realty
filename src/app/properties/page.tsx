@@ -9,7 +9,7 @@ async function getProperties() {
   try {
     // Build OData query parameters - only using allowed filter fields
     const queryParams = new URLSearchParams({
-      '$top': '500',  // Increased to get more properties
+      '$top': '1000',  // Increased to get more properties
       '$filter': 'MlgCanView eq true', // Only use allowed filter fields
       '$orderby': 'ModificationTimestamp desc', // Order by last modified
       '$count': 'true',
@@ -60,19 +60,32 @@ async function getProperties() {
       totalCount: data['@odata.count'],
       nextLink: data['@odata.nextLink'],
       resultCount: data.value?.length,
+      statusBreakdown: data.value?.reduce((acc: Record<string, number>, prop: Property) => {
+        acc[prop.StandardStatus] = (acc[prop.StandardStatus] || 0) + 1;
+        return acc;
+      }, {}),
       firstProperty: data.value?.[0] ? {
         id: data.value[0].ListingId,
         address: data.value[0].UnparsedAddress,
         price: data.value[0].ListPrice,
+        status: data.value[0].StandardStatus,
         mediaCount: data.value[0].Media?.length || 0,
         firstMediaUrl: data.value[0].Media?.[0]?.MediaURL || null
       } : 'No properties'
     });
 
     // Filter the results on the client side for active listings
+    // Include various active statuses that might be used
+    const activeStatuses = ['Active', 'Active Under Contract', 'Active Option Contract'];
     const filteredProperties = data.value.filter((property: Property) => 
-      property.StandardStatus === 'Active'
+      activeStatuses.includes(property.StandardStatus)
     );
+
+    console.log('Filtered Properties:', {
+      totalProperties: data.value.length,
+      activeProperties: filteredProperties.length,
+      statuses: [...new Set(data.value.map((p: Property) => p.StandardStatus))]
+    });
 
     return filteredProperties;
   } catch (error) {
