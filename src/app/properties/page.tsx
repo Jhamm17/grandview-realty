@@ -33,6 +33,7 @@ async function getProperties() {
         'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
         'Accept': 'application/json',
         'Content-Type': 'application/json',
+        'Accept-Encoding': 'gzip'
       },
       next: { revalidate: 300 } // Cache for 5 minutes
     });
