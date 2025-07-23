@@ -87,27 +87,18 @@ export function PropertyGrid({ city, minPrice, maxPrice, beds, baths, propertyTy
             {properties.map(property => (
                 <div key={property.ListingId} className="bg-white rounded-lg shadow-md overflow-hidden">
                     <div className="relative h-48 bg-gray-100">
-                        {property.Media?.[0]?.MediaURL ? (
-                            <Image
-                                src={property.Media[0].MediaURL}
-                                alt={`Property in ${property.City}`}
-                                fill
-                                className="object-cover"
-                                onError={(e) => {
-                                    const target = e.target as HTMLImageElement;
-                                    console.error('Failed to load image:', target.src);
-                                    target.onerror = null; // Prevent infinite loop
-                                    target.src = '/property-1.jpg';
-                                }}
-                            />
-                        ) : (
-                            <Image
-                                src="/property-1.jpg"
-                                alt="Property placeholder"
-                                fill
-                                className="object-cover"
-                            />
-                        )}
+                        <Image
+                            src={property.Media?.[0]?.MediaURL || '/property-1.jpg'}
+                            alt={`Property in ${property.City}`}
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            className="object-cover"
+                            priority={false}
+                            quality={75}
+                            onError={() => {
+                                console.error('Failed to load image:', property.Media?.[0]?.MediaURL);
+                            }}
+                        />
                     </div>
                     <div className="p-4">
                         <div className="flex justify-between items-start mb-2">

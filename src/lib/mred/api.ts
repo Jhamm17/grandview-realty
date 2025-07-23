@@ -2,6 +2,13 @@ import { MRED_CONFIG } from './config';
 import { Property, SearchParams } from './types';
 
 class MLSGridService {
+    private formatImageUrl(mediaUrl: string): string {
+        // Remove any existing proxy prefix if present
+        const cleanUrl = mediaUrl.replace(/^https:\/\/grandview-realty\.jphamm2001\.workers\.dev\/proxy\?url=/, '');
+        // Return the direct S3 URL without proxy
+        return cleanUrl;
+    }
+
     private async fetchFromAPI<T>(endpoint: string, params?: URLSearchParams): Promise<T> {
         const url = params ? 
             `${MRED_CONFIG.API_BASE_URL}/${endpoint}?${params.toString()}` :
@@ -100,8 +107,18 @@ class MLSGridService {
         }
 
         const data = await this.fetchFromAPI<MLSGridResponse>('Property', queryParams);
-        console.log('API Response:', data);
-        return data.value;
+        
+        // Format image URLs in the response
+        const formattedProperties = data.value.map(property => ({
+            ...property,
+            Media: property.Media?.map(media => ({
+                ...media,
+                MediaURL: this.formatImageUrl(media.MediaURL)
+            }))
+        }));
+
+        console.log('API Response with formatted URLs:', formattedProperties);
+        return formattedProperties;
     }
 }
 
