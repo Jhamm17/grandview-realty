@@ -58,10 +58,12 @@ async function getProperties() {
     // Collect all properties (handle pagination if needed)
     let allProperties = [...data.value];
     let nextLink = data['@odata.nextLink'];
+    let pageCount = 1;
     
     // Handle pagination to get all properties
     while (nextLink) {
-      console.log('Fetching additional properties from:', nextLink);
+      pageCount++;
+      console.log(`Fetching page ${pageCount} of properties...`);
       
       const nextResponse = await fetch(nextLink, {
         headers: {
@@ -87,8 +89,9 @@ async function getProperties() {
       totalCount: data['@odata.count'],
       initialResultCount: data.value?.length,
       totalFetched: allProperties.length,
+      pagesFetched: pageCount,
       hasNextLink: !!data['@odata.nextLink'],
-      paginationRounds: allProperties.length > data.value?.length ? Math.ceil(allProperties.length / 5000) : 1,
+      estimatedTotalPages: Math.ceil((data['@odata.count'] || 0) / 1000),
       statusBreakdown: allProperties.reduce((acc: Record<string, number>, prop: Property) => {
         acc[prop.StandardStatus] = (acc[prop.StandardStatus] || 0) + 1;
         return acc;
