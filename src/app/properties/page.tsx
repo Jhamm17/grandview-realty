@@ -7,9 +7,9 @@ export const revalidate = 300; // Revalidate every 5 minutes
 
 async function getProperties() {
   try {
-    // Build OData query parameters - only using allowed filter fields
+    // Build OData query parameters - using maximum allowed limit
     const queryParams = new URLSearchParams({
-      '$top': '1000',  // Increased to get more properties
+      '$top': '5000',  // Maximum allowed by MLS Grid API
       '$filter': 'MlgCanView eq true', // Only use allowed filter fields
       '$orderby': 'ModificationTimestamp desc', // Order by last modified
       '$count': 'true',
@@ -55,44 +55,67 @@ async function getProperties() {
 
     const data = await response.json();
     
+    // Collect all properties (handle pagination if needed)
+    let allProperties = [...data.value];
+    let nextLink = data['@odata.nextLink'];
+    
+    // Handle pagination to get all properties
+    while (nextLink) {
+      console.log('Fetching additional properties from:', nextLink);
+      
+      const nextResponse = await fetch(nextLink, {
+        headers: {
+          'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip'
+        }
+      });
+      
+      if (!nextResponse.ok) {
+        console.error('Pagination request failed:', nextResponse.status);
+        break;
+      }
+      
+      const nextData = await nextResponse.json();
+      allProperties = [...allProperties, ...nextData.value];
+      nextLink = nextData['@odata.nextLink'];
+    }
+    
     // Log successful response details with media info
     console.log('MLS Grid API Response:', {
       totalCount: data['@odata.count'],
-      nextLink: data['@odata.nextLink'],
-      resultCount: data.value?.length,
+      initialResultCount: data.value?.length,
+      totalFetched: allProperties.length,
       hasNextLink: !!data['@odata.nextLink'],
-      statusBreakdown: data.value?.reduce((acc: Record<string, number>, prop: Property) => {
+      paginationRounds: allProperties.length > data.value?.length ? Math.ceil(allProperties.length / 5000) : 1,
+      statusBreakdown: allProperties.reduce((acc: Record<string, number>, prop: Property) => {
         acc[prop.StandardStatus] = (acc[prop.StandardStatus] || 0) + 1;
         return acc;
       }, {}),
-      firstProperty: data.value?.[0] ? {
-        id: data.value[0].ListingId,
-        address: data.value[0].UnparsedAddress,
-        price: data.value[0].ListPrice,
-        status: data.value[0].StandardStatus,
-        mediaCount: data.value[0].Media?.length || 0,
-        firstMediaUrl: data.value[0].Media?.[0]?.MediaURL || null
+      firstProperty: allProperties[0] ? {
+        id: allProperties[0].ListingId,
+        address: allProperties[0].UnparsedAddress,
+        price: allProperties[0].ListPrice,
+        status: allProperties[0].StandardStatus,
+        mediaCount: allProperties[0].Media?.length || 0,
+        firstMediaUrl: allProperties[0].Media?.[0]?.MediaURL || null
       } : 'No properties'
     });
 
     // Filter the results on the client side for active listings
     // Only include properties with "Active" status
-    const filteredProperties = data.value.filter((property: Property) => 
+    const filteredProperties = allProperties.filter((property: Property) => 
       property.StandardStatus === 'Active'
     );
 
     console.log('Filtered Properties:', {
-      totalProperties: data.value.length,
+      totalProperties: allProperties.length,
       activeProperties: filteredProperties.length,
-      statuses: [...new Set(data.value.map((p: Property) => p.StandardStatus))],
+      statuses: [...new Set(allProperties.map((p: Property) => p.StandardStatus))],
       expectedTotal: data['@odata.count'],
       missingCount: (data['@odata.count'] || 0) - filteredProperties.length
     });
-
-    // If we have a nextLink and we're missing properties, we need to handle pagination
-    if (data['@odata.nextLink'] && filteredProperties.length < (data['@odata.count'] || 0)) {
-      console.warn('Missing properties detected - pagination may be needed');
-    }
 
     return filteredProperties;
   } catch (error) {
