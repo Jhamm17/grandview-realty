@@ -44,7 +44,7 @@ export interface Property {
 
     // Additional Features
     Appliances?: string[];
-    ArchitecturalStyle?: string;
+    ArchitecturalStyle?: string[];
     CommunityFeatures?: string[];
     ConstructionMaterials?: string[];
     Cooling?: string[];

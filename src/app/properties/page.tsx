@@ -1,185 +1,110 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import { mlsGridService } from '@/lib/mred/api';
+import { MRED_CONFIG } from '@/lib/mred/config';
 import { Property } from '@/lib/mred/types';
-import { PropertyGridSkeleton } from '@/components/PropertyLoading';
 
-interface Filters {
-    city: string;
-    minPrice?: number;
-    maxPrice?: number;
-    beds?: number;
-    baths?: number;
-    propertyType?: string;
-}
+export const runtime = 'edge';
+export const revalidate = 300; // Revalidate every 5 minutes
 
-export default function PropertiesPage() {
-    const [properties, setProperties] = useState<Property[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [filters, setFilters] = useState<Filters>({
-        city: 'Geneva'
+async function getProperties() {
+  try {
+    // Log the request for debugging
+    console.log('Fetching properties from MLS Grid API');
+    
+    const response = await fetch(`${MRED_CONFIG.API_BASE_URL}/Property`, {
+      headers: {
+        'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
+        'Accept': 'application/json',
+      },
+      next: { revalidate: 300 } // Cache for 5 minutes
     });
 
-    useEffect(() => {
-        const loadProperties = async () => {
-            try {
-                setLoading(true);
-                setError(null);
-
-                console.log('Fetching properties with filters:', filters);
-                const results = await mlsGridService.searchProperties({
-                    ...filters,
-                    top: 12,
-                    orderby: 'ListPrice desc',
-                    // Only fetch active listings
-                    status: 'Active'
-                });
-                console.log('API Response:', results);
-
-                setProperties(results);
-            } catch (err) {
-                console.error('Detailed API Error:', err);
-                setError(err instanceof Error ? err.message : 'Failed to load properties');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        loadProperties();
-    }, [filters]);
-
-    if (error) {
-        return (
-            <div className="container mx-auto px-4 py-8">
-                <div className="bg-red-50 text-red-700 p-4 rounded-lg">
-                    <h3 className="font-bold">Error Loading Properties</h3>
-                    <p>{error}</p>
-                </div>
-            </div>
-        );
+    if (!response.ok) {
+      console.error('MLS Grid API Error:', {
+        status: response.status,
+        statusText: response.statusText
+      });
+      throw new Error(`API request failed: ${response.status}`);
     }
 
+    const data = await response.json();
+    console.log('MLS Grid API Response:', {
+      count: data['@odata.count'],
+      nextLink: data['@odata.nextLink']
+    });
+
+    return data.value as Property[];
+  } catch (error) {
+    console.error('Error fetching properties:', error);
+    throw error;
+  }
+}
+
+export default async function PropertiesPage() {
+  let properties: Property[] = [];
+  let error = null;
+
+  try {
+    properties = await getProperties();
+  } catch (e) {
+    error = e;
+    console.error('Failed to load properties:', e);
+  }
+
+  if (error) {
     return (
-        <main className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-8">Available Properties</h1>
-            
-            {/* Basic filters */}
-            <div className="bg-white p-4 rounded-lg shadow-sm mb-8">
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                    <input
-                        type="text"
-                        placeholder="City"
-                        className="p-2 border rounded"
-                        value={filters.city}
-                        onChange={(e) => setFilters(prev => ({ ...prev, city: e.target.value }))}
-                    />
-                    <input
-                        type="number"
-                        placeholder="Min Price"
-                        className="p-2 border rounded"
-                        value={filters.minPrice || ''}
-                        onChange={(e) => setFilters(prev => ({ 
-                            ...prev, 
-                            minPrice: e.target.value ? parseInt(e.target.value) : undefined 
-                        }))}
-                    />
-                    <input
-                        type="number"
-                        placeholder="Max Price"
-                        className="p-2 border rounded"
-                        value={filters.maxPrice || ''}
-                        onChange={(e) => setFilters(prev => ({ 
-                            ...prev, 
-                            maxPrice: e.target.value ? parseInt(e.target.value) : undefined 
-                        }))}
-                    />
-                    <select
-                        className="p-2 border rounded"
-                        value={filters.beds || ''}
-                        onChange={(e) => setFilters(prev => ({ 
-                            ...prev, 
-                            beds: e.target.value ? parseInt(e.target.value) : undefined 
-                        }))}
-                    >
-                        <option value="">Beds</option>
-                        {[1, 2, 3, 4, 5].map(num => (
-                            <option key={num} value={num}>{num}+ beds</option>
-                        ))}
-                    </select>
-                    <select
-                        className="p-2 border rounded"
-                        value={filters.baths || ''}
-                        onChange={(e) => setFilters(prev => ({ 
-                            ...prev, 
-                            baths: e.target.value ? parseInt(e.target.value) : undefined 
-                        }))}
-                    >
-                        <option value="">Baths</option>
-                        {[1, 2, 3, 4, 5].map(num => (
-                            <option key={num} value={num}>{num}+ baths</option>
-                        ))}
-                    </select>
-                    <select
-                        className="p-2 border rounded"
-                        value={filters.propertyType || ''}
-                        onChange={(e) => setFilters(prev => ({ 
-                            ...prev, 
-                            propertyType: e.target.value || undefined 
-                        }))}
-                    >
-                        <option value="">Property Type</option>
-                        <option value="Residential">Residential</option>
-                        <option value="Condo">Condo</option>
-                        <option value="MultiFamily">Multi-Family</option>
-                        <option value="Land">Land</option>
-                    </select>
-                </div>
-            </div>
-
-            {/* Loading State */}
-            {loading ? (
-                <PropertyGridSkeleton />
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {properties.map(property => (
-                        <div key={property.ListingKey} className="bg-white rounded-lg shadow-md overflow-hidden">
-                            {property.Photos?.[0] && (
-                                <div className="relative h-48">
-                                    <img
-                                        src={property.Photos[0]}
-                                        alt={`${property.City} property`}
-                                        className="w-full h-full object-cover"
-                                    />
-                                </div>
-                            )}
-                            <div className="p-4">
-                                <div className="flex justify-between items-start mb-2">
-                                    <h3 className="text-xl font-semibold">${property.ListPrice.toLocaleString()}</h3>
-                                    <span className="px-2 py-1 text-sm rounded bg-blue-100 text-blue-800">
-                                        {property.StandardStatus}
-                                    </span>
-                                </div>
-                                <p className="text-gray-600 mb-2">
-                                    {property.City}, {property.StateOrProvince}
-                                </p>
-                                <div className="flex justify-between text-sm text-gray-500">
-                                    <span>{property.BedroomsTotal} beds</span>
-                                    <span>{property.BathroomsTotalInteger} baths</span>
-                                    <span>{property.LivingArea?.toLocaleString()} sqft</span>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-
-                    {properties.length === 0 && (
-                        <div className="col-span-full text-center py-8 text-gray-500">
-                            No properties found matching your criteria.
-                        </div>
-                    )}
-                </div>
-            )}
-        </main>
+      <div className="container-padding py-16">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+          <h2 className="text-red-800 text-lg font-semibold mb-2">Error Loading Properties</h2>
+          <p className="text-red-600">
+            We&apos;re having trouble connecting to our property database. Please try again later.
+          </p>
+        </div>
+      </div>
     );
+  }
+
+  if (properties.length === 0) {
+    return (
+      <div className="container-padding py-16">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+          <h2 className="text-yellow-800 text-lg font-semibold mb-2">No Properties Found</h2>
+          <p className="text-yellow-600">
+            We couldn&apos;t find any properties matching your criteria. Please try adjusting your search.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container-padding py-16">
+      <h1 className="text-4xl font-bold mb-8">Available Properties</h1>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {properties.map((property) => (
+          <div key={property.ListingId} className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div className="p-6">
+              <h3 className="text-xl font-semibold mb-2">{property.UnparsedAddress}</h3>
+              <p className="text-gray-600 mb-4">{property.City}, {property.StateOrProvince}</p>
+              <p className="text-primary font-bold text-xl mb-4">
+                ${property.ListPrice.toLocaleString()}
+              </p>
+              <div className="flex justify-between text-gray-500 text-sm">
+                <span>{property.BedroomsTotal} Beds</span>
+                <span>{property.BathroomsTotalInteger} Baths</span>
+                <span>{property.LivingArea.toLocaleString()} Sq Ft</span>
+              </div>
+              <div className="mt-4 pt-4 border-t">
+                <p className="text-sm text-gray-600">
+                  Status: <span className="font-semibold">{property.StandardStatus}</span>
+                </p>
+                <p className="text-sm text-gray-600">
+                  MLS#: {property.ListingId}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 } 

@@ -1,7 +1,9 @@
-import React from 'react';
+import { defaultHeroImage } from '../layout';
 import Image from 'next/image';
 
-export default function Contact() {
+export const runtime = 'edge';
+
+export default async function Contact() {
   return (
     <div>
       {/* Hero Section */}
@@ -9,7 +11,7 @@ export default function Contact() {
         <div className="absolute inset-0 z-0">
           <div className="relative w-full h-full">
             <Image
-              src="/contact-hero.jpg"
+              src={defaultHeroImage}
               alt="Contact Grandview Realty"
               fill
               style={{ objectFit: "cover" }}

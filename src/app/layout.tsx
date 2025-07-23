@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   },
 };
 
+// Default hero image for pages that don't have their own
+export const defaultHeroImage = '/hero-default.jpg';
+
 export default function RootLayout({
   children,
 }: {

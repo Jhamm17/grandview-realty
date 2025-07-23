@@ -1,7 +1,9 @@
-import React from 'react';
+import { defaultHeroImage } from '../layout';
 import Image from 'next/image';
 
-export default function Careers() {
+export const runtime = 'edge';
+
+export default async function Careers() {
   const openPositions = [
     {
       title: "Real Estate Agent",
@@ -30,7 +32,7 @@ export default function Careers() {
         <div className="absolute inset-0 z-0">
           <div className="relative w-full h-full">
             <Image
-              src="/careers-hero.jpg"
+              src={defaultHeroImage}
               alt="Join Our Team"
               fill
               style={{ objectFit: "cover" }}

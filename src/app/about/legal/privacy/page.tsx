@@ -1,6 +1,6 @@
-import React from 'react';
+export const runtime = 'edge';
 
-export default function PrivacyPolicy() {
+export default async function PrivacyPolicy() {
   return (
     <div className="container-padding py-16">
       <h1 className="text-3xl font-bold mb-8">Privacy Policy</h1>
@@ -12,7 +12,7 @@ export default function PrivacyPolicy() {
           <ul className="list-disc pl-6 mb-4">
             <li>Name, email address, phone number, and mailing address</li>
             <li>Property preferences and search criteria</li>
-            <li>Information about properties you're interested in</li>
+            <li>Information about properties you&apos;re interested in</li>
             <li>Communications you send to us</li>
           </ul>
         </section>
