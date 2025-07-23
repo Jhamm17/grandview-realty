@@ -37,6 +37,11 @@ export function PropertyGrid({ city, minPrice, maxPrice, beds, baths, propertyTy
                     status: 'Active'
                 });
 
+                console.log('Property results:', results.map(p => ({ 
+                    id: p.ListingId, 
+                    media: p.Media 
+                })));
+
                 setProperties(results);
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to load properties');
@@ -73,15 +78,18 @@ export function PropertyGrid({ city, minPrice, maxPrice, beds, baths, propertyTy
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {properties.map(property => (
                 <div key={property.ListingId} className="bg-white rounded-lg shadow-md overflow-hidden">
-                    {property.Media && property.Media.length > 0 && (
-                        <div className="relative h-48">
-                            <img
-                                src={property.Media[0].MediaURL}
-                                alt={`Property in ${property.City}`}
-                                className="w-full h-full object-cover"
-                            />
-                        </div>
-                    )}
+                    <div className="relative h-48">
+                        <img
+                            src={property.Media?.[0]?.MediaURL || '/property-1.jpg'}
+                            alt={`Property in ${property.City}`}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                console.error('Failed to load image:', target.src);
+                                target.src = '/property-1.jpg';
+                            }}
+                        />
+                    </div>
                     <div className="p-4">
                         <div className="flex justify-between items-start mb-2">
                             <h3 className="text-xl font-semibold">${property.ListPrice.toLocaleString()}</h3>

@@ -78,6 +78,19 @@ class MLSGridService {
         // Add field selection
         if (params.select?.length) {
             queryParams.append('$select', params.select.join(','));
+        } else {
+            // Always include essential fields including Media
+            queryParams.append('$select', [
+                'ListingId',
+                'ListPrice',
+                'City',
+                'StateOrProvince',
+                'BedroomsTotal',
+                'BathroomsTotalInteger',
+                'LivingArea',
+                'StandardStatus',
+                'Media'
+            ].join(','));
         }
 
         interface MLSGridResponse {
