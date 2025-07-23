@@ -28,6 +28,7 @@ export default function PropertiesPage() {
                 setLoading(true);
                 setError(null);
 
+                console.log('Fetching properties with filters:', filters);
                 const results = await mlsGridService.searchProperties({
                     ...filters,
                     top: 12,
@@ -35,11 +36,12 @@ export default function PropertiesPage() {
                     // Only fetch active listings
                     status: 'Active'
                 });
+                console.log('API Response:', results);
 
                 setProperties(results);
             } catch (err) {
+                console.error('Detailed API Error:', err);
                 setError(err instanceof Error ? err.message : 'Failed to load properties');
-                console.error('Error loading properties:', err);
             } finally {
                 setLoading(false);
             }

@@ -177,11 +177,15 @@ class MLSGridService {
         const startTime = Date.now();
         try {
             const queryString = this.buildQueryString(params);
+            console.log('API Request URL:', `${MRED_CONFIG.API_BASE_URL}/${MRED_CONFIG.RESOURCES.PROPERTY}?${queryString}`);
+            console.log('API Headers:', this.getAuthHeaders());
+            
             const cacheKey = `search:${queryString}`;
             
             // Cache search results for a short time
             const cacheEntry = this.cache.get(cacheKey);
             if (cacheEntry && Date.now() - cacheEntry.timestamp < 300000) { // 5 minute cache
+                console.log('Returning cached data');
                 mredMonitoring.trackRequest(startTime, 0);
                 return cacheEntry.data as Property[];
             }
@@ -193,12 +197,15 @@ class MLSGridService {
             });
             
             const responseSize = parseInt(response.headers.get('content-length') || '0', 10);
+            console.log('API Response Status:', response.status);
+            console.log('API Response Headers:', Object.fromEntries(response.headers.entries()));
             
             if (!response.ok) {
                 throw new APIError(response.statusText, response.status);
             }
 
             const data: MLSGridResponse<Property> = await response.json();
+            console.log('API Response Data:', data);
             
             // Transform media URLs for all properties
             const properties = data.value.map(property => ({
@@ -213,6 +220,7 @@ class MLSGridService {
             
             return properties;
         } catch (error) {
+            console.error('API Error Details:', error);
             return await errorHandler.handleError(error as Error, `searchProperties(${JSON.stringify(params)})`);
         }
     }
