@@ -9,8 +9,8 @@ async function getProperties() {
   try {
     // Build OData query parameters - only using allowed filter fields
     const queryParams = new URLSearchParams({
-      '$top': '50',  // Increased limit for better filtering
-      '$filter': 'MlgCanView eq true',
+      '$top': '500',  // Increased to get more properties
+      '$filter': 'MlgCanView eq true and StandardStatus eq \'Active\'', // Filter for active listings directly
       '$orderby': 'ModificationTimestamp desc', // Order by last modified
       '$count': 'true',
       '$expand': 'Media' // Include media in the response
@@ -69,12 +69,8 @@ async function getProperties() {
       } : 'No properties'
     });
 
-    // Filter the results on the client side for now
-    const filteredProperties = data.value.filter((property: Property) => 
-      property.StandardStatus === 'Active'
-    );
-
-    return filteredProperties;
+    // Return the properties directly since we're filtering for active in the API
+    return data.value;
   } catch (error) {
     // Log detailed error information
     console.error('Error fetching properties:', {
