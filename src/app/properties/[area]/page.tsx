@@ -32,11 +32,11 @@ async function getPropertiesByArea(area: string) {
       throw new Error(`Invalid area: ${area}`);
     }
 
-    // Build OData query parameters
+    // Build OData query parameters - only using allowed filter fields
     const queryParams = new URLSearchParams({
-      '$top': '20',  // Limit to 20 properties for now
-      '$filter': `MlgCanView eq true and StandardStatus eq 'Active' and City eq '${cityName}'`,
-      '$orderby': 'ListPrice desc',
+      '$top': '100',  // Get more properties since we'll filter client-side
+      '$filter': 'MlgCanView eq true',
+      '$orderby': 'ModificationTimestamp desc', // Order by last modified
       '$count': 'true'
     });
 
@@ -92,7 +92,13 @@ async function getPropertiesByArea(area: string) {
       } : 'No properties'
     });
 
-    return data.value as Property[];
+    // Filter the results on the client side for now
+    const filteredProperties = data.value.filter((property: Property) => 
+      property.StandardStatus === 'Active' && 
+      property.City === cityName
+    );
+
+    return filteredProperties;
   } catch (error) {
     // Log detailed error information
     console.error('Error fetching properties:', {

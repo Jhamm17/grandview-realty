@@ -6,11 +6,11 @@ export const revalidate = 300; // Revalidate every 5 minutes
 
 async function getProperties() {
   try {
-    // Build OData query parameters
+    // Build OData query parameters - only using allowed filter fields
     const queryParams = new URLSearchParams({
       '$top': '20',  // Limit to 20 properties for now
-      '$filter': 'MlgCanView eq true and StandardStatus eq \'Active\'',
-      '$orderby': 'ListPrice desc',
+      '$filter': 'MlgCanView eq true',
+      '$orderby': 'ModificationTimestamp desc', // Order by last modified
       '$count': 'true'
     });
 
@@ -65,7 +65,13 @@ async function getProperties() {
       } : 'No properties'
     });
 
-    return data.value as Property[];
+    // Filter the results on the client side for now
+    // Once we understand the API better, we can move this to the server
+    const filteredProperties = data.value.filter((property: Property) => 
+      property.StandardStatus === 'Active'
+    );
+
+    return filteredProperties;
   } catch (error) {
     // Log detailed error information
     console.error('Error fetching properties:', {
