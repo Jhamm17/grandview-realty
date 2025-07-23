@@ -75,10 +75,9 @@ async function getProperties() {
     });
 
     // Filter the results on the client side for active listings
-    // Include various active statuses that might be used
-    const activeStatuses = ['Active', 'Active Under Contract', 'Active Option Contract'];
+    // Only include properties with "Active" status
     const filteredProperties = data.value.filter((property: Property) => 
-      activeStatuses.includes(property.StandardStatus)
+      property.StandardStatus === 'Active'
     );
 
     console.log('Filtered Properties:', {
