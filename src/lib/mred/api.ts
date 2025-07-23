@@ -1,6 +1,41 @@
 import { MRED_CONFIG } from './config';
 import { Property, SearchParams } from './types';
 
+const MOCK_PROPERTIES: Property[] = [
+    {
+        ListingId: 'MOCK1',
+        ListingKey: 'MOCK1',
+        ModificationTimestamp: new Date().toISOString(),
+        OriginatingSystemName: 'MOCK',
+        StandardStatus: 'Active',
+        MlgCanView: true,
+        ListPrice: 499000,
+        City: 'Geneva',
+        StateOrProvince: 'IL',
+        PostalCode: '60134',
+        BedroomsTotal: 3,
+        BathroomsTotalInteger: 2,
+        LivingArea: 2000,
+        PublicRemarks: 'Beautiful mock property'
+    },
+    {
+        ListingId: 'MOCK2',
+        ListingKey: 'MOCK2',
+        ModificationTimestamp: new Date().toISOString(),
+        OriginatingSystemName: 'MOCK',
+        StandardStatus: 'Active',
+        MlgCanView: true,
+        ListPrice: 699000,
+        City: 'St. Charles',
+        StateOrProvince: 'IL',
+        PostalCode: '60174',
+        BedroomsTotal: 4,
+        BathroomsTotalInteger: 3,
+        LivingArea: 2500,
+        PublicRemarks: 'Spacious mock property'
+    }
+];
+
 class MLSGridService {
     private formatImageUrl(mediaUrl: string): string {
         // If it's already a proxy URL, return as is
@@ -15,6 +50,12 @@ class MLSGridService {
     }
 
     private async fetchFromAPI<T>(endpoint: string, params?: URLSearchParams): Promise<T> {
+        // If no token, return mock data
+        if (!MRED_CONFIG.ACCESS_TOKEN || MRED_CONFIG.ACCESS_TOKEN === 'demo_token') {
+            console.log('Using mock data (no API token configured)');
+            return { value: MOCK_PROPERTIES } as T;
+        }
+
         const url = params ? 
             `${MRED_CONFIG.API_BASE_URL}/${endpoint}?${params.toString()}` :
             `${MRED_CONFIG.API_BASE_URL}/${endpoint}`;
@@ -40,6 +81,30 @@ class MLSGridService {
     }
 
     public async searchProperties(params: SearchParams): Promise<Property[]> {
+        // If using mock data, apply filters client-side
+        if (!MRED_CONFIG.ACCESS_TOKEN || MRED_CONFIG.ACCESS_TOKEN === 'demo_token') {
+            let results = [...MOCK_PROPERTIES];
+            
+            if (params.city) {
+                results = results.filter(p => p.City.toLowerCase().includes(params.city!.toLowerCase()));
+            }
+            if (params.minPrice) {
+                results = results.filter(p => p.ListPrice >= params.minPrice!);
+            }
+            if (params.maxPrice) {
+                results = results.filter(p => p.ListPrice <= params.maxPrice!);
+            }
+            if (params.beds) {
+                results = results.filter(p => p.BedroomsTotal >= params.beds!);
+            }
+            if (params.baths) {
+                results = results.filter(p => p.BathroomsTotalInteger >= params.baths!);
+            }
+
+            console.log('Returning filtered mock data:', results);
+            return results;
+        }
+
         const queryParams = new URLSearchParams();
 
         // Add pagination
@@ -101,7 +166,7 @@ class MLSGridService {
         ];
 
         queryParams.append('$select', params.select?.length ? params.select.join(',') : defaultFields.join(','));
-        queryParams.append('$expand', 'Media'); // Add explicit expand for Media
+        queryParams.append('$expand', 'Media');
 
         console.log('API Request URL:', `${MRED_CONFIG.API_BASE_URL}/Property?${queryParams.toString()}`);
 
@@ -112,18 +177,8 @@ class MLSGridService {
         }
 
         const data = await this.fetchFromAPI<MLSGridResponse>('Property', queryParams);
-        
-        // Format image URLs in the response
-        const formattedProperties = data.value.map(property => ({
-            ...property,
-            Media: property.Media?.map(media => ({
-                ...media,
-                MediaURL: this.formatImageUrl(media.MediaURL)
-            }))
-        }));
-
-        console.log('API Response with formatted URLs:', formattedProperties);
-        return formattedProperties;
+        console.log('API Response:', data);
+        return data.value;
     }
 }
 
