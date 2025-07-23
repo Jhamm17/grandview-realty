@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 function NavDropdown({ title, items }: { title: string; items: { name: string; href: string }[] }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -24,10 +26,15 @@ function NavDropdown({ title, items }: { title: string; items: { name: string; h
     };
   }, [isOpen]);
 
+  // Check if any dropdown item is active
+  const isActive = items.some(item => pathname === item.href);
+
   return (
     <div className="relative" ref={dropdownRef}>
       <button 
-        className="flex items-center text-white hover:text-white/80 transition-colors py-2"
+        className={`flex items-center text-white hover:text-white/80 transition-colors py-4 px-3 text-base font-medium ${
+          isActive ? 'bg-[#1a4a7a]' : ''
+        }`}
         onClick={(e) => {
           e.stopPropagation();
           setIsOpen(!isOpen);
@@ -53,7 +60,9 @@ function NavDropdown({ title, items }: { title: string; items: { name: string; h
             <Link
               key={item.href}
               href={item.href}
-              className="block px-4 py-2 text-sm text-white hover:bg-white/10 transition-colors"
+              className={`block px-4 py-2 text-sm text-white hover:bg-white/10 transition-colors ${
+                pathname === item.href ? 'bg-[#1a4a7a]' : ''
+              }`}
               onClick={() => setIsOpen(false)}
             >
               {item.name}
@@ -68,6 +77,7 @@ function NavDropdown({ title, items }: { title: string; items: { name: string; h
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const pathname = usePathname();
   
   const navItems = {
     properties: [
@@ -107,39 +117,54 @@ export function Header() {
 
   return (
     <header className="bg-[#081d36] shadow-sm sticky top-0 z-50">
-      <nav className="container-padding">
-        <div className="flex items-center justify-between -my-4">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-20">
           <Link href="/" className="flex items-center hover:opacity-90 transition-opacity">
             <Image
               src="/logo.png"
               alt="Grandview Realty"
               width={1200}
               height={300}
-              className="h-32 w-auto"
+              className="h-16 w-auto"
               priority
             />
             <span className="sr-only">Grandview Realty</span>
           </Link>
           
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
-            <Link href="/" className="text-white hover:text-white/80 transition-colors text-sm">
+          <div className="hidden md:flex items-center space-x-1">
+            <Link 
+              href="/" 
+              className={`text-white hover:text-white/80 transition-colors text-base font-medium py-4 px-3 ${
+                pathname === '/' ? 'bg-[#1a4a7a]' : ''
+              }`}
+            >
               Home
             </Link>
             <NavDropdown title="Properties" items={navItems.properties} />
             <NavDropdown title="About Us" items={navItems.about} />
             <NavDropdown title="Community" items={navItems.community} />
-            <Link href="/careers" className="text-white hover:text-white/80 transition-colors text-sm">
+            <Link 
+              href="/careers" 
+              className={`text-white hover:text-white/80 transition-colors text-base font-medium py-4 px-3 ${
+                pathname === '/careers' ? 'bg-[#1a4a7a]' : ''
+              }`}
+            >
               Careers
             </Link>
-            <Link href="/contact" className="text-white hover:text-white/80 transition-colors text-sm">
+            <Link 
+              href="/contact" 
+              className={`text-white hover:text-white/80 transition-colors text-base font-medium py-4 px-3 ${
+                pathname === '/contact' ? 'bg-[#1a4a7a]' : ''
+              }`}
+            >
               Contact
             </Link>
           </div>
 
           {/* Mobile Menu Button */}
           <button 
-            className="md:hidden p-1 mobile-menu-button text-white"
+            className="md:hidden p-2 mobile-menu-button text-white"
             onClick={(e) => {
               e.stopPropagation();
               setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -159,11 +184,13 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <div className="md:hidden mt-2 pb-2 mobile-menu bg-[#081d36]">
-            <div className="flex flex-col space-y-2 text-sm">
+          <div className="md:hidden pb-4 mobile-menu bg-[#081d36]">
+            <div className="flex flex-col space-y-2 text-base">
               <Link 
                 href="/" 
-                className="text-white hover:text-white/80 transition-colors py-1"
+                className={`text-white hover:text-white/80 transition-colors py-2 px-3 rounded ${
+                  pathname === '/' ? 'bg-[#1a4a7a]' : ''
+                }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Home
@@ -171,7 +198,7 @@ export function Header() {
               {Object.entries(navItems).map(([key, items]) => (
                 <div key={key} className="space-y-1">
                   <button
-                    className="font-medium text-white flex items-center justify-between w-full text-sm py-1"
+                    className="font-medium text-white flex items-center justify-between w-full text-base py-2 px-3 rounded"
                     onClick={() => setActiveDropdown(activeDropdown === key ? null : key)}
                   >
                     {key.charAt(0).toUpperCase() + key.slice(1)}
@@ -190,7 +217,9 @@ export function Header() {
                         <Link
                           key={item.href}
                           href={item.href}
-                          className="block text-white/90 hover:text-white transition-colors text-sm py-1"
+                          className={`block text-white/90 hover:text-white transition-colors text-sm py-2 px-3 rounded ${
+                            pathname === item.href ? 'bg-[#1a4a7a] text-white' : ''
+                          }`}
                           onClick={() => {
                             setIsMobileMenuOpen(false);
                             setActiveDropdown(null);
@@ -205,14 +234,18 @@ export function Header() {
               ))}
               <Link 
                 href="/careers" 
-                className="text-white hover:text-white/80 transition-colors text-sm py-1"
+                className={`text-white hover:text-white/80 transition-colors text-base py-2 px-3 rounded ${
+                  pathname === '/careers' ? 'bg-[#1a4a7a]' : ''
+                }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Careers
               </Link>
               <Link 
                 href="/contact" 
-                className="text-white hover:text-white/80 transition-colors text-sm py-1"
+                className={`text-white hover:text-white/80 transition-colors text-base py-2 px-3 rounded ${
+                  pathname === '/contact' ? 'bg-[#1a4a7a]' : ''
+                }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Contact
