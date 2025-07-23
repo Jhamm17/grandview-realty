@@ -1,10 +1,6 @@
-'use client';
-
 import { MRED_CONFIG } from '@/lib/mred/config';
 import { Property } from '@/lib/mred/types';
-import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import PropertyFilter, { FilterState } from '@/components/PropertyFilter';
+import PropertyFilter from '@/components/PropertyFilter';
 
 export const runtime = 'edge';
 export const revalidate = 300; // Revalidate every 5 minutes
@@ -98,88 +94,14 @@ async function getProperties() {
   }
 }
 
-function filterProperties(properties: Property[], filters: FilterState): Property[] {
-  return properties.filter(property => {
-    // City filter
-    if (filters.city && !property.City?.toLowerCase().includes(filters.city.toLowerCase())) {
-      return false;
-    }
+export default async function PropertiesPage() {
+  let properties: Property[] = [];
+  let error = null;
 
-    // Price filters
-    if (filters.minPrice && property.ListPrice < parseInt(filters.minPrice)) {
-      return false;
-    }
-    if (filters.maxPrice && property.ListPrice > parseInt(filters.maxPrice)) {
-      return false;
-    }
-
-    // Bedrooms filter
-    if (filters.beds && property.BedroomsTotal < parseInt(filters.beds)) {
-      return false;
-    }
-
-    // Bathrooms filter
-    if (filters.baths && property.BathroomsTotalInteger < parseInt(filters.baths)) {
-      return false;
-    }
-
-    // Property type filter (if we have this data)
-    if (filters.propertyType && property.PropertyType !== filters.propertyType) {
-      return false;
-    }
-
-    return true;
-  });
-}
-
-export default function PropertiesPage() {
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-  const [filters, setFilters] = useState<FilterState>({
-    city: '',
-    minPrice: '',
-    maxPrice: '',
-    beds: '',
-    baths: '',
-    propertyType: ''
-  });
-
-  useEffect(() => {
-    const fetchProperties = async () => {
-      try {
-        const data = await getProperties();
-        setProperties(data);
-        setFilteredProperties(data);
-      } catch (e) {
-        setError(e instanceof Error ? e : new Error(String(e)));
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProperties();
-  }, []);
-
-  useEffect(() => {
-    const filtered = filterProperties(properties, filters);
-    setFilteredProperties(filtered);
-  }, [properties, filters]);
-
-  const handleFilterChange = (newFilters: FilterState) => {
-    setFilters(newFilters);
-  };
-
-  if (loading) {
-    return (
-      <div className="container-padding py-16">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 mx-auto"></div>
-          <p className="mt-4 text-lg">Loading properties...</p>
-        </div>
-      </div>
-    );
+  try {
+    properties = await getProperties();
+  } catch (e) {
+    error = e;
   }
 
   if (error) {
@@ -192,8 +114,21 @@ export default function PropertiesPage() {
           </p>
           {/* Always show error details in production for now, to help debug */}
           <pre className="mt-4 p-4 bg-red-100 rounded text-sm overflow-auto">
-            {error.message}
+            {error instanceof Error ? error.message : 'Unknown error'}
           </pre>
+        </div>
+      </div>
+    );
+  }
+
+  if (properties.length === 0) {
+    return (
+      <div className="container-padding py-16">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+          <h2 className="text-yellow-800 text-lg font-semibold mb-2">No Properties Found</h2>
+          <p className="text-yellow-600">
+            We couldn&apos;t find any properties matching your criteria. Please try adjusting your search.
+          </p>
         </div>
       </div>
     );
@@ -203,69 +138,8 @@ export default function PropertiesPage() {
     <div className="container-padding py-16">
       <h1 className="text-4xl font-bold mb-8">Available Properties</h1>
       
-      {/* Filter Component */}
-      <PropertyFilter onFilterChange={handleFilterChange} />
-
-      {/* Results Count */}
-      <div className="mb-6">
-        <p className="text-gray-600">
-          Showing {filteredProperties.length} of {properties.length} properties
-        </p>
-      </div>
-
-      {filteredProperties.length === 0 ? (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-          <h2 className="text-yellow-800 text-lg font-semibold mb-2">No Properties Found</h2>
-          <p className="text-yellow-600">
-            We couldn&apos;t find any properties matching your criteria. Please try adjusting your search.
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProperties.map((property) => (
-            <div key={property.ListingId} className="bg-white rounded-lg shadow-md overflow-hidden">
-              {/* Property Image */}
-              <div className="relative h-64">
-                {property.Media?.[0]?.MediaURL ? (
-                  <Image
-                    src={`${process.env.NEXT_PUBLIC_CLOUDFLARE_URL}/proxy?url=${encodeURIComponent(property.Media[0].MediaURL)}`}
-                    alt={`${property.UnparsedAddress || 'Property'} in ${property.City}`}
-                    fill
-                    style={{ objectFit: "cover" }}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-400">No image available</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Property Details */}
-              <div className="p-6">
-                <h3 className="text-xl font-semibold mb-2">{property.UnparsedAddress}</h3>
-                <p className="text-gray-600 mb-4">{property.City}, {property.StateOrProvince}</p>
-                <p className="text-primary font-bold text-xl mb-4">
-                  ${property.ListPrice.toLocaleString()}
-                </p>
-                <div className="flex justify-between text-gray-500 text-sm">
-                  <span>{property.BedroomsTotal} Beds</span>
-                  <span>{property.BathroomsTotalInteger} Baths</span>
-                  <span>{property.LivingArea?.toLocaleString()} Sq Ft</span>
-                </div>
-                <div className="mt-4 pt-4 border-t">
-                  <p className="text-sm text-gray-600">
-                    Status: <span className="font-semibold">{property.StandardStatus}</span>
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    MLS#: {property.ListingId}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      {/* Filter Component with Properties Display */}
+      <PropertyFilter initialProperties={properties} />
     </div>
   );
 } 
