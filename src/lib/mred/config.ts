@@ -3,7 +3,7 @@ export const MRED_CONFIG = {
   IS_STAGING: process.env.NODE_ENV !== 'production',
 
   // MLS Grid API Configuration
-  API_BASE_URL: 'https://api.mlsgrid.com/v2',
+  API_BASE_URL: process.env.MLSGRID_API_URL || 'https://api.mlsgrid.com/v2',
   ACCESS_TOKEN: process.env.MLSGRID_ACCESS_TOKEN,
 
   // Rate Limiting & Pagination
@@ -41,15 +41,7 @@ export type MREDConfig = typeof MRED_CONFIG;
 
 // Validate required environment variables
 if (process.env.NODE_ENV === 'production') {
-    const requiredEnvVars = [
-        'MLSGRID_ACCESS_TOKEN',
-        'NEXT_PUBLIC_CLOUDFLARE_URL',
-        'NEXT_PUBLIC_VERCEL_URL'
-    ];
-
-    for (const envVar of requiredEnvVars) {
-        if (!process.env[envVar]) {
-            throw new Error(`Missing required environment variable: ${envVar}`);
-        }
+    if (!process.env.MLSGRID_ACCESS_TOKEN) {
+        throw new Error('Missing required environment variable: MLSGRID_ACCESS_TOKEN');
     }
 } 

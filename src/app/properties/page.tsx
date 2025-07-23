@@ -32,6 +32,7 @@ async function getProperties() {
       headers: {
         'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
         'Accept': 'application/json',
+        'Content-Type': 'application/json',
       },
       next: { revalidate: 300 } // Cache for 5 minutes
     });
@@ -101,11 +102,10 @@ export default async function PropertiesPage() {
           <p className="text-red-600">
             We&apos;re having trouble connecting to our property database. Please try again later.
           </p>
-          {process.env.NODE_ENV === 'development' && (
-            <pre className="mt-4 p-4 bg-red-100 rounded text-sm overflow-auto">
-              {error instanceof Error ? error.message : 'Unknown error'}
-            </pre>
-          )}
+          {/* Always show error details in production for now, to help debug */}
+          <pre className="mt-4 p-4 bg-red-100 rounded text-sm overflow-auto">
+            {error instanceof Error ? error.message : 'Unknown error'}
+          </pre>
         </div>
       </div>
     );
