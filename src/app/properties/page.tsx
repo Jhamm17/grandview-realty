@@ -7,9 +7,9 @@ export const revalidate = 300; // Revalidate every 5 minutes
 
 async function getProperties() {
   try {
-    // Build OData query parameters - using maximum allowed limit
+    // Build OData query parameters - using maximum allowed limit with $expand
     const queryParams = new URLSearchParams({
-      '$top': '5000',  // Maximum allowed by MLS Grid API
+      '$top': '1000',  // Maximum allowed when using $expand
       '$filter': 'MlgCanView eq true', // Only use allowed filter fields
       '$orderby': 'ModificationTimestamp desc', // Order by last modified
       '$count': 'true',
