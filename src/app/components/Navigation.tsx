@@ -32,7 +32,7 @@ function NavDropdown({ title, items }: { title: string; items: { name: string; h
   return (
     <div className="relative" ref={dropdownRef}>
       <button 
-        className={`flex items-center text-white hover:text-white/80 transition-colors py-4 px-3 text-base font-medium ${
+        className={`flex items-center text-white hover:text-white/80 transition-colors py-6 px-3 text-base font-medium ${
           isActive ? 'text-[#60a5fa]' : ''
         }`}
         onClick={(e) => {
@@ -117,15 +117,15 @@ export function Header() {
 
   return (
     <header className="bg-[#081d36] shadow-sm sticky top-0 z-50">
-      <nav className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
-        <div className="flex items-center justify-between h-24">
+      <nav className="max-w-7xl mx-auto px-1 sm:px-2 lg:px-3">
+        <div className="flex items-center justify-between h-42">
           <Link href="/" className="flex items-center hover:opacity-90 transition-opacity">
             <Image
               src="/logo.png"
               alt="Grandview Realty"
               width={1200}
               height={300}
-              className="h-28 w-auto"
+              className="h-49 w-auto"
               priority
             />
             <span className="sr-only">Grandview Realty</span>
@@ -135,7 +135,7 @@ export function Header() {
           <div className="hidden md:flex items-center space-x-1">
             <Link 
               href="/" 
-              className={`text-white hover:text-white/80 transition-colors text-base font-medium py-4 px-3 ${
+              className={`text-white hover:text-white/80 transition-colors text-base font-medium py-6 px-3 ${
                 pathname === '/' ? 'text-[#60a5fa]' : ''
               }`}
             >
@@ -146,7 +146,7 @@ export function Header() {
             <NavDropdown title="Community" items={navItems.community} />
             <Link 
               href="/careers" 
-              className={`text-white hover:text-white/80 transition-colors text-base font-medium py-4 px-3 ${
+              className={`text-white hover:text-white/80 transition-colors text-base font-medium py-6 px-3 ${
                 pathname === '/careers' ? 'text-[#60a5fa]' : ''
               }`}
             >
@@ -154,7 +154,7 @@ export function Header() {
             </Link>
             <Link 
               href="/contact" 
-              className={`text-white hover:text-white/80 transition-colors text-base font-medium py-4 px-3 ${
+              className={`text-white hover:text-white/80 transition-colors text-base font-medium py-6 px-3 ${
                 pathname === '/contact' ? 'text-[#60a5fa]' : ''
               }`}
             >
