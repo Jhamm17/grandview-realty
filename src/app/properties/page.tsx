@@ -6,10 +6,24 @@ export const revalidate = 300; // Revalidate every 5 minutes
 
 async function getProperties() {
   try {
-    // Log the request for debugging
-    console.log('Fetching properties from MLS Grid API');
+    // Build OData query parameters
+    const queryParams = new URLSearchParams({
+      '$top': '20',  // Limit to 20 properties for now
+      '$filter': 'MlgCanView eq true and StandardStatus eq \'Active\'',
+      '$orderby': 'ListPrice desc',
+      '$count': 'true'
+    });
+
+    const url = `${MRED_CONFIG.API_BASE_URL}/Property?${queryParams.toString()}`;
     
-    const response = await fetch(`${MRED_CONFIG.API_BASE_URL}/Property`, {
+    // Log the full request details for debugging
+    console.log('MLS Grid API Request:', {
+      url,
+      token: MRED_CONFIG.ACCESS_TOKEN ? 'Present' : 'Missing',
+      baseUrl: MRED_CONFIG.API_BASE_URL
+    });
+    
+    const response = await fetch(url, {
       headers: {
         'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
         'Accept': 'application/json',
@@ -18,22 +32,44 @@ async function getProperties() {
     });
 
     if (!response.ok) {
+      // Log detailed error information
+      const errorText = await response.text();
       console.error('MLS Grid API Error:', {
         status: response.status,
-        statusText: response.statusText
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries()),
+        body: errorText
       });
-      throw new Error(`API request failed: ${response.status}`);
+      throw new Error(`API request failed: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
+    
+    // Log successful response details
     console.log('MLS Grid API Response:', {
-      count: data['@odata.count'],
-      nextLink: data['@odata.nextLink']
+      totalCount: data['@odata.count'],
+      nextLink: data['@odata.nextLink'],
+      resultCount: data.value?.length,
+      firstProperty: data.value?.[0] ? {
+        id: data.value[0].ListingId,
+        address: data.value[0].UnparsedAddress,
+        price: data.value[0].ListPrice
+      } : 'No properties'
     });
 
     return data.value as Property[];
   } catch (error) {
-    console.error('Error fetching properties:', error);
+    // Log detailed error information
+    console.error('Error fetching properties:', {
+      error: error instanceof Error ? {
+        message: error.message,
+        stack: error.stack
+      } : error,
+      config: {
+        baseUrl: MRED_CONFIG.API_BASE_URL,
+        hasToken: Boolean(MRED_CONFIG.ACCESS_TOKEN)
+      }
+    });
     throw error;
   }
 }
@@ -57,6 +93,11 @@ export default async function PropertiesPage() {
           <p className="text-red-600">
             We&apos;re having trouble connecting to our property database. Please try again later.
           </p>
+          {process.env.NODE_ENV === 'development' && (
+            <pre className="mt-4 p-4 bg-red-100 rounded text-sm overflow-auto">
+              {error instanceof Error ? error.message : 'Unknown error'}
+            </pre>
+          )}
         </div>
       </div>
     );
