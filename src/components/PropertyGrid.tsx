@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 import { Property } from '@/lib/mred/types';
 import { mlsGridService } from '@/lib/mred/api';
 import { PropertyGridSkeleton } from './PropertyLoading';
@@ -83,26 +82,13 @@ export function PropertyGrid({ city, minPrice, maxPrice, beds, baths, propertyTy
             {properties.map(property => (
                 <div key={property.ListingId} className="bg-white rounded-lg shadow-md overflow-hidden">
                     <div className="relative h-48 bg-gray-100">
-                        {!imageErrors.has(property.ListingId) ? (
-                            <Image
-                                src={property.Media?.[0]?.MediaURL || '/property-1.jpg'}
-                                alt={`Property in ${property.City}`}
-                                fill
-                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                className="object-cover"
-                                priority={false}
-                                quality={75}
-                                onError={() => handleImageError(property.ListingId)}
-                            />
-                        ) : (
-                            <Image
-                                src="/property-1.jpg"
-                                alt="Property placeholder"
-                                fill
-                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                className="object-cover"
-                            />
-                        )}
+                        <img
+                            src={!imageErrors.has(property.ListingId) ? property.Media?.[0]?.MediaURL : '/property-1.jpg'}
+                            alt={`Property in ${property.City}`}
+                            className="absolute inset-0 w-full h-full object-cover"
+                            onError={() => handleImageError(property.ListingId)}
+                            loading="lazy"
+                        />
                     </div>
                     <div className="p-4">
                         <div className="flex justify-between items-start mb-2">
