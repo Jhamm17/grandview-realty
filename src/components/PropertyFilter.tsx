@@ -107,6 +107,9 @@ export default function PropertyFilter({ initialProperties }: FilterProps) {
           {initialProperties.length > 0 && (
             <p>First property media URL: {initialProperties[0].Media?.[0]?.MediaURL || 'No media'}</p>
           )}
+          {initialProperties.length > 0 && initialProperties[0].Media?.[0]?.MediaURL && (
+            <p>Image URL being used: {initialProperties[0].Media[0].MediaURL}</p>
+          )}
         </div>
       </div>
 
@@ -253,7 +256,7 @@ export default function PropertyFilter({ initialProperties }: FilterProps) {
               <div className="relative h-64">
                 {property.Media?.[0]?.MediaURL ? (
                   <Image
-                    src={`${process.env.NEXT_PUBLIC_CLOUDFLARE_URL}/proxy?url=${encodeURIComponent(property.Media[0].MediaURL)}`}
+                    src={property.Media[0].MediaURL}
                     alt={`${property.UnparsedAddress || 'Property'} in ${property.City}`}
                     fill
                     style={{ objectFit: "cover" }}

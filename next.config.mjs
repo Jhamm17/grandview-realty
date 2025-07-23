@@ -7,6 +7,11 @@ const nextConfig = {
                 hostname: 'grandview-realty.jphamm2001.workers.dev',
                 pathname: '/proxy/**',
             },
+            {
+                protocol: 'https',
+                hostname: 's3.amazonaws.com',
+                pathname: '/mlsgrid/images/**',
+            },
         ],
     },
 };
