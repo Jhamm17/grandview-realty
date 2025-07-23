@@ -1,56 +1,77 @@
 export const MRED_CONFIG = {
-    // API Configuration
-    API_BASE_URL: process.env.NEXT_PUBLIC_MRED_API_URL || 'https://api.mred.com/v2',
-    TOKEN_ENDPOINT: process.env.NEXT_PUBLIC_MRED_TOKEN_URL || 'https://api.mred.com/oauth/token',
-    CLIENT_ID: process.env.MRED_CLIENT_ID,
-    CLIENT_SECRET: process.env.MRED_CLIENT_SECRET,
+    // Environment
+    IS_STAGING: process.env.NODE_ENV !== 'production',
     
-    // Rate Limiting
+    // MLS Grid API Configuration
+    API_BASE_URL: 'https://api.mlsgrid.com/v2',
+    ACCESS_TOKEN: process.env.MLSGRID_ACCESS_TOKEN,
+    
+    // Media Configuration
+    MEDIA_CDN_URL: process.env.NEXT_PUBLIC_CLOUDFLARE_URL,
+    MEDIA_HOST_NAME: process.env.NEXT_PUBLIC_VERCEL_URL || 'grandview-realty-r69of05js-jackson-hamms-projects.vercel.app',
+    CDN_PROVIDER: 'Cloudflare',
+    USE_CDN: true,
+    
+    // Rate Limiting & Pagination
     MAX_REQUESTS_PER_SECOND: 2,
     MAX_REQUESTS_PER_HOUR: 7200,
     MAX_DATA_PER_HOUR_GB: 4,
+    RECORDS_PER_PAGE: 5000, // MLS Grid limit
     
+    // Resource Types
+    RESOURCES: {
+        PROPERTY: 'Property',
+        MEMBER: 'Member',
+        OFFICE: 'Office',
+        MEDIA: 'Media'
+    },
+
+    // Searchable Fields (MLS Grid standard)
+    SEARCHABLE_FIELDS: {
+        MODIFICATION_TIMESTAMP: 'ModificationTimestamp',
+        ORIGINATING_SYSTEM: 'OriginatingSystemName',
+        STATUS: 'StandardStatus',
+        LISTING_ID: 'ListingId',
+        CAN_VIEW: 'MlgCanView'
+    },
+    
+    // Sync Intervals (in milliseconds)
+    SYNC_INTERVALS: {
+        FULL_SYNC: 24 * 60 * 60 * 1000,    // 24 hours
+        INCREMENTAL_SYNC: 15 * 60 * 1000,   // 15 minutes
+    },
+
     // Caching
     CACHE_TIMES: {
         LISTING_DETAILS: 15 * 60, // 15 minutes
         SEARCH_RESULTS: 5 * 60,   // 5 minutes
-        FULL_SYNC: 24 * 60 * 60   // 24 hours
-    },
-    
-    // Sync Settings
-    SYNC_INTERVALS: {
-        FULL_SYNC: 24 * 60 * 60 * 1000,    // 24 hours
-        INCREMENTAL_SYNC: 15 * 60 * 1000,   // 15 minutes
-        BATCH_SIZE: 100                     // Number of records per page
+        FULL_SYNC: 24 * 60 * 60,  // 24 hours
+        MEDIA: 7 * 24 * 60 * 60   // 7 days for media
     },
 
-    // Error Handling
-    MAX_RETRIES: 3,
-    RETRY_DELAY: 1000, // 1 second
-    
-    // Image Storage
-    IMAGE_STORAGE_PATH: '/property-images',
-    MAX_IMAGE_SIZE: 5 * 1024 * 1024, // 5MB
-    
-    // Feature Flags
-    ENABLE_CACHING: true,
-    ENABLE_RATE_LIMITING: true,
-    ENABLE_IMAGE_OPTIMIZATION: true,
-    
     // Monitoring
     ENABLE_MONITORING: true,
-    LOG_LEVEL: process.env.NODE_ENV === 'production' ? 'error' : 'debug'
+    LOG_LEVEL: process.env.NODE_ENV === 'production' ? 'error' : 'debug',
+
+    // Query Parameters
+    QUERY_PARAMS: {
+        TOP: '$top',
+        SKIP: '$skip',
+        COUNT: '$count',
+        FILTER: '$filter',
+        SELECT: '$select',
+        ORDERBY: '$orderby'
+    }
 } as const;
 
-// Type for the config
 export type MREDConfig = typeof MRED_CONFIG;
 
 // Validate required environment variables
 if (process.env.NODE_ENV === 'production') {
     const requiredEnvVars = [
-        'NEXT_PUBLIC_MRED_API_URL',
-        'MRED_CLIENT_ID',
-        'MRED_CLIENT_SECRET'
+        'MLSGRID_ACCESS_TOKEN',
+        'NEXT_PUBLIC_CLOUDFLARE_URL',
+        'NEXT_PUBLIC_VERCEL_URL'
     ];
 
     for (const envVar of requiredEnvVars) {

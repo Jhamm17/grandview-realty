@@ -84,6 +84,7 @@ export function Header() {
       { name: "Pawty Time", href: "/community/pawty-time" },
       { name: "Anderson Humane", href: "/community/anderson-humane" },
       { name: "Community Events", href: "/community/events" },
+      { name: "System Status", href: "/community/monitoring" },
     ],
   };
 
