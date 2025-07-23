@@ -243,7 +243,7 @@ export default function PropertyFilter({ initialProperties }: FilterProps) {
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
                         {/* Listed Badge */}
-                        <div className="absolute bottom-2 left-2 bg-blue-400 text-white px-2 py-1 rounded text-xs font-medium">
+                        <div className="absolute bottom-0 left-0 bg-blue-400 text-white px-4 py-3 text-lg font-black" style={{ borderRadius: '0' }}>
                           Listed
                         </div>
                       </>
@@ -260,7 +260,12 @@ export default function PropertyFilter({ initialProperties }: FilterProps) {
 
               {/* Property Details */}
               <div className="p-6">
-                <h3 className="text-xl font-semibold mb-2">{property.UnparsedAddress}</h3>
+                <h3 className="text-xl font-semibold mb-2">
+                  {property.StreetNumber && property.StreetName 
+                    ? `${property.StreetNumber} ${property.StreetName} ${property.StreetSuffix || ''}`.trim()
+                    : property.UnparsedAddress || 'Address not available'
+                  }
+                </h3>
                 <p className="text-gray-600 mb-4">{property.City}, {property.StateOrProvince}</p>
                 <p className="text-primary font-bold text-xl mb-4">
                   ${property.ListPrice.toLocaleString()}
