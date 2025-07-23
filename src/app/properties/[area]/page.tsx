@@ -37,7 +37,8 @@ async function getPropertiesByArea(area: string) {
       '$top': '100',  // Get more properties since we'll filter client-side
       '$filter': 'MlgCanView eq true',
       '$orderby': 'ModificationTimestamp desc', // Order by last modified
-      '$count': 'true'
+      '$count': 'true',
+      '$expand': 'Media' // Include media in the response
     });
 
     const url = `${MRED_CONFIG.API_BASE_URL}/Property?${queryParams.toString()}`;
@@ -80,7 +81,7 @@ async function getPropertiesByArea(area: string) {
 
     const data = await response.json();
     
-    // Log successful response details
+    // Log successful response details with media info
     console.log('MLS Grid API Response:', {
       totalCount: data['@odata.count'],
       nextLink: data['@odata.nextLink'],
@@ -88,7 +89,9 @@ async function getPropertiesByArea(area: string) {
       firstProperty: data.value?.[0] ? {
         id: data.value[0].ListingId,
         address: data.value[0].UnparsedAddress,
-        price: data.value[0].ListPrice
+        price: data.value[0].ListPrice,
+        mediaCount: data.value[0].Media?.length || 0,
+        firstMediaUrl: data.value[0].Media?.[0]?.MediaURL || null
       } : 'No properties'
     });
 
@@ -196,6 +199,24 @@ export default async function AreaProperties({ params }: { params: { area: strin
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {properties.map((property) => (
                 <div key={property.ListingId} className="bg-white rounded-lg shadow-md overflow-hidden">
+                  {/* Property Image */}
+                  <div className="relative h-64">
+                    {property.Media?.[0]?.MediaURL ? (
+                      <Image
+                        src={`${process.env.NEXT_PUBLIC_CLOUDFLARE_URL}/proxy?url=${encodeURIComponent(property.Media[0].MediaURL)}`}
+                        alt={`${property.UnparsedAddress || 'Property'} in ${property.City}`}
+                        fill
+                        style={{ objectFit: "cover" }}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                        <span className="text-gray-400">No image available</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Property Details */}
                   <div className="p-6">
                     <h3 className="text-xl font-semibold mb-2">{property.UnparsedAddress}</h3>
                     <p className="text-gray-600 mb-4">{property.City}, {property.StateOrProvince}</p>

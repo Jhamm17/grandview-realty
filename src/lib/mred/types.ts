@@ -1,72 +1,71 @@
 // RESO Data Dictionary Standard Fields
+export interface Media {
+  MediaKey: string;
+  MediaURL: string;
+  Order: number;
+  ModificationTimestamp: string;
+}
+
 export interface Property {
-    // Required MLS Grid fields
-    ListingId: string;
-    ListingKey: string;
-    ModificationTimestamp: string;
-    OriginatingSystemName: string;
-    StandardStatus: string;
-    MlgCanView: boolean;
+  // Required MLS Grid fields
+  ListingId: string;
+  ListingKey: string;
+  ModificationTimestamp: string;
+  OriginatingSystemName: string;
+  StandardStatus: string;
+  MlgCanView: boolean;
 
-    // Common Property Fields
-    PropertyType?: string;
-    PropertySubType?: string;
-    ListPrice: number;
-    UnparsedAddress?: string;
-    StreetNumber?: string;
-    StreetName?: string;
-    StreetSuffix?: string;
-    City: string;
-    StateOrProvince: string;
-    PostalCode: string;
-    CountyOrParish?: string;
-    BedroomsTotal: number;
-    BathroomsTotalInteger: number;
-    LivingArea: number;
-    LotSize?: string;
-    YearBuilt?: number;
-    
-    // Media
-    Photos?: string[];
-    Videos?: string[];
-    VirtualTours?: string[];
-    
-    // Listing Details
-    ListingContractDate?: string;
-    CloseDate?: string;
-    ListingTerms?: string;
-    Financing?: string[];
-    ShowingInstructions?: string;
-    Ownership?: string;
-    PropertyCondition?: string;
-    PublicRemarks: string;
-    PrivateRemarks?: string;
+  // Common Property Fields
+  PropertyType?: string;
+  PropertySubType?: string;
+  ListPrice: number;
+  UnparsedAddress?: string;
+  StreetNumber?: string;
+  StreetName?: string;
+  StreetSuffix?: string;
+  City: string;
+  StateOrProvince: string;
+  PostalCode: string;
+  CountyOrParish?: string;
+  BedroomsTotal: number;
+  BathroomsTotalInteger: number;
+  LivingArea: number;
+  LotSize?: string;
+  YearBuilt?: number;
 
-    // Additional Features
-    Appliances?: string[];
-    ArchitecturalStyle?: string[];
-    CommunityFeatures?: string[];
-    ConstructionMaterials?: string[];
-    Cooling?: string[];
-    Heating?: string[];
-    InteriorFeatures?: string[];
-    ExteriorFeatures?: string[];
-    ParkingFeatures?: string[];
-    WaterFrontFeatures?: string[];
-    Utilities?: string[];
-    Zoning?: string;
+  // Media
+  Media?: Media[];
 
-    // Financial
-    AssociationFee?: number;
-    AssociationFeeFrequency?: string;
-    TaxAnnualAmount?: number;
-    TaxYear?: number;
-    
-    // Timestamps
-    OriginalEntryTimestamp?: string;
-    OnMarketDate?: string;
-    StatusChangeTimestamp?: string;
-    PriceChangeTimestamp?: string;
+  // Listing Details
+  ListingContractDate?: string;
+  CloseDate?: string;
+  ListingTerms?: string;
+  Financing?: string[];
+  ShowingInstructions?: string;
+  Ownership?: string;
+  PropertyCondition?: string;
+  PublicRemarks: string;
+  PrivateRemarks?: string;
+
+  // Additional Features
+  Appliances?: string[];
+  ArchitecturalStyle?: string[];
+  CommunityFeatures?: string[];
+  ConstructionMaterials?: string[];
+  Cooling?: string[];
+  Heating?: string[];
+  InteriorFeatures?: string[];
+  ExteriorFeatures?: string[];
+  ParkingFeatures?: string[];
+  WaterFrontFeatures?: string[];
+  Utilities?: string[];
+  Zoning?: string;
+
+  // Financial
+  AssociationFee?: number;
+  AssociationFeeFrequency?: string;
+  TaxAnnualAmount?: number;
+  TaxYear?: number;
 }
 
 export interface PropertyPhoto {
