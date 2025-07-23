@@ -17,14 +17,12 @@ export function PropertyGrid({ city, minPrice, maxPrice, beds, baths, propertyTy
     const [properties, setProperties] = useState<Property[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [imageError, setImageError] = useState<string | null>(null);
 
     useEffect(() => {
         const loadProperties = async () => {
             try {
                 setLoading(true);
                 setError(null);
-                setImageError(null);
 
                 console.log('Fetching properties with params:', {
                     city, minPrice, maxPrice, beds, baths, propertyType
@@ -57,69 +55,41 @@ export function PropertyGrid({ city, minPrice, maxPrice, beds, baths, propertyTy
     }, [city, minPrice, maxPrice, beds, baths, propertyType]);
 
     if (loading) {
-        return <div>Loading properties...</div>;
+        return <div className="p-4 text-center">Loading properties...</div>;
     }
 
     if (error) {
         return (
-            <div style={{ 
-                padding: '20px', 
-                margin: '20px', 
-                backgroundColor: '#fee2e2', 
-                border: '1px solid #ef4444',
-                borderRadius: '8px'
-            }}>
-                <h3 style={{ color: '#b91c1c', marginBottom: '8px' }}>Error Loading Properties</h3>
-                <p style={{ color: '#dc2626' }}>{error}</p>
+            <div className="p-4 bg-red-100 text-red-700 rounded">
+                <h3 className="font-bold mb-2">Error Loading Properties</h3>
+                <p>{error}</p>
             </div>
         );
     }
 
-    // Just render the first property for testing
-    const firstProperty = properties[0];
-    const imageUrl = firstProperty?.Media?.[0]?.MediaURL;
+    if (properties.length === 0) {
+        return (
+            <div className="p-4 text-center text-gray-500">
+                No properties found matching your criteria.
+            </div>
+        );
+    }
 
     return (
-        <div style={{ padding: '20px' }}>
-            <div style={{ 
-                padding: '20px', 
-                marginBottom: '20px', 
-                backgroundColor: '#f3f4f6', 
-                borderRadius: '8px' 
-            }}>
-                <h3 style={{ marginBottom: '10px', fontWeight: 'bold' }}>Debug Information:</h3>
-                <div style={{ fontFamily: 'monospace', wordBreak: 'break-all' }}>
-                    <p>Properties loaded: {properties.length}</p>
-                    <p>First property ID: {firstProperty?.ListingId}</p>
-                    <p>Image URL: {imageUrl || 'No image URL'}</p>
-                </div>
-                {imageError && (
-                    <div style={{ 
-                        marginTop: '10px',
-                        padding: '10px',
-                        backgroundColor: '#fee2e2',
-                        color: '#dc2626',
-                        borderRadius: '4px'
-                    }}>
-                        {imageError}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {properties.map(property => (
+                <div key={property.ListingId} className="bg-white rounded-lg shadow-md p-4">
+                    <div className="mb-2">
+                        <h3 className="text-xl font-semibold">${property.ListPrice.toLocaleString()}</h3>
+                        <p className="text-gray-600">{property.City}, {property.StateOrProvince}</p>
                     </div>
-                )}
-            </div>
-
-            {imageUrl && (
-                <div style={{ marginTop: '20px' }}>
-                    <img 
-                        src={imageUrl} 
-                        style={{ maxWidth: '300px', height: 'auto' }}
-                        alt="Test property"
-                        onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            console.error('Image load error:', target.src);
-                            setImageError(`Failed to load image: ${target.src}`);
-                        }}
-                    />
+                    <div className="flex justify-between text-sm text-gray-500">
+                        <span>{property.BedroomsTotal} beds</span>
+                        <span>{property.BathroomsTotalInteger} baths</span>
+                        <span>{property.LivingArea?.toLocaleString()} sqft</span>
+                    </div>
                 </div>
-            )}
+            ))}
         </div>
     );
 } 

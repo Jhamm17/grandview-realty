@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { PropertyGrid } from './PropertyGrid';
 
 export default function PropertySearch() {
     const [filters, setFilters] = useState({
@@ -87,13 +88,8 @@ export default function PropertySearch() {
                 </div>
             </div>
 
-            {/* Debug Info */}
-            <div className="bg-blue-100 p-4 rounded mb-8">
-                <h3 className="font-bold mb-2">Current Filters:</h3>
-                <pre className="whitespace-pre-wrap">
-                    {JSON.stringify(filters, null, 2)}
-                </pre>
-            </div>
+            {/* Property Grid */}
+            <PropertyGrid {...filters} />
         </div>
     );
 } 
