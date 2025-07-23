@@ -234,13 +234,19 @@ export default function PropertyFilter({ initialProperties }: FilterProps) {
                   
                   if (firstImage?.MediaURL) {
                     return (
-                      <Image
-                        src={firstImage.MediaURL}
-                        alt={`${property.UnparsedAddress || 'Property'} in ${property.City}`}
-                        fill
-                        style={{ objectFit: "cover" }}
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      />
+                      <>
+                        <Image
+                          src={firstImage.MediaURL}
+                          alt={`${property.UnparsedAddress || 'Property'} in ${property.City}`}
+                          fill
+                          style={{ objectFit: "cover" }}
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                        {/* Listed Badge */}
+                        <div className="absolute bottom-2 left-2 bg-blue-400 text-white px-2 py-1 rounded text-xs font-medium">
+                          Listed
+                        </div>
+                      </>
                     );
                   } else {
                     return (
@@ -260,17 +266,18 @@ export default function PropertyFilter({ initialProperties }: FilterProps) {
                   ${property.ListPrice.toLocaleString()}
                 </p>
                 <div className="flex justify-between text-gray-500 text-sm">
-                  <span>{property.BedroomsTotal} Beds</span>
-                  <span>{property.BathroomsTotalInteger} Baths</span>
-                  <span>{property.LivingArea?.toLocaleString()} Sq Ft</span>
-                </div>
-                <div className="mt-4 pt-4 border-t">
-                  <p className="text-sm text-gray-600">
-                    Status: <span className="font-semibold">{property.StandardStatus}</span>
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    MLS#: {property.ListingId}
-                  </p>
+                  <div className="flex items-center">
+                    <span className="mr-1">🛏️</span>
+                    <span>{property.BedroomsTotal} Beds</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="mr-1">🚿</span>
+                    <span>{property.BathroomsTotalInteger} Baths</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="mr-1">📐</span>
+                    <span>{property.LivingArea?.toLocaleString()} Sq Ft</span>
+                  </div>
                 </div>
               </div>
             </div>
