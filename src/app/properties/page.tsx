@@ -1,9 +1,6 @@
-'use client';
-
 import { MRED_CONFIG } from '@/lib/mred/config';
 import { Property } from '@/lib/mred/types';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
 
 export const runtime = 'edge';
 export const revalidate = 300; // Revalidate every 5 minutes
@@ -28,6 +25,10 @@ async function getProperties() {
       baseUrl: MRED_CONFIG.API_BASE_URL,
       params: Object.fromEntries(queryParams.entries())
     });
+    
+    if (!MRED_CONFIG.ACCESS_TOKEN) {
+      throw new Error('Access token is not configured. Please add MLSGRID_ACCESS_TOKEN to environment variables.');
+    }
 
     const response = await fetch(url, {
       headers: {
@@ -93,27 +94,14 @@ async function getProperties() {
   }
 }
 
-export default function PropertiesPage() {
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+export default async function PropertiesPage() {
+  let properties: Property[] = [];
+  let error = null;
 
-  useEffect(() => {
-    getProperties()
-      .then(setProperties)
-      .catch(err => setError(err instanceof Error ? err : new Error(String(err))))
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="container-padding py-16">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 mx-auto"></div>
-          <p className="mt-4 text-lg">Loading properties...</p>
-        </div>
-      </div>
-    );
+  try {
+    properties = await getProperties();
+  } catch (e) {
+    error = e;
   }
 
   if (error) {
@@ -124,8 +112,9 @@ export default function PropertiesPage() {
           <p className="text-red-600">
             We&apos;re having trouble connecting to our property database. Please try again later.
           </p>
+          {/* Always show error details in production for now, to help debug */}
           <pre className="mt-4 p-4 bg-red-100 rounded text-sm overflow-auto">
-            {error.message}
+            {error instanceof Error ? error.message : 'Unknown error'}
           </pre>
         </div>
       </div>
@@ -156,7 +145,7 @@ export default function PropertiesPage() {
             <div className="relative h-64">
               {property.Media?.[0]?.MediaURL ? (
                 <Image
-                  src={property.Media[0].MediaURL}
+                  src={`${process.env.NEXT_PUBLIC_CLOUDFLARE_URL}/proxy?url=${encodeURIComponent(property.Media[0].MediaURL)}`}
                   alt={`${property.UnparsedAddress || 'Property'} in ${property.City}`}
                   fill
                   style={{ objectFit: "cover" }}
