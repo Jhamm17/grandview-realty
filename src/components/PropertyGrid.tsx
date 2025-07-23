@@ -73,6 +73,15 @@ export function PropertyGrid({ city, minPrice, maxPrice, beds, baths, propertyTy
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {properties.map(property => (
                 <div key={property.ListingId} className="bg-white rounded-lg shadow-md overflow-hidden">
+                    {property.Media && property.Media.length > 0 && (
+                        <div className="relative h-48">
+                            <img
+                                src={property.Media[0].MediaURL}
+                                alt={`Property in ${property.City}`}
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
+                    )}
                     <div className="p-4">
                         <div className="flex justify-between items-start mb-2">
                             <h3 className="text-xl font-semibold">${property.ListPrice.toLocaleString()}</h3>
