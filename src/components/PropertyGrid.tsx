@@ -19,12 +19,14 @@ export function PropertyGrid({ city, minPrice, maxPrice, beds, baths, propertyTy
     const [properties, setProperties] = useState<Property[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
 
     useEffect(() => {
         const loadProperties = async () => {
             try {
                 setLoading(true);
                 setError(null);
+                setImageErrors(new Set());
 
                 const results = await mlsGridService.searchProperties({
                     city,
@@ -39,16 +41,6 @@ export function PropertyGrid({ city, minPrice, maxPrice, beds, baths, propertyTy
                 });
 
                 console.log('Raw property results:', results);
-                
-                // Log each property's media information
-                results.forEach(property => {
-                    console.log(`Property ${property.ListingId} media:`, {
-                        hasMedia: Boolean(property.Media),
-                        mediaCount: property.Media?.length || 0,
-                        firstMediaUrl: property.Media?.[0]?.MediaURL
-                    });
-                });
-
                 setProperties(results);
             } catch (err) {
                 console.error('Error loading properties:', err);
@@ -60,6 +52,10 @@ export function PropertyGrid({ city, minPrice, maxPrice, beds, baths, propertyTy
 
         loadProperties();
     }, [city, minPrice, maxPrice, beds, baths, propertyType]);
+
+    const handleImageError = (propertyId: string) => {
+        setImageErrors(prev => new Set([...prev, propertyId]));
+    };
 
     if (loading) {
         return <PropertyGridSkeleton />;
@@ -87,19 +83,26 @@ export function PropertyGrid({ city, minPrice, maxPrice, beds, baths, propertyTy
             {properties.map(property => (
                 <div key={property.ListingId} className="bg-white rounded-lg shadow-md overflow-hidden">
                     <div className="relative h-48 bg-gray-100">
-                        <Image
-                            src={property.Media?.[0]?.MediaURL || '/property-1.jpg'}
-                            alt={`Property in ${property.City}`}
-                            fill
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            className="object-cover"
-                            priority={false}
-                            quality={75}
-                            onError={() => {
-                                console.error('Failed to load image:', property.Media?.[0]?.MediaURL);
-                            }}
-                            unoptimized // Add this to bypass Next.js image optimization
-                        />
+                        {!imageErrors.has(property.ListingId) ? (
+                            <Image
+                                src={property.Media?.[0]?.MediaURL || '/property-1.jpg'}
+                                alt={`Property in ${property.City}`}
+                                fill
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                className="object-cover"
+                                priority={false}
+                                quality={75}
+                                onError={() => handleImageError(property.ListingId)}
+                            />
+                        ) : (
+                            <Image
+                                src="/property-1.jpg"
+                                alt="Property placeholder"
+                                fill
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                className="object-cover"
+                            />
+                        )}
                     </div>
                     <div className="p-4">
                         <div className="flex justify-between items-start mb-2">
