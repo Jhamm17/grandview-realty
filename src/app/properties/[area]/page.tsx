@@ -47,8 +47,13 @@ async function getPropertiesByArea(area: string) {
       url,
       token: MRED_CONFIG.ACCESS_TOKEN ? 'Present' : 'Missing',
       baseUrl: MRED_CONFIG.API_BASE_URL,
-      city: cityName
+      city: cityName,
+      params: Object.fromEntries(queryParams.entries())
     });
+
+    if (!MRED_CONFIG.ACCESS_TOKEN) {
+      throw new Error('Access token is not configured. Please add MLSGRID_ACCESS_TOKEN to environment variables.');
+    }
     
     const response = await fetch(url, {
       headers: {
@@ -65,7 +70,8 @@ async function getPropertiesByArea(area: string) {
         status: response.status,
         statusText: response.statusText,
         headers: Object.fromEntries(response.headers.entries()),
-        body: errorText
+        body: errorText,
+        url: url.replace(MRED_CONFIG.ACCESS_TOKEN || '', '[REDACTED]') // Redact token from logs
       });
       throw new Error(`API request failed: ${response.status} - ${errorText}`);
     }
@@ -90,11 +96,15 @@ async function getPropertiesByArea(area: string) {
     console.error('Error fetching properties:', {
       error: error instanceof Error ? {
         message: error.message,
-        stack: error.stack
+        stack: error.stack,
+        name: error.name
       } : error,
       config: {
         baseUrl: MRED_CONFIG.API_BASE_URL,
-        hasToken: Boolean(MRED_CONFIG.ACCESS_TOKEN)
+        hasToken: Boolean(MRED_CONFIG.ACCESS_TOKEN),
+        environment: process.env.NODE_ENV,
+        vercelEnv: process.env.VERCEL_ENV,
+        area: area
       }
     });
     throw error;
@@ -114,7 +124,6 @@ export default async function AreaProperties({ params }: { params: { area: strin
     properties = await getPropertiesByArea(params.area);
   } catch (e) {
     error = e;
-    console.error('Failed to load properties:', e);
   }
 
   // Format the area name for display
