@@ -85,9 +85,12 @@ export function Header() {
       { name: "Price Changes", href: "/properties/price-changes" },
       { name: "Under Contract", href: "/properties/under-contract" },
     ],
+    team: [
+      { name: "Agents", href: "/team/agents" },
+      { name: "Office Staff", href: "/team/office-staff" },
+    ],
     about: [
       { name: "Mission Statement", href: "/about/mission" },
-      { name: "Meet Our Team", href: "/about/team" },
       { name: "Legal & Compliance", href: "/about/legal" },
     ],
     community: [
@@ -142,6 +145,7 @@ export function Header() {
               Home
             </Link>
             <NavDropdown title="Properties" items={navItems.properties} />
+            <NavDropdown title="Team" items={navItems.team} />
             <NavDropdown title="About Us" items={navItems.about} />
             <NavDropdown title="Community" items={navItems.community} />
             <Link 
