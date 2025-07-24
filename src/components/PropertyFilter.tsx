@@ -266,22 +266,31 @@ export default function PropertyFilter({ initialProperties }: FilterProps) {
                     : property.UnparsedAddress || 'Address not available'
                   }
                 </h3>
-                <p className="text-gray-600 mb-4">{property.City}, {property.StateOrProvince}</p>
-                <p className="text-primary font-bold text-xl mb-4">
+                <p className="text-gray-600 mb-4">{property.City}</p>
+                <p className="text-black font-bold text-xl mb-4">
                   ${property.ListPrice.toLocaleString()}
                 </p>
-                <div className="flex justify-between text-gray-500 text-sm">
-                  <div className="flex items-center">
-                    <span className="mr-1">🛏️</span>
-                    <span>{property.BedroomsTotal} Beds</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="mr-1">🚿</span>
-                    <span>{property.BathroomsTotalInteger} Baths</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="mr-1">📐</span>
-                    <span>{property.LivingArea?.toLocaleString()} Sq Ft</span>
+                <div className="border-t border-gray-200 pt-4">
+                  <div className="flex justify-between text-gray-500 text-sm">
+                    <div className="flex items-center">
+                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5v4m8-4v4M8 11h8m-8 4h8" />
+                      </svg>
+                      <span>{property.BedroomsTotal} Beds</span>
+                    </div>
+                    <div className="flex items-center">
+                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+                      </svg>
+                      <span>{property.BathroomsTotalInteger} Baths</span>
+                    </div>
+                    <div className="flex items-center">
+                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                      </svg>
+                      <span>{property.LivingArea?.toLocaleString()} Sq Ft</span>
+                    </div>
                   </div>
                 </div>
               </div>
