@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Property } from '@/lib/mred/types';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface FilterProps {
   initialProperties: Property[];
@@ -224,7 +225,8 @@ export default function PropertyFilter({ initialProperties }: FilterProps) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredProperties.map((property) => (
-            <div key={property.ListingId} className="bg-white shadow-md overflow-hidden" style={{ borderRadius: '0' }}>
+            <Link key={property.ListingId} href={`/properties/${property.ListingId}`} className="block">
+              <div className="bg-white shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200" style={{ borderRadius: '0' }}>
               {/* Property Image */}
               <div className="relative h-64">
                 {(() => {
@@ -295,6 +297,7 @@ export default function PropertyFilter({ initialProperties }: FilterProps) {
                 </div>
               </div>
             </div>
+            </Link>
           ))}
         </div>
       )}
