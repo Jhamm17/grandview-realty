@@ -1,15 +1,17 @@
 import { MRED_CONFIG } from '@/lib/mred/config';
 import { Property } from '@/lib/mred/types';
 import PropertyFilter from '@/components/PropertyFilter';
+import { Suspense } from 'react';
+import PropertiesLoading from '@/components/PropertiesLoading';
 
 export const runtime = 'edge';
 export const revalidate = 300; // Revalidate every 5 minutes
 
 async function getProperties() {
   try {
-    // Build OData query parameters - using maximum allowed limit with $expand
+    // Build OData query parameters - optimized for speed
     const queryParams = new URLSearchParams({
-      '$top': '50',  // Start with fewer properties for faster initial load
+      '$top': '25',  // Start with very few properties for instant load
       '$filter': 'MlgCanView eq true', // Only use allowed filter fields
       '$orderby': 'ModificationTimestamp desc', // Order by last modified
       '$count': 'true',
@@ -60,8 +62,9 @@ async function getProperties() {
     let nextLink = data['@odata.nextLink'];
     let pageCount = 1;
     
-    // Handle pagination to get all properties
-    while (nextLink) {
+    // Handle pagination to get all properties (limit to reasonable amount for performance)
+    const maxPages = 4; // Limit to 4 pages (100 properties max) for performance
+    while (nextLink && pageCount < maxPages) {
       pageCount++;
       console.log(`Fetching page ${pageCount} of properties...`);
       
@@ -107,9 +110,12 @@ async function getProperties() {
     });
 
     // Filter the results on the client side for active listings
-    // Only include properties with "Active" status
+    // Only include properties with "Active" status (exclude "Under Contract", "Pending", etc.)
     const filteredProperties = allProperties.filter((property: Property) => 
-      property.StandardStatus === 'Active'
+      property.StandardStatus === 'Active' && 
+      !property.StandardStatus.includes('Contract') &&
+      !property.StandardStatus.includes('Pending') &&
+      !property.StandardStatus.includes('Sold')
     );
 
     console.log('Filtered Properties:', {
@@ -140,7 +146,7 @@ async function getProperties() {
   }
 }
 
-export default async function PropertiesPage() {
+async function PropertiesContent() {
   let properties: Property[] = [];
   let error = null;
 
@@ -182,10 +188,22 @@ export default async function PropertiesPage() {
 
   return (
     <div className="container-padding py-16">
-      <h1 className="text-4xl font-bold mb-8">Available Properties</h1>
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold mb-4">Active Listings</h1>
+        <p className="text-xl text-gray-600">
+          Discover exceptional homes and investment opportunities
+        </p>
+      </div>
       
-      {/* Filter Component with Properties Display */}
       <PropertyFilter initialProperties={properties} />
     </div>
+  );
+}
+
+export default function PropertiesPage() {
+  return (
+    <Suspense fallback={<PropertiesLoading />}>
+      <PropertiesContent />
+    </Suspense>
   );
 } 
