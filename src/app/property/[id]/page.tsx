@@ -8,12 +8,18 @@ export const revalidate = 300; // Revalidate every 5 minutes
 
 async function getProperty(id: string): Promise<Property | null> {
   try {
+    console.log('Fetching property with ID:', id);
+    
+    // Try a broader search first to see if the property exists
     const queryParams = new URLSearchParams({
-      '$filter': `ListingId eq '${id}'`,
+      '$top': '1000',
+      '$filter': 'MlgCanView eq true',
+      '$orderby': 'ModificationTimestamp desc',
       '$expand': 'Media'
     });
 
     const url = `${MRED_CONFIG.API_BASE_URL}/Property?${queryParams.toString()}`;
+    console.log('API URL:', url);
     
     if (!MRED_CONFIG.ACCESS_TOKEN) {
       throw new Error('Access token is not configured.');
@@ -30,19 +36,44 @@ async function getProperty(id: string): Promise<Property | null> {
     });
 
     if (!response.ok) {
-      throw new Error(`API request failed: ${response.status}`);
+      const errorText = await response.text();
+      console.error('API Error Response:', {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText
+      });
+      throw new Error(`API request failed: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
-    return data.value?.[0] || null;
+    console.log('API Response:', {
+      totalCount: data['@odata.count'],
+      resultCount: data.value?.length,
+      availableIds: data.value?.slice(0, 5).map((p: Property) => p.ListingId) || []
+    });
+    
+    // Find the specific property by ID
+    const property = data.value?.find((p: Property) => p.ListingId === id);
+    
+    if (property) {
+      console.log('Found property:', {
+        id: property.ListingId,
+        address: property.UnparsedAddress,
+        status: property.StandardStatus
+      });
+    } else {
+      console.log('Property not found. Available IDs (first 5):', data.value?.slice(0, 5).map((p: Property) => p.ListingId));
+    }
+    
+    return property || null;
   } catch (error) {
     console.error('Error fetching property:', error);
     return null;
   }
 }
 
-export default async function PropertyPage({ params }: { params: { listingId: string } }) {
-  const property = await getProperty(params.listingId);
+export default async function PropertyPage({ params }: { params: { id: string } }) {
+  const property = await getProperty(params.id);
 
   if (!property) {
     return (
@@ -52,6 +83,14 @@ export default async function PropertyPage({ params }: { params: { listingId: st
           <p className="text-red-600 mb-4">
             We couldn&apos;t find the property you&apos;re looking for.
           </p>
+          {process.env.NODE_ENV === 'development' && (
+            <div className="mt-4 p-4 bg-red-100 rounded text-sm">
+              <p><strong>Debug Info:</strong></p>
+              <p>Property ID: {params.id}</p>
+              <p>API Base URL: {MRED_CONFIG.API_BASE_URL}</p>
+              <p>Access Token: {MRED_CONFIG.ACCESS_TOKEN ? 'Present' : 'Missing'}</p>
+            </div>
+          )}
           <Link href="/properties" className="text-blue-600 hover:text-blue-800 underline">
             ← Back to Properties
           </Link>
