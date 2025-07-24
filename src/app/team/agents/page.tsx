@@ -80,7 +80,7 @@ export default function AgentsPage() {
             {/* Agent Info */}
             <div className="p-6">
               <h3 className="text-xl font-bold mb-1">{agent.name}</h3>
-              <p className="text-blue-600 font-semibold mb-4">{agent.title}</p>
+              <p className="text-[#60a5fa] font-semibold mb-4">{agent.title}</p>
               
               {/* Contact Info */}
               <div className="mb-6 space-y-2">
@@ -101,7 +101,7 @@ export default function AgentsPage() {
               {/* View More Button */}
               <Link 
                 href={`/team/agents/${agent.id}`}
-                className="block w-full bg-blue-600 text-white text-center py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                className="block w-full bg-[#081d36] text-white text-center py-3 px-4 rounded-lg font-semibold hover:bg-[#0f2a4a] transition-colors"
               >
                 Learn More About {agent.name.split(' ')[0]}
               </Link>

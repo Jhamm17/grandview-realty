@@ -94,7 +94,7 @@ export default function AgentPage({ params }: { params: { id: string } }) {
           <p className="text-red-600 mb-4">
             We couldn&apos;t find the agent you&apos;re looking for.
           </p>
-          <Link href="/team/agents" className="text-blue-600 hover:text-blue-800 underline">
+          <Link href="/team/agents" className="text-[#60a5fa] hover:text-[#3b82f6] underline">
             ← Back to Agents
           </Link>
         </div>
@@ -106,7 +106,7 @@ export default function AgentPage({ params }: { params: { id: string } }) {
     <div className="container-padding py-16">
       {/* Back Button */}
       <div className="mb-8">
-        <Link href="/team/agents" className="text-blue-600 hover:text-blue-800 underline flex items-center">
+        <Link href="/team/agents" className="text-[#60a5fa] hover:text-[#3b82f6] underline flex items-center">
           ← Back to Agents
         </Link>
       </div>
@@ -132,7 +132,7 @@ export default function AgentPage({ params }: { params: { id: string } }) {
         {/* Agent Info */}
         <div className="lg:col-span-2">
           <h1 className="text-4xl font-bold mb-2">{agent.name}</h1>
-          <p className="text-2xl text-blue-600 font-semibold mb-6">{agent.title}</p>
+          <p className="text-2xl text-[#60a5fa] font-semibold mb-6">{agent.title}</p>
           
           {/* Contact Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -169,13 +169,13 @@ export default function AgentPage({ params }: { params: { id: string } }) {
               </div>
               <div>
                 <h4 className="font-semibold text-gray-800 mb-2">Service Areas</h4>
-                <div className="flex flex-wrap gap-2">
-                  {agent.areas.map((area, idx) => (
-                    <span key={idx} className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
-                      {area}
-                    </span>
-                  ))}
-                </div>
+                                 <div className="flex flex-wrap gap-2">
+                   {agent.areas.map((area, idx) => (
+                     <span key={idx} className="bg-[#60a5fa]/10 text-[#081d36] px-3 py-1 rounded-full text-sm">
+                       {area}
+                     </span>
+                   ))}
+                 </div>
               </div>
             </div>
           </div>
@@ -183,13 +183,13 @@ export default function AgentPage({ params }: { params: { id: string } }) {
           {/* Specialties */}
           <div className="mb-8">
             <h3 className="text-xl font-bold mb-4">Specialties</h3>
-            <div className="flex flex-wrap gap-3">
-              {agent.specialties.map((specialty, idx) => (
-                <span key={idx} className="bg-blue-100 text-blue-800 px-4 py-2 rounded-full font-semibold">
-                  {specialty}
-                </span>
-              ))}
-            </div>
+                         <div className="flex flex-wrap gap-3">
+               {agent.specialties.map((specialty, idx) => (
+                 <span key={idx} className="bg-[#60a5fa]/10 text-[#081d36] px-4 py-2 rounded-full font-semibold">
+                   {specialty}
+                 </span>
+               ))}
+             </div>
           </div>
         </div>
       </div>
@@ -208,9 +208,9 @@ export default function AgentPage({ params }: { params: { id: string } }) {
         <h2 className="text-3xl font-bold mb-6">Achievements & Certifications</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {agent.achievements.map((achievement, idx) => (
-            <div key={idx} className="bg-white rounded-lg shadow-lg p-6 border-l-4 border-blue-600">
+            <div key={idx} className="bg-white rounded-lg shadow-lg p-6 border-l-4 border-[#60a5fa]">
               <div className="flex items-center">
-                <svg className="w-6 h-6 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6 text-[#60a5fa] mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                 </svg>
                 <span className="text-lg font-semibold">{achievement}</span>
@@ -222,16 +222,16 @@ export default function AgentPage({ params }: { params: { id: string } }) {
 
       {/* Call to Action */}
       <div className="text-center">
-        <div className="bg-blue-50 rounded-lg p-8">
+        <div className="bg-[#60a5fa]/5 rounded-lg p-8">
           <h2 className="text-2xl font-bold mb-4">Ready to Work With {agent.name.split(' ')[0]}?</h2>
           <p className="text-gray-600 mb-6">
             {agent.name} is ready to help you achieve your real estate goals with expertise and dedication.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href={`mailto:${agent.email}`} className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+            <a href={`mailto:${agent.email}`} className="bg-[#081d36] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#0f2a4a] transition-colors">
               Email {agent.name.split(' ')[0]}
             </a>
-            <a href={`tel:${agent.phone}`} className="bg-white text-blue-600 border border-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
+            <a href={`tel:${agent.phone}`} className="bg-white text-[#081d36] border border-[#081d36] px-8 py-3 rounded-lg font-semibold hover:bg-[#60a5fa]/5 transition-colors">
               Call {agent.name.split(' ')[0]}
             </a>
             <a href="/properties" className="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">
