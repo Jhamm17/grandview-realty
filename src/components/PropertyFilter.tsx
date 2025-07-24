@@ -225,7 +225,7 @@ export default function PropertyFilter({ initialProperties }: FilterProps) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredProperties.map((property) => (
-            <Link key={property.ListingId} href={`/properties/${property.ListingId}`} className="block">
+            <Link key={property.ListingId} href={`/property/${property.ListingId}`} className="block">
               <div className="bg-white shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-200" style={{ borderRadius: '0' }}>
               {/* Property Image */}
               <div className="relative h-64">
