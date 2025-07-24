@@ -2,6 +2,8 @@ import { MRED_CONFIG } from '@/lib/mred/config';
 import { Property } from '@/lib/mred/types';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Suspense } from 'react';
+import PropertyLoading from '@/components/PropertyLoading';
 
 export const runtime = 'edge';
 export const revalidate = 300; // Revalidate every 5 minutes
@@ -10,22 +12,20 @@ async function getProperty(id: string): Promise<Property | null> {
   try {
     console.log('Fetching property with ID:', id);
     
-    // Try a broader search first to see if the property exists
-    const queryParams = new URLSearchParams({
-      '$top': '1000',
-      '$filter': 'MlgCanView eq true',
-      '$orderby': 'ModificationTimestamp desc',
+    // Try to filter by ListingId first (more efficient)
+    let queryParams = new URLSearchParams({
+      '$filter': `ListingId eq '${id}'`,
       '$expand': 'Media'
     });
 
-    const url = `${MRED_CONFIG.API_BASE_URL}/Property?${queryParams.toString()}`;
-    console.log('API URL:', url);
+    let url = `${MRED_CONFIG.API_BASE_URL}/Property?${queryParams.toString()}`;
+    console.log('API URL (direct filter):', url);
     
     if (!MRED_CONFIG.ACCESS_TOKEN) {
       throw new Error('Access token is not configured.');
     }
 
-    const response = await fetch(url, {
+    let response = await fetch(url, {
       headers: {
         'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
         'Accept': 'application/json',
@@ -34,6 +34,30 @@ async function getProperty(id: string): Promise<Property | null> {
       },
       next: { revalidate: 300 }
     });
+
+    // If direct filter fails, fall back to broader search
+    if (!response.ok) {
+      console.log('Direct filter failed, trying broader search...');
+      queryParams = new URLSearchParams({
+        '$top': '100',
+        '$filter': 'MlgCanView eq true',
+        '$orderby': 'ModificationTimestamp desc',
+        '$expand': 'Media'
+      });
+
+      url = `${MRED_CONFIG.API_BASE_URL}/Property?${queryParams.toString()}`;
+      console.log('API URL (broader search):', url);
+      
+      response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip'
+        },
+        next: { revalidate: 300 }
+      });
+    }
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -72,8 +96,8 @@ async function getProperty(id: string): Promise<Property | null> {
   }
 }
 
-export default async function PropertyPage({ params }: { params: { id: string } }) {
-  const property = await getProperty(params.id);
+async function PropertyContent({ id }: { id: string }) {
+  const property = await getProperty(id);
 
   if (!property) {
     return (
@@ -86,7 +110,7 @@ export default async function PropertyPage({ params }: { params: { id: string } 
           {process.env.NODE_ENV === 'development' && (
             <div className="mt-4 p-4 bg-red-100 rounded text-sm">
               <p><strong>Debug Info:</strong></p>
-              <p>Property ID: {params.id}</p>
+              <p>Property ID: {id}</p>
               <p>API Base URL: {MRED_CONFIG.API_BASE_URL}</p>
               <p>Access Token: {MRED_CONFIG.ACCESS_TOKEN ? 'Present' : 'Missing'}</p>
             </div>
@@ -232,5 +256,13 @@ export default async function PropertyPage({ params }: { params: { id: string } 
         </div>
       )}
     </div>
+  );
+}
+
+export default function PropertyPage({ params }: { params: { id: string } }) {
+  return (
+    <Suspense fallback={<PropertyLoading />}>
+      <PropertyContent id={params.id} />
+    </Suspense>
   );
 } 

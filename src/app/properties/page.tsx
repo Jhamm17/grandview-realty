@@ -9,7 +9,7 @@ async function getProperties() {
   try {
     // Build OData query parameters - using maximum allowed limit with $expand
     const queryParams = new URLSearchParams({
-      '$top': '1000',  // Maximum allowed when using $expand
+      '$top': '50',  // Start with fewer properties for faster initial load
       '$filter': 'MlgCanView eq true', // Only use allowed filter fields
       '$orderby': 'ModificationTimestamp desc', // Order by last modified
       '$count': 'true',
