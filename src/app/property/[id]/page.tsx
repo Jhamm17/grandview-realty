@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import PropertyLoading from '@/components/PropertyLoading';
+import { rateLimiter } from '@/lib/mred/rate-limiter';
 
 export const runtime = 'edge';
 export const revalidate = 900; // Revalidate every 15 minutes (increased from 5)
@@ -25,21 +26,23 @@ async function getProperty(id: string): Promise<Property | null> {
       throw new Error('Access token is not configured.');
     }
 
-    let response = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Accept-Encoding': 'gzip'
-      },
-      next: { revalidate: 900 }
+    let response = await rateLimiter.executeWithRateLimit(async () => {
+      return fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip'
+        },
+        next: { revalidate: 900 }
+      });
     });
 
     // If direct filter fails, fall back to broader search
     if (!response.ok) {
       console.log('Direct filter failed, trying broader search...');
       queryParams = new URLSearchParams({
-        '$top': '100',
+        '$top': '50',
         '$filter': 'MlgCanView eq true',
         '$orderby': 'ModificationTimestamp desc',
         '$expand': 'Media'
@@ -48,14 +51,16 @@ async function getProperty(id: string): Promise<Property | null> {
       url = `${MRED_CONFIG.API_BASE_URL}/Property?${queryParams.toString()}`;
       console.log('API URL (broader search):', url);
       
-      response = await fetch(url, {
-        headers: {
-          'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Accept-Encoding': 'gzip'
-      },
-        next: { revalidate: 900 }
+      response = await rateLimiter.executeWithRateLimit(async () => {
+        return fetch(url, {
+          headers: {
+            'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Accept-Encoding': 'gzip'
+          },
+          next: { revalidate: 900 }
+        });
       });
     }
 

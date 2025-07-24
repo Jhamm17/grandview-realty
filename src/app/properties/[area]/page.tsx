@@ -3,6 +3,7 @@ import { MRED_CONFIG } from '@/lib/mred/config';
 import { Property } from '@/lib/mred/types';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
+import { rateLimiter } from '@/lib/mred/rate-limiter';
 
 export const runtime = 'edge';
 export const revalidate = 900; // Revalidate every 15 minutes (increased from 5)
@@ -34,7 +35,7 @@ async function getPropertiesByArea(area: string) {
 
     // Build OData query parameters - only using allowed filter fields
     const queryParams = new URLSearchParams({
-      '$top': '100',  // Get more properties since we'll filter client-side
+      '$top': '25',  // Reduced to 25 to minimize API calls
       '$filter': 'MlgCanView eq true',
       '$orderby': 'ModificationTimestamp desc', // Order by last modified
       '$count': 'true',
@@ -56,14 +57,16 @@ async function getPropertiesByArea(area: string) {
       throw new Error('Access token is not configured. Please add MLSGRID_ACCESS_TOKEN to environment variables.');
     }
     
-    const response = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Accept-Encoding': 'gzip'
-      },
-      next: { revalidate: 900 } // Cache for 15 minutes (increased from 5)
+    const response = await rateLimiter.executeWithRateLimit(async () => {
+      return fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip'
+        },
+        next: { revalidate: 900 } // Cache for 15 minutes (increased from 5)
+      });
     });
 
     if (!response.ok) {

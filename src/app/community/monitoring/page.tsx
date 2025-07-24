@@ -56,10 +56,10 @@ export default function MonitoringPage() {
 
                 <div className="bg-white p-6 rounded-lg shadow">
                     <h3 className="text-lg font-semibold mb-2">Requests/Hour</h3>
-                    <p className={`text-3xl font-bold ${stats.hourly.requestCount > 2880 ? 'text-red-600' : stats.hourly.requestCount > 2160 ? 'text-yellow-600' : 'text-green-600'}`}>
+                    <p className={`text-3xl font-bold ${stats.hourly.requestCount > 1440 ? 'text-red-600' : stats.hourly.requestCount > 1080 ? 'text-yellow-600' : 'text-green-600'}`}>
                         {stats.hourly.requestCount > 0 ? (stats.hourly.requestCount / (stats.uptime / (60 * 60 * 1000))).toFixed(1) : '0'}
                     </p>
-                    <p className="text-sm text-gray-500">Current rate (limit: 3600/hour)</p>
+                    <p className="text-sm text-gray-500">Current rate (limit: 1800/hour)</p>
                 </div>
 
                 <div className="bg-white p-6 rounded-lg shadow">
@@ -91,11 +91,11 @@ export default function MonitoringPage() {
 
                 <div className="bg-white p-6 rounded-lg shadow">
                     <h3 className="text-lg font-semibold mb-2">Rate Limit Status</h3>
-                    <p className={`text-3xl font-bold ${stats.hourly.requestCount > 2880 ? 'text-red-600' : stats.hourly.requestCount > 2160 ? 'text-yellow-600' : 'text-green-600'}`}>
-                        {stats.hourly.requestCount > 2880 ? 'CRITICAL' : stats.hourly.requestCount > 2160 ? 'WARNING' : 'HEALTHY'}
+                    <p className={`text-3xl font-bold ${stats.hourly.requestCount > 1440 ? 'text-red-600' : stats.hourly.requestCount > 1080 ? 'text-yellow-600' : 'text-green-600'}`}>
+                        {stats.hourly.requestCount > 1440 ? 'CRITICAL' : stats.hourly.requestCount > 1080 ? 'WARNING' : 'HEALTHY'}
                     </p>
                     <p className="text-sm text-gray-500">
-                        {stats.hourly.requestCount > 0 ? `${((stats.hourly.requestCount / 3600) * 100).toFixed(1)}% of hourly limit` : 'No requests yet'}
+                        {stats.hourly.requestCount > 0 ? `${((stats.hourly.requestCount / 1800) * 100).toFixed(1)}% of hourly limit` : 'No requests yet'}
                     </p>
                 </div>
             </div>

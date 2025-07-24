@@ -3,6 +3,7 @@ import { Property } from '@/lib/mred/types';
 import PropertyFilter from '@/components/PropertyFilter';
 import { Suspense } from 'react';
 import PropertiesLoading from '@/components/PropertiesLoading';
+import { rateLimiter } from '@/lib/mred/rate-limiter';
 
 export const runtime = 'edge';
 export const revalidate = 900; // Revalidate every 15 minutes (increased from 5)
@@ -11,7 +12,7 @@ async function getProperties() {
   try {
     // Build OData query parameters - optimized for speed and reduced API calls
     const queryParams = new URLSearchParams({
-      '$top': '50',  // Increased from 25 to reduce pagination calls
+      '$top': '25',  // Reduced to 25 to minimize API calls
       '$filter': 'MlgCanView eq true', // Only use allowed filter fields
       '$orderby': 'ModificationTimestamp desc', // Order by last modified
       '$count': 'true',
@@ -32,14 +33,16 @@ async function getProperties() {
       throw new Error('Access token is not configured. Please add MLSGRID_ACCESS_TOKEN to environment variables.');
     }
 
-    const response = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Accept-Encoding': 'gzip'
-      },
-      next: { revalidate: 900 } // Cache for 15 minutes (increased from 5)
+    const response = await rateLimiter.executeWithRateLimit(async () => {
+      return fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept-Encoding': 'gzip'
+        },
+        next: { revalidate: 900 } // Cache for 15 minutes (increased from 5)
+      });
     });
 
     if (!response.ok) {
@@ -63,18 +66,20 @@ async function getProperties() {
     let pageCount = 1;
     
     // Handle pagination to get all properties (limit to reasonable amount for performance)
-    const maxPages = 2; // Reduced from 4 to 2 pages (100 properties max) for performance
+    const maxPages = 1; // Reduced to 1 page to minimize API calls
     while (nextLink && pageCount < maxPages) {
       pageCount++;
       console.log(`Fetching page ${pageCount} of properties...`);
       
-      const nextResponse = await fetch(nextLink, {
-        headers: {
-          'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Accept-Encoding': 'gzip'
-        }
+      const nextResponse = await rateLimiter.executeWithRateLimit(async () => {
+        return fetch(nextLink, {
+          headers: {
+            'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Accept-Encoding': 'gzip'
+          }
+        });
       });
       
       if (!nextResponse.ok) {

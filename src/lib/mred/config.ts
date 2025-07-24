@@ -7,10 +7,10 @@ export const MRED_CONFIG = {
     ACCESS_TOKEN: process.env.MLSGRID_ACCESS_TOKEN || 'demo_token',
 
     // Rate Limiting & Pagination
-    MAX_REQUESTS_PER_SECOND: 1, // Reduced from 2 to 1
-    MAX_REQUESTS_PER_HOUR: 3600, // Reduced from 7200 to 3600
-    MAX_DATA_PER_HOUR_GB: 2, // Reduced from 4 to 2
-    RECORDS_PER_PAGE: 50, // Reduced from 100 to 50
+    MAX_REQUESTS_PER_SECOND: 0.5, // Reduced to 1 request every 2 seconds (well below 2 RPS limit)
+    MAX_REQUESTS_PER_HOUR: 1800, // Reduced to 1800 requests/hour (0.5 RPS * 3600 seconds)
+    MAX_DATA_PER_HOUR_GB: 1, // Reduced to 1GB/hour
+    RECORDS_PER_PAGE: 25, // Reduced to 25 records per page
 
     // Resource Types
     RESOURCES: {
