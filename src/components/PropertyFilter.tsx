@@ -243,7 +243,7 @@ export default function PropertyFilter({ initialProperties }: FilterProps) {
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
                         {/* Listed Badge */}
-                        <div className="absolute bottom-0 left-0 bg-blue-400 text-white px-4 py-3 text-lg font-black" style={{ borderRadius: '0' }}>
+                        <div className="absolute bottom-0 left-0 bg-blue-400 text-white px-2 py-1 text-lg font-black" style={{ borderRadius: '0' }}>
                           Listed
                         </div>
                       </>
