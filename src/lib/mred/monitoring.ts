@@ -95,17 +95,32 @@ class MREDMonitoring {
     }
 
     private checkRateLimits() {
-        const hoursSinceStart = (Date.now() - this.metricsStartTime.getTime()) / (60 * 60 * 1000);
+        const hoursSinceStart = Math.max((Date.now() - this.metricsStartTime.getTime()) / (60 * 60 * 1000), 0.001); // Avoid division by zero
         const requestsPerHour = this.hourlyMetrics.requestCount / hoursSinceStart;
         const dataPerHour = this.hourlyMetrics.totalDataTransferred / hoursSinceStart / (1024 * 1024 * 1024); // Convert to GB
 
         if (requestsPerHour > MRED_CONFIG.MAX_REQUESTS_PER_HOUR) {
-            this.logWarning('Exceeding hourly request limit');
+            this.logWarning(`Exceeding hourly request limit: ${requestsPerHour.toFixed(1)}/hour (limit: ${MRED_CONFIG.MAX_REQUESTS_PER_HOUR})`);
         }
 
         if (dataPerHour > MRED_CONFIG.MAX_DATA_PER_HOUR_GB) {
-            this.logWarning('Exceeding hourly data transfer limit');
+            this.logWarning(`Exceeding hourly data transfer limit: ${dataPerHour.toFixed(2)}GB/hour (limit: ${MRED_CONFIG.MAX_DATA_PER_HOUR_GB}GB)`);
         }
+    }
+
+    public canMakeRequest(): boolean {
+        const hoursSinceStart = Math.max((Date.now() - this.metricsStartTime.getTime()) / (60 * 60 * 1000), 0.001);
+        const requestsPerHour = this.hourlyMetrics.requestCount / hoursSinceStart;
+        
+        // Check if we're approaching the limit (80% threshold)
+        const hourlyThreshold = MRED_CONFIG.MAX_REQUESTS_PER_HOUR * 0.8;
+        
+        if (requestsPerHour >= hourlyThreshold) {
+            this.logWarning(`Rate limit threshold reached: ${requestsPerHour.toFixed(1)}/hour (threshold: ${hourlyThreshold})`);
+            return false;
+        }
+        
+        return true;
     }
 
     private logWarning(message: string) {

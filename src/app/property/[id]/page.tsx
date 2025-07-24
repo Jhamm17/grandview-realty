@@ -6,7 +6,7 @@ import { Suspense } from 'react';
 import PropertyLoading from '@/components/PropertyLoading';
 
 export const runtime = 'edge';
-export const revalidate = 300; // Revalidate every 5 minutes
+export const revalidate = 900; // Revalidate every 15 minutes (increased from 5)
 
 async function getProperty(id: string): Promise<Property | null> {
   try {
@@ -32,7 +32,7 @@ async function getProperty(id: string): Promise<Property | null> {
         'Content-Type': 'application/json',
         'Accept-Encoding': 'gzip'
       },
-      next: { revalidate: 300 }
+      next: { revalidate: 900 }
     });
 
     // If direct filter fails, fall back to broader search
@@ -54,8 +54,8 @@ async function getProperty(id: string): Promise<Property | null> {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'Accept-Encoding': 'gzip'
-        },
-        next: { revalidate: 300 }
+      },
+        next: { revalidate: 900 }
       });
     }
 

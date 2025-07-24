@@ -5,13 +5,13 @@ import { Suspense } from 'react';
 import PropertiesLoading from '@/components/PropertiesLoading';
 
 export const runtime = 'edge';
-export const revalidate = 300; // Revalidate every 5 minutes
+export const revalidate = 900; // Revalidate every 15 minutes (increased from 5)
 
 async function getProperties() {
   try {
-    // Build OData query parameters - optimized for speed
+    // Build OData query parameters - optimized for speed and reduced API calls
     const queryParams = new URLSearchParams({
-      '$top': '25',  // Start with very few properties for instant load
+      '$top': '50',  // Increased from 25 to reduce pagination calls
       '$filter': 'MlgCanView eq true', // Only use allowed filter fields
       '$orderby': 'ModificationTimestamp desc', // Order by last modified
       '$count': 'true',
@@ -39,7 +39,7 @@ async function getProperties() {
         'Content-Type': 'application/json',
         'Accept-Encoding': 'gzip'
       },
-      next: { revalidate: 300 } // Cache for 5 minutes
+      next: { revalidate: 900 } // Cache for 15 minutes (increased from 5)
     });
 
     if (!response.ok) {
@@ -63,7 +63,7 @@ async function getProperties() {
     let pageCount = 1;
     
     // Handle pagination to get all properties (limit to reasonable amount for performance)
-    const maxPages = 4; // Limit to 4 pages (100 properties max) for performance
+    const maxPages = 2; // Reduced from 4 to 2 pages (100 properties max) for performance
     while (nextLink && pageCount < maxPages) {
       pageCount++;
       console.log(`Fetching page ${pageCount} of properties...`);

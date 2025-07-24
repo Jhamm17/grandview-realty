@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
 export const runtime = 'edge';
-export const revalidate = 300; // Revalidate every 5 minutes
+export const revalidate = 900; // Revalidate every 15 minutes (increased from 5)
 
 // This is a temporary solution until we integrate with the MLS API
 const areaMapping = {
@@ -63,7 +63,7 @@ async function getPropertiesByArea(area: string) {
         'Content-Type': 'application/json',
         'Accept-Encoding': 'gzip'
       },
-      next: { revalidate: 300 } // Cache for 5 minutes
+      next: { revalidate: 900 } // Cache for 15 minutes (increased from 5)
     });
 
     if (!response.ok) {

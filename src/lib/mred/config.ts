@@ -7,10 +7,10 @@ export const MRED_CONFIG = {
     ACCESS_TOKEN: process.env.MLSGRID_ACCESS_TOKEN || 'demo_token',
 
     // Rate Limiting & Pagination
-    MAX_REQUESTS_PER_SECOND: 2,
-    MAX_REQUESTS_PER_HOUR: 7200,
-    MAX_DATA_PER_HOUR_GB: 4,
-    RECORDS_PER_PAGE: 100, // Start with a smaller number for testing
+    MAX_REQUESTS_PER_SECOND: 1, // Reduced from 2 to 1
+    MAX_REQUESTS_PER_HOUR: 3600, // Reduced from 7200 to 3600
+    MAX_DATA_PER_HOUR_GB: 2, // Reduced from 4 to 2
+    RECORDS_PER_PAGE: 50, // Reduced from 100 to 50
 
     // Resource Types
     RESOURCES: {
@@ -31,8 +31,8 @@ export const MRED_CONFIG = {
 
     // Caching
     CACHE_TIMES: {
-        LISTING_DETAILS: 15 * 60, // 15 minutes
-        SEARCH_RESULTS: 5 * 60,   // 5 minutes
+        LISTING_DETAILS: 30 * 60, // Increased from 15 to 30 minutes
+        SEARCH_RESULTS: 15 * 60,   // Increased from 5 to 15 minutes
         MEDIA: 7 * 24 * 60 * 60   // 7 days for media
     }
 } as const;
