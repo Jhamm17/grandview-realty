@@ -3,16 +3,15 @@ import { Property } from '@/lib/mred/types';
 import PropertyFilter from '@/components/PropertyFilter';
 import { Suspense } from 'react';
 import PropertiesLoading from '@/components/PropertiesLoading';
-import { rateLimiter } from '@/lib/mred/rate-limiter';
 
 export const runtime = 'edge';
-export const revalidate = 900; // Revalidate every 15 minutes (increased from 5)
+export const revalidate = 300; // Revalidate every 5 minutes
 
 async function getProperties() {
   try {
-    // Build OData query parameters - optimized for speed and reduced API calls
+    // Build OData query parameters - optimized for speed
     const queryParams = new URLSearchParams({
-      '$top': '25',  // 25 per page for safe rate limiting
+      '$top': '25',  // Start with very few properties for instant load
       '$filter': 'MlgCanView eq true', // Only use allowed filter fields
       '$orderby': 'ModificationTimestamp desc', // Order by last modified
       '$count': 'true',
@@ -20,105 +19,191 @@ async function getProperties() {
     });
 
     const url = `${MRED_CONFIG.API_BASE_URL}/Property?${queryParams.toString()}`;
+    
+    // Log the full request details for debugging
+    console.log('MLS Grid API Request:', {
+      url,
+      token: MRED_CONFIG.ACCESS_TOKEN ? 'Present' : 'Missing',
+      baseUrl: MRED_CONFIG.API_BASE_URL,
+      params: Object.fromEntries(queryParams.entries())
+    });
+    
     if (!MRED_CONFIG.ACCESS_TOKEN) {
       throw new Error('Access token is not configured. Please add MLSGRID_ACCESS_TOKEN to environment variables.');
     }
 
-    // Fetch the first page with rate limiting
-    const response = await rateLimiter.executeWithRateLimit(async () => {
-      return fetch(url, {
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Accept-Encoding': 'gzip'
+      },
+      next: { revalidate: 300 } // Cache for 5 minutes
+    });
+
+    if (!response.ok) {
+      // Log detailed error information
+      const errorText = await response.text();
+      console.error('MLS Grid API Error:', {
+        status: response.status,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries()),
+        body: errorText,
+        url: url.replace(MRED_CONFIG.ACCESS_TOKEN || '', '[REDACTED]') // Redact token from logs
+      });
+      throw new Error(`API request failed: ${response.status} - ${errorText}`);
+    }
+
+    const data = await response.json();
+    
+    // Collect all properties (handle pagination if needed)
+    let allProperties = [...data.value];
+    let nextLink = data['@odata.nextLink'];
+    let pageCount = 1;
+    
+    // Handle pagination to get all properties (limit to reasonable amount for performance)
+    const maxPages = 4; // Limit to 4 pages (100 properties max) for performance
+    while (nextLink && pageCount < maxPages) {
+      pageCount++;
+      console.log(`Fetching page ${pageCount} of properties...`);
+      
+      const nextResponse = await fetch(nextLink, {
         headers: {
           'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'Accept-Encoding': 'gzip'
-        },
-        next: { revalidate: 900 } // Cache for 15 minutes
+        }
       });
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('API request failed:', response.status, errorText);
-      return [];
-    }
-
-    const data = await response.json();
-    let allProperties = [...data.value];
-    let nextLink = data['@odata.nextLink'];
-    let totalFetched = allProperties.length;
-    const maxRecords = 1000;
-    let page = 1;
-    console.log(`[DEBUG] Page ${page}: fetched ${allProperties.length} properties. nextLink:`, !!nextLink);
-    if (allProperties.length > 0) {
-      console.log('[DEBUG] Statuses on first page:', [...new Set(allProperties.map((p: Property) => p.StandardStatus))]);
-    }
-
-    // Paginate until we reach 1000 records or run out of pages
-    while (nextLink && totalFetched < maxRecords) {
-      page++;
-      const nextResponse = await rateLimiter.executeWithRateLimit(async () => {
-        return fetch(nextLink, {
-          headers: {
-            'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Accept-Encoding': 'gzip'
-          }
-        });
-      });
+      
       if (!nextResponse.ok) {
-        const errorText = await nextResponse.text();
-        console.error(`[DEBUG] Pagination request failed on page ${page}:`, nextResponse.status, errorText);
+        console.error('Pagination request failed:', nextResponse.status);
         break;
       }
+      
       const nextData = await nextResponse.json();
       allProperties = [...allProperties, ...nextData.value];
-      totalFetched = allProperties.length;
       nextLink = nextData['@odata.nextLink'];
-      console.log(`[DEBUG] Page ${page}: fetched ${nextData.value.length} properties. Total so far: ${totalFetched}. nextLink:`, !!nextLink);
-      if (nextData.value.length > 0) {
-        console.log(`[DEBUG] Statuses on page ${page}:`, [...new Set(nextData.value.map((p: Property) => p.StandardStatus))]);
-      }
-      if (totalFetched >= maxRecords) {
-        allProperties = allProperties.slice(0, maxRecords);
-        break;
-      }
     }
+    
+    // Log successful response details with media info
+    console.log('MLS Grid API Response:', {
+      totalCount: data['@odata.count'],
+      initialResultCount: data.value?.length,
+      totalFetched: allProperties.length,
+      pagesFetched: pageCount,
+      hasNextLink: !!data['@odata.nextLink'],
+      estimatedTotalPages: Math.ceil((data['@odata.count'] || 0) / 1000),
+      statusBreakdown: allProperties.reduce((acc: Record<string, number>, prop: Property) => {
+        acc[prop.StandardStatus] = (acc[prop.StandardStatus] || 0) + 1;
+        return acc;
+      }, {}),
+      firstProperty: allProperties[0] ? {
+        id: allProperties[0].ListingId,
+        address: allProperties[0].UnparsedAddress,
+        price: allProperties[0].ListPrice,
+        status: allProperties[0].StandardStatus,
+        mediaCount: allProperties[0].Media?.length || 0,
+        firstMediaUrl: allProperties[0].Media?.[0]?.MediaURL || null
+      } : 'No properties'
+    });
 
     // Filter the results on the client side for active listings
+    // Only include properties with "Active" status (exclude "Under Contract", "Pending", etc.)
     const filteredProperties = allProperties.filter((property: Property) => 
       property.StandardStatus === 'Active' && 
       !property.StandardStatus.includes('Contract') &&
       !property.StandardStatus.includes('Pending') &&
       !property.StandardStatus.includes('Sold')
     );
-    console.log(`[DEBUG] Filtered properties: ${filteredProperties.length} out of ${allProperties.length}`);
-    if (filteredProperties.length === 0 && allProperties.length > 0) {
-      console.log('[DEBUG] All statuses in allProperties:', [...new Set(allProperties.map((p: Property) => p.StandardStatus))]);
-    }
+
+    console.log('Filtered Properties:', {
+      totalProperties: allProperties.length,
+      activeProperties: filteredProperties.length,
+      statuses: [...new Set(allProperties.map((p: Property) => p.StandardStatus))],
+      expectedTotal: data['@odata.count'],
+      missingCount: (data['@odata.count'] || 0) - filteredProperties.length
+    });
+
     return filteredProperties;
   } catch (error) {
-    console.error('[DEBUG] Error fetching properties:', error);
-    return [];
+    // Log detailed error information
+    console.error('Error fetching properties:', {
+      error: error instanceof Error ? {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      } : error,
+      config: {
+        baseUrl: MRED_CONFIG.API_BASE_URL,
+        hasToken: Boolean(MRED_CONFIG.ACCESS_TOKEN),
+        environment: process.env.NODE_ENV,
+        vercelEnv: process.env.VERCEL_ENV
+      }
+    });
+    throw error;
   }
 }
 
 async function PropertiesContent() {
-  const properties = await getProperties();
-  return <PropertyFilter initialProperties={properties} />;
+  let properties: Property[] = [];
+  let error = null;
+
+  try {
+    properties = await getProperties();
+  } catch (e) {
+    error = e;
+  }
+
+  if (error) {
+    return (
+      <div className="container-padding py-16">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+          <h2 className="text-red-800 text-lg font-semibold mb-2">Error Loading Properties</h2>
+          <p className="text-red-600">
+            We&apos;re having trouble connecting to our property database. Please try again later.
+          </p>
+          {/* Always show error details in production for now, to help debug */}
+          <pre className="mt-4 p-4 bg-red-100 rounded text-sm overflow-auto">
+            {error instanceof Error ? error.message : 'Unknown error'}
+          </pre>
+        </div>
+      </div>
+    );
+  }
+
+  if (properties.length === 0) {
+    return (
+      <div className="container-padding py-16">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+          <h2 className="text-yellow-800 text-lg font-semibold mb-2">No Properties Found</h2>
+          <p className="text-yellow-600">
+            We couldn&apos;t find any properties matching your criteria. Please try adjusting your search.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container-padding py-16">
+      <div className="mb-8">
+        <h1 className="text-4xl font-bold mb-4">Active Listings</h1>
+        <p className="text-xl text-gray-600">
+          Discover exceptional homes and investment opportunities
+        </p>
+      </div>
+      
+      <PropertyFilter initialProperties={properties} />
+    </div>
+  );
 }
 
 export default function PropertiesPage() {
   return (
-    <main className="container-padding py-12 min-h-screen">
-      <h1 className="text-4xl font-bold mb-2 text-center">Active Listings</h1>
-      <p className="text-center text-lg text-gray-600 mb-8">
-        Explore all active properties currently listed for sale. Use the filters to narrow your search.
-      </p>
-      <Suspense fallback={<PropertiesLoading />}>
-        <PropertiesContent />
-      </Suspense>
-    </main>
+    <Suspense fallback={<PropertiesLoading />}>
+      <PropertiesContent />
+    </Suspense>
   );
 } 
