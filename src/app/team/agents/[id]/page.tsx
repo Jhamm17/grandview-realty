@@ -3,24 +3,26 @@ import Link from 'next/link';
 export default function AgentPage({ params }: { params: { id: string } }) {
   const agents = [
     {
-      id: "sarah-johnson",
-      name: "Sarah Johnson",
-      title: "Senior Real Estate Agent",
-      image: "/agents/sarah-johnson.jpg",
-      phone: "(555) 123-4567",
-      email: "sarah.johnson@grandviewrealty.com",
-      specialties: ["Residential Sales", "Luxury Properties", "First-Time Buyers"],
-      experience: "15+ years",
-      description: "Sarah specializes in residential sales and has helped hundreds of families find their dream homes. Her expertise in luxury properties and first-time buyer guidance makes her a trusted advisor in the community.",
-      bio: "With over 15 years of experience in the real estate industry, Sarah has built a reputation for exceptional service and deep market knowledge. She understands that buying or selling a home is one of life's most significant decisions, and she approaches each transaction with the care and attention it deserves. Sarah's commitment to her clients extends beyond the closing table - she maintains lasting relationships and continues to provide support and guidance long after the transaction is complete.",
+      id: "chris-clark",
+      name: "Chris Clark",
+      title: "Sales Manager",
+      image: "/agents/chris-clark.png",
+      logo: "/agents/chris-clark-logo.png",
+      phone: "630-973-7825",
+      email: "chris.clark@grandviewsells.com",
+      specialties: ["Buyers", "Sellers", "Investors"],
+      experience: "20+ years",
+      serviceArea: "Chicagoland and West Suburbs",
+      description: "Chris Clark launched his real estate career in 2003, and is passionate about helping people achieve their real estate goals by leveraging data, technology and wow service to create raving fans and customers for life. In April, 2021, Chris partnered with Grandview Realty as their Sales Manager to drive growth in the brokerage by increasing transactions, adding agents and growing his personal real estate business under the Clark Home Team banner.",
+      bio: "Chris Clark launched his real estate career in 2003, and is passionate about helping people achieve their real estate goals by leveraging data, technology and wow service to create raving fans and customers for life. In April, 2021, Chris partnered with Grandview Realty as their Sales Manager to drive growth in the brokerage by increasing transactions, adding agents and growing his personal real estate business under the Clark Home Team banner.",
       achievements: [
-        "Top Producer Award 2023",
-        "Certified Luxury Home Specialist",
-        "First-Time Buyer Expert Certification",
-        "Over 500 successful transactions"
+        "Sales Manager at Grandview Realty",
+        "Clark Home Team Founder",
+        "20+ Years of Real Estate Experience",
+        "Data-Driven Approach to Real Estate"
       ],
-      areas: ["Geneva", "St. Charles", "Naperville", "Oak Brook", "Hinsdale"],
-      languages: ["English", "Spanish"]
+      areas: ["Chicagoland", "West Suburbs"],
+      languages: ["English"]
     },
     {
       id: "michael-chen",

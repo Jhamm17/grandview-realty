@@ -4,15 +4,17 @@ import Link from 'next/link';
 export default function AgentsPage() {
   const agents = [
     {
-      id: "sarah-johnson",
-      name: "Sarah Johnson",
-      title: "Senior Real Estate Agent",
-      image: "/agents/sarah-johnson.jpg",
-      phone: "(555) 123-4567",
-      email: "sarah.johnson@grandviewrealty.com",
-      specialties: ["Residential Sales", "Luxury Properties", "First-Time Buyers"],
-      experience: "15+ years",
-      description: "Sarah specializes in residential sales and has helped hundreds of families find their dream homes. Her expertise in luxury properties and first-time buyer guidance makes her a trusted advisor in the community."
+      id: "chris-clark",
+      name: "Chris Clark",
+      title: "Sales Manager",
+      image: "/agents/chris-clark.png",
+      logo: "/agents/chris-clark-logo.png",
+      phone: "630-973-7825",
+      email: "chris.clark@grandviewsells.com",
+      specialties: ["Buyers", "Sellers", "Investors"],
+      experience: "20+ years",
+      serviceArea: "Chicagoland and West Suburbs",
+      description: "Chris Clark launched his real estate career in 2003, and is passionate about helping people achieve their real estate goals by leveraging data, technology and wow service to create raving fans and customers for life. In April, 2021, Chris partnered with Grandview Realty as their Sales Manager to drive growth in the brokerage by increasing transactions, adding agents and growing his personal real estate business under the Clark Home Team banner."
     },
     {
       id: "michael-chen",
@@ -101,9 +103,9 @@ export default function AgentsPage() {
               {/* View More Button */}
               <Link 
                 href={`/team/agents/${agent.id}`}
-                className="block w-full bg-[#081d36] text-white text-center py-3 px-4 rounded-lg font-semibold hover:bg-[#0f2a4a] transition-colors"
+                className="block w-full bg-[#1a365d] text-white text-center py-3 px-4 rounded-lg font-semibold hover:bg-[#2d5a87] transition-colors"
               >
-                Learn More About {agent.name.split(' ')[0]}
+                Agent Info
               </Link>
             </div>
           </div>
