@@ -1,100 +1,35 @@
-import { MRED_CONFIG } from '@/lib/mred/config';
 import { Property } from '@/lib/mred/types';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import PropertyLoading from '@/components/PropertyLoading';
-import { rateLimiter } from '@/lib/mred/rate-limiter';
 
 export const runtime = 'edge';
-export const revalidate = 900; // Revalidate every 15 minutes (increased from 5)
+export const revalidate = 300; // Revalidate every 5 minutes
 
 async function getProperty(id: string): Promise<Property | null> {
   try {
     console.log('Fetching property with ID:', id);
     
-    // Try to filter by ListingId first (more efficient)
-    let queryParams = new URLSearchParams({
-      '$filter': `ListingId eq '${id}'`,
-      '$expand': 'Media'
+    // Call our own API route instead of MLS Grid directly
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/properties/${id}`, {
+      next: { revalidate: 300 }
     });
 
-    let url = `${MRED_CONFIG.API_BASE_URL}/Property?${queryParams.toString()}`;
-    console.log('API URL (direct filter):', url);
-    
-    if (!MRED_CONFIG.ACCESS_TOKEN) {
-      throw new Error('Access token is not configured.');
-    }
-
-    let response = await rateLimiter.executeWithRateLimit(async () => {
-      return fetch(url, {
-        headers: {
-          'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Accept-Encoding': 'gzip'
-        },
-        next: { revalidate: 900 }
-      });
-    });
-
-    // If direct filter fails, fall back to broader search
     if (!response.ok) {
-      console.log('Direct filter failed, trying broader search...');
-      queryParams = new URLSearchParams({
-        '$top': '50',
-        '$filter': 'MlgCanView eq true',
-        '$orderby': 'ModificationTimestamp desc',
-        '$expand': 'Media'
-      });
-
-      url = `${MRED_CONFIG.API_BASE_URL}/Property?${queryParams.toString()}`;
-      console.log('API URL (broader search):', url);
-      
-      response = await rateLimiter.executeWithRateLimit(async () => {
-        return fetch(url, {
-          headers: {
-            'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Accept-Encoding': 'gzip'
-          },
-          next: { revalidate: 900 }
-        });
-      });
-    }
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('API Error Response:', {
-        status: response.status,
-        statusText: response.statusText,
-        body: errorText
-      });
-      throw new Error(`API request failed: ${response.status} - ${errorText}`);
+      console.error('API request failed:', response.status);
+      return null;
     }
 
     const data = await response.json();
-    console.log('API Response:', {
-      totalCount: data['@odata.count'],
-      resultCount: data.value?.length,
-      availableIds: data.value?.slice(0, 5).map((p: Property) => p.ListingId) || []
-    });
     
-    // Find the specific property by ID
-    const property = data.value?.find((p: Property) => p.ListingId === id);
-    
-    if (property) {
-      console.log('Found property:', {
-        id: property.ListingId,
-        address: property.UnparsedAddress,
-        status: property.StandardStatus
-      });
-    } else {
-      console.log('Property not found. Available IDs (first 5):', data.value?.slice(0, 5).map((p: Property) => p.ListingId));
+    if (data.error) {
+      console.error('API returned error:', data.error);
+      return null;
     }
-    
-    return property || null;
+
+    console.log(`[Property Page] Received property: ${data.property?.ListingId}`);
+    return data.property || null;
   } catch (error) {
     console.error('Error fetching property:', error);
     return null;
@@ -112,14 +47,6 @@ async function PropertyContent({ id }: { id: string }) {
           <p className="text-red-600 mb-4">
             We couldn&apos;t find the property you&apos;re looking for.
           </p>
-          {process.env.NODE_ENV === 'development' && (
-            <div className="mt-4 p-4 bg-red-100 rounded text-sm">
-              <p><strong>Debug Info:</strong></p>
-              <p>Property ID: {id}</p>
-              <p>API Base URL: {MRED_CONFIG.API_BASE_URL}</p>
-              <p>Access Token: {MRED_CONFIG.ACCESS_TOKEN ? 'Present' : 'Missing'}</p>
-            </div>
-          )}
           <Link href="/properties" className="text-blue-600 hover:text-blue-800 underline">
             ← Back to Properties
           </Link>
@@ -127,9 +54,6 @@ async function PropertyContent({ id }: { id: string }) {
       </div>
     );
   }
-
-  const sortedMedia = property.Media?.sort((a, b) => (a.Order || 0) - (b.Order || 0)) || [];
-  const mainImage = sortedMedia[0];
 
   return (
     <div className="container-padding py-16">
@@ -141,125 +65,133 @@ async function PropertyContent({ id }: { id: string }) {
       </div>
 
       {/* Property Header */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-4">
-          {property.StreetNumber && property.StreetName 
-            ? `${property.StreetNumber} ${property.StreetName} ${property.StreetSuffix || ''}`.trim()
-            : property.UnparsedAddress || 'Address not available'
-          }
-        </h1>
-        <p className="text-xl text-gray-600 mb-4">{property.City}, {property.StateOrProvince}</p>
-        <p className="text-3xl font-bold text-black">
-          ${property.ListPrice.toLocaleString()}
-        </p>
-      </div>
-
-      {/* Main Image */}
-      <div className="mb-8">
-        {mainImage?.MediaURL ? (
-          <div className="relative h-96 w-full">
-            <Image
-              src={mainImage.MediaURL}
-              alt={`${property.UnparsedAddress || 'Property'} in ${property.City}`}
-              fill
-              style={{ objectFit: "cover" }}
-              sizes="100vw"
-              className="rounded-lg"
-            />
-            {/* Listed Badge */}
-            <div className="absolute bottom-0 left-0 bg-blue-400 text-white px-3 py-2 text-lg font-black tracking-wider" style={{ borderRadius: '0' }}>
-              LISTED
-            </div>
-          </div>
-        ) : (
-          <div className="h-96 w-full bg-gray-200 rounded-lg flex items-center justify-center">
-            <span className="text-gray-400 text-xl">No image available</span>
-          </div>
-        )}
-      </div>
-
-      {/* Property Details Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Key Details */}
-        <div className="lg:col-span-2">
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-2xl font-bold mb-6">Property Details</h2>
-            
-            {/* Stats Grid */}
-            <div className="grid grid-cols-3 gap-6 mb-8">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600">{property.BedroomsTotal}</div>
-                <div className="text-gray-600">Bedrooms</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600">{property.BathroomsTotalInteger}</div>
-                <div className="text-gray-600">Bathrooms</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-600">{property.LivingArea?.toLocaleString()}</div>
-                <div className="text-gray-600">Square Feet</div>
-              </div>
-            </div>
-
-            {/* Additional Details */}
-            <div className="space-y-4">
-              {property.YearBuilt && (
-                <div className="flex justify-between py-2 border-b border-gray-200">
-                  <span className="font-semibold">Year Built</span>
-                  <span>{property.YearBuilt}</span>
-                </div>
-              )}
-              {property.PropertyType && (
-                <div className="flex justify-between py-2 border-b border-gray-200">
-                  <span className="font-semibold">Property Type</span>
-                  <span>{property.PropertyType}</span>
-                </div>
-              )}
-              {property.LotSize && (
-                <div className="flex justify-between py-2 border-b border-gray-200">
-                  <span className="font-semibold">Lot Size</span>
-                  <span>{property.LotSize}</span>
-                </div>
-              )}
-              {property.StandardStatus && (
-                <div className="flex justify-between py-2 border-b border-gray-200">
-                  <span className="font-semibold">Status</span>
-                  <span className="text-green-600 font-semibold">{property.StandardStatus}</span>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Contact/MLS Info */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+        {/* Property Image */}
         <div className="lg:col-span-1">
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-bold mb-4">Property Information</h2>
+          {property.Media && property.Media.length > 0 ? (
+            <div className="relative h-96 bg-gray-200 rounded-lg overflow-hidden">
+              <Image
+                src={property.Media[0].MediaURL}
+                alt={property.UnparsedAddress || 'Property'}
+                fill
+                className="object-cover"
+                priority
+              />
+            </div>
+          ) : (
+            <div className="relative h-96 bg-gray-200 rounded-lg">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-gray-400 text-center">
+                  <p className="text-lg">No Image Available</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Property Info */}
+        <div className="lg:col-span-1">
+          <h1 className="text-4xl font-bold mb-2">{property.UnparsedAddress}</h1>
+          <p className="text-2xl text-blue-600 font-semibold mb-6">
+            ${property.ListPrice?.toLocaleString()}
+          </p>
+          
+          {/* Property Details */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-gray-800">{property.BedroomsTotal}</div>
+              <div className="text-gray-600">Bedrooms</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-gray-800">{property.BathroomsTotalInteger}</div>
+              <div className="text-gray-600">Bathrooms</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-gray-800">
+                {property.LivingArea ? `${property.LivingArea.toLocaleString()} sq ft` : 'N/A'}
+              </div>
+              <div className="text-gray-600">Square Feet</div>
+            </div>
+          </div>
+
+          {/* Status */}
+          <div className="mb-8">
+            <span className={`inline-block px-4 py-2 rounded-full text-sm font-semibold ${
+              property.StandardStatus === 'Active' 
+                ? 'bg-green-100 text-green-800' 
+                : 'bg-yellow-100 text-yellow-800'
+            }`}>
+              {property.StandardStatus}
+            </span>
+          </div>
+
+          {/* Contact Info */}
+          <div className="bg-gray-50 rounded-lg p-6">
+            <h3 className="text-lg font-semibold mb-4">Interested in this property?</h3>
             <div className="space-y-3">
-              <div>
-                <span className="font-semibold">MLS#:</span>
-                <span className="ml-2">{property.ListingId}</span>
-              </div>
-              <div>
-                <span className="font-semibold">County:</span>
-                <span className="ml-2">{property.CountyOrParish || 'N/A'}</span>
-              </div>
-              <div>
-                <span className="font-semibold">Postal Code:</span>
-                <span className="ml-2">{property.PostalCode}</span>
-              </div>
+              <a 
+                href="tel:+1234567890" 
+                className="block w-full bg-blue-600 text-white text-center py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+              >
+                Call Us
+              </a>
+              <a 
+                href="mailto:info@grandviewrealty.com" 
+                className="block w-full bg-white text-blue-600 border border-blue-600 py-3 px-4 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
+              >
+                Email Us
+              </a>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Description */}
-      {property.PublicRemarks && (
-        <div className="mt-8 bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-2xl font-bold mb-4">Description</h2>
-          <p className="text-gray-700 leading-relaxed">{property.PublicRemarks}</p>
+      {/* Property Description */}
+      <div className="mb-16">
+        <h2 className="text-3xl font-bold mb-6">Property Details</h2>
+        <div className="bg-white rounded-lg shadow-lg p-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Property Information</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">MLS #:</span>
+                  <span className="font-semibold">{property.ListingId}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Status:</span>
+                  <span className="font-semibold">{property.StandardStatus}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Property Type:</span>
+                  <span className="font-semibold">{property.PropertyType || 'N/A'}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Year Built:</span>
+                  <span className="font-semibold">{property.YearBuilt || 'N/A'}</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-xl font-semibold mb-4">Location</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">City:</span>
+                  <span className="font-semibold">{property.City}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">State:</span>
+                  <span className="font-semibold">{property.StateOrProvince}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">ZIP:</span>
+                  <span className="font-semibold">{property.PostalCode}</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
