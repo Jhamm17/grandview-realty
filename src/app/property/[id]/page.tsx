@@ -1,47 +1,100 @@
+'use client';
+
 import { Property } from '@/lib/mred/types';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Suspense } from 'react';
+import { useEffect, useState } from 'react';
 import PropertyLoading from '@/components/PropertyLoading';
 
-export const runtime = 'edge';
-export const revalidate = 300; // Revalidate every 5 minutes
+export default function PropertyPage({ params }: { params: { id: string } }) {
+  const [property, setProperty] = useState<Property | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-async function getProperty(id: string): Promise<Property | null> {
-  try {
-    console.log('Fetching property with ID:', id);
-    
-    // Call our own API route instead of MLS Grid directly
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/properties/${id}`, {
-      next: { revalidate: 300 }
-    });
+  useEffect(() => {
+    async function fetchProperty() {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        console.log('Fetching property with ID:', params.id);
+        
+        // Use relative URL to avoid environment variable issues
+        const response = await fetch(`/api/properties/${params.id}`, {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+        });
 
-    if (!response.ok) {
-      console.error('API request failed:', response.status);
-      return null;
+        console.log(`[Property Page] API response status: ${response.status}`);
+
+        if (!response.ok) {
+          throw new Error(`API request failed: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        
+        if (data.error) {
+          throw new Error(`API returned error: ${data.error}`);
+        }
+
+        console.log(`[Property Page] Received property: ${data.property?.ListingId}`);
+        setProperty(data.property || null);
+      } catch (err) {
+        console.error('Error fetching property:', err);
+        setError(err instanceof Error ? err.message : 'Unknown error');
+      } finally {
+        setLoading(false);
+      }
     }
 
-    const data = await response.json();
-    
-    if (data.error) {
-      console.error('API returned error:', data.error);
-      return null;
-    }
+    fetchProperty();
+  }, [params.id]);
 
-    console.log(`[Property Page] Received property: ${data.property?.ListingId}`);
-    return data.property || null;
-  } catch (error) {
-    console.error('Error fetching property:', error);
-    return null;
+  if (loading) {
+    return (
+      <main className="container-padding py-12 min-h-screen">
+        <div className="mb-8">
+          <Link href="/properties" className="text-blue-600 hover:text-blue-800 underline flex items-center">
+            ← Back to Properties
+          </Link>
+        </div>
+        <PropertyLoading />
+      </main>
+    );
   }
-}
 
-async function PropertyContent({ id }: { id: string }) {
-  const property = await getProperty(id);
+  if (error) {
+    return (
+      <main className="container-padding py-12 min-h-screen">
+        <div className="mb-8">
+          <Link href="/properties" className="text-blue-600 hover:text-blue-800 underline flex items-center">
+            ← Back to Properties
+          </Link>
+        </div>
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+          <h2 className="text-red-800 text-lg font-semibold mb-2">Error Loading Property</h2>
+          <p className="text-red-600 mb-4">{error}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+          >
+            Try Again
+          </button>
+        </div>
+      </main>
+    );
+  }
 
   if (!property) {
     return (
-      <div className="container-padding py-16">
+      <main className="container-padding py-12 min-h-screen">
+        <div className="mb-8">
+          <Link href="/properties" className="text-blue-600 hover:text-blue-800 underline flex items-center">
+            ← Back to Properties
+          </Link>
+        </div>
         <div className="bg-red-50 border border-red-200 rounded-lg p-6">
           <h2 className="text-red-800 text-lg font-semibold mb-2">Property Not Found</h2>
           <p className="text-red-600 mb-4">
@@ -51,7 +104,7 @@ async function PropertyContent({ id }: { id: string }) {
             ← Back to Properties
           </Link>
         </div>
-      </div>
+      </main>
     );
   }
 
@@ -193,13 +246,5 @@ async function PropertyContent({ id }: { id: string }) {
         </div>
       </div>
     </div>
-  );
-}
-
-export default function PropertyPage({ params }: { params: { id: string } }) {
-  return (
-    <Suspense fallback={<PropertyLoading />}>
-      <PropertyContent id={params.id} />
-    </Suspense>
   );
 } 
