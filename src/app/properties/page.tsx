@@ -39,7 +39,8 @@ async function getProperties() {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`API request failed: ${response.status} - ${errorText}`);
+      console.error('API request failed:', response.status, errorText);
+      return [];
     }
 
     const data = await response.json();
@@ -47,9 +48,15 @@ async function getProperties() {
     let nextLink = data['@odata.nextLink'];
     let totalFetched = allProperties.length;
     const maxRecords = 1000;
+    let page = 1;
+    console.log(`[DEBUG] Page ${page}: fetched ${allProperties.length} properties. nextLink:`, !!nextLink);
+    if (allProperties.length > 0) {
+      console.log('[DEBUG] Statuses on first page:', [...new Set(allProperties.map((p: Property) => p.StandardStatus))]);
+    }
 
     // Paginate until we reach 1000 records or run out of pages
     while (nextLink && totalFetched < maxRecords) {
+      page++;
       const nextResponse = await rateLimiter.executeWithRateLimit(async () => {
         return fetch(nextLink, {
           headers: {
@@ -61,12 +68,18 @@ async function getProperties() {
         });
       });
       if (!nextResponse.ok) {
+        const errorText = await nextResponse.text();
+        console.error(`[DEBUG] Pagination request failed on page ${page}:`, nextResponse.status, errorText);
         break;
       }
       const nextData = await nextResponse.json();
       allProperties = [...allProperties, ...nextData.value];
       totalFetched = allProperties.length;
       nextLink = nextData['@odata.nextLink'];
+      console.log(`[DEBUG] Page ${page}: fetched ${nextData.value.length} properties. Total so far: ${totalFetched}. nextLink:`, !!nextLink);
+      if (nextData.value.length > 0) {
+        console.log(`[DEBUG] Statuses on page ${page}:`, [...new Set(nextData.value.map((p: Property) => p.StandardStatus))]);
+      }
       if (totalFetched >= maxRecords) {
         allProperties = allProperties.slice(0, maxRecords);
         break;
@@ -80,10 +93,13 @@ async function getProperties() {
       !property.StandardStatus.includes('Pending') &&
       !property.StandardStatus.includes('Sold')
     );
-
+    console.log(`[DEBUG] Filtered properties: ${filteredProperties.length} out of ${allProperties.length}`);
+    if (filteredProperties.length === 0 && allProperties.length > 0) {
+      console.log('[DEBUG] All statuses in allProperties:', [...new Set(allProperties.map((p: Property) => p.StandardStatus))]);
+    }
     return filteredProperties;
   } catch (error) {
-    console.error('Error fetching properties:', error);
+    console.error('[DEBUG] Error fetching properties:', error);
     return [];
   }
 }
