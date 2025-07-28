@@ -1,111 +1,59 @@
-'use client';
-
-import { Property } from '@/lib/mred/types';
+import { PropertyCacheService } from '@/lib/property-cache';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import PropertyLoading from '@/components/PropertyLoading';
+import { notFound } from 'next/navigation';
 
-export default function PropertyPage({ params }: { params: { id: string } }) {
-  const [property, setProperty] = useState<Property | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface PropertyPageProps {
+  params: { id: string };
+}
 
-  useEffect(() => {
-    async function fetchProperty() {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        console.log('Fetching property with ID:', params.id);
-        
-        // Use relative URL to avoid environment variable issues
-        const response = await fetch(`/api/properties/${params.id}`, {
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          }
-        });
+// Generate static params for all properties
+export async function generateStaticParams() {
+  try {
+    const properties = await PropertyCacheService.getAllProperties();
+    return properties.map((property) => ({
+      id: property.ListingId,
+    }));
+  } catch (error) {
+    console.error('Error generating static params:', error);
+    return [];
+  }
+}
 
-        console.log(`[Property Page] API response status: ${response.status}`);
-
-        if (!response.ok) {
-          throw new Error(`API request failed: ${response.status} ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        
-        if (data.error) {
-          throw new Error(`API returned error: ${data.error}`);
-        }
-
-        console.log(`[Property Page] Received property: ${data.property?.ListingId}`);
-        setProperty(data.property || null);
-      } catch (err) {
-        console.error('Error fetching property:', err);
-        setError(err instanceof Error ? err.message : 'Unknown error');
-      } finally {
-        setLoading(false);
-      }
+// Generate metadata for SEO
+export async function generateMetadata({ params }: PropertyPageProps) {
+  try {
+    const property = await PropertyCacheService.getProperty(params.id);
+    
+    if (!property) {
+      return {
+        title: 'Property Not Found',
+        description: 'The requested property could not be found.',
+      };
     }
 
-    fetchProperty();
-  }, [params.id]);
-
-  if (loading) {
-    return (
-      <main className="container-padding py-12 min-h-screen">
-        <div className="mb-8">
-          <Link href="/properties" className="text-blue-600 hover:text-blue-800 underline flex items-center">
-            ← Back to Properties
-          </Link>
-        </div>
-        <PropertyLoading />
-      </main>
-    );
+    return {
+      title: `${property.UnparsedAddress} - Grandview Realty`,
+      description: `${property.BedroomsTotal} bed, ${property.BathroomsTotalInteger} bath home for sale in ${property.City}, ${property.StateOrProvince}. Listed at $${property.ListPrice?.toLocaleString()}.`,
+      openGraph: {
+        title: `${property.UnparsedAddress} - Grandview Realty`,
+        description: `${property.BedroomsTotal} bed, ${property.BathroomsTotalInteger} bath home for sale in ${property.City}, ${property.StateOrProvince}.`,
+        images: property.Media && property.Media.length > 0 ? [property.Media[0].MediaURL] : [],
+      },
+    };
+  } catch {
+    return {
+      title: 'Property - Grandview Realty',
+      description: 'Property details from Grandview Realty.',
+    };
   }
+}
 
-  if (error) {
-    return (
-      <main className="container-padding py-12 min-h-screen">
-        <div className="mb-8">
-          <Link href="/properties" className="text-blue-600 hover:text-blue-800 underline flex items-center">
-            ← Back to Properties
-          </Link>
-        </div>
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-          <h2 className="text-red-800 text-lg font-semibold mb-2">Error Loading Property</h2>
-          <p className="text-red-600 mb-4">{error}</p>
-          <button 
-            onClick={() => window.location.reload()} 
-            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-          >
-            Try Again
-          </button>
-        </div>
-      </main>
-    );
-  }
+export default async function PropertyPage({ params }: PropertyPageProps) {
+  const property = await PropertyCacheService.getProperty(params.id);
 
   if (!property) {
-    return (
-      <main className="container-padding py-12 min-h-screen">
-        <div className="mb-8">
-          <Link href="/properties" className="text-blue-600 hover:text-blue-800 underline flex items-center">
-            ← Back to Properties
-          </Link>
-        </div>
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-          <h2 className="text-red-800 text-lg font-semibold mb-2">Property Not Found</h2>
-          <p className="text-red-600 mb-4">
-            We couldn&apos;t find the property you&apos;re looking for.
-          </p>
-          <Link href="/properties" className="text-blue-600 hover:text-blue-800 underline">
-            ← Back to Properties
-          </Link>
-        </div>
-      </main>
-    );
+    notFound();
   }
 
   return (

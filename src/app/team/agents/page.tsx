@@ -17,26 +17,17 @@ export default function AgentsPage() {
       description: "Chris Clark launched his real estate career in 2003, and is passionate about helping people achieve their real estate goals by leveraging data, technology and wow service to create raving fans and customers for life. In April, 2021, Chris partnered with Grandview Realty as their Sales Manager to drive growth in the brokerage by increasing transactions, adding agents and growing his personal real estate business under the Clark Home Team banner."
     },
     {
-      id: "michael-chen",
-      name: "Michael Chen",
-      title: "Commercial Real Estate Specialist",
-      image: "/agents/michael-chen.jpg",
-      phone: "(555) 234-5678",
-      email: "michael.chen@grandviewrealty.com",
-      specialties: ["Commercial Properties", "Investment Sales", "Property Management"],
-      experience: "12+ years",
-      description: "Michael focuses on commercial real estate and investment properties. His deep understanding of market trends and investment strategies has made him a go-to expert for business owners and investors."
-    },
-    {
-      id: "emily-rodriguez",
-      name: "Emily Rodriguez",
-      title: "Residential Sales Agent",
-      image: "/agents/emily-rodriguez.jpg",
-      phone: "(555) 345-6789",
-      email: "emily.rodriguez@grandviewrealty.com",
-      specialties: ["Residential Sales", "New Construction", "Relocation Services"],
-      experience: "8+ years",
-      description: "Emily excels in residential sales and new construction projects. Her attention to detail and commitment to client satisfaction has earned her numerous repeat clients and referrals."
+      id: "randall-glenn",
+      name: "Randall Glenn",
+      title: "Agent",
+      image: "/agents/randall-glenn.png",
+      logo: "/agents/randall-glenn-logo.png",
+      phone: "312-752-7415",
+      email: "randall@grandviewsells.com",
+      specialties: ["Sellers", "Investors"],
+      experience: undefined,
+      serviceArea: "Chicago and South Suburbs",
+      description: "Randall works primarily in the Chicagoland area, and he is extremely diligent to consistently provide his clients with the utmost transparency, professionalism, and respect."
     },
     {
       id: "david-thompson",
@@ -66,21 +57,35 @@ export default function AgentsPage() {
         {agents.map((agent, index) => (
           <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
             {/* Agent Image */}
-            <div className="relative h-64 bg-gray-200">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-gray-400 text-center">
-                  <div className="w-20 h-20 bg-gray-300 rounded-full mx-auto mb-3 flex items-center justify-center">
-                    <span className="text-xl font-bold text-gray-500">
-                      {agent.name.split(' ').map(n => n[0]).join('')}
-                    </span>
+            <div className="relative w-full aspect-square bg-gray-200">
+              {agent.logo ? (
+                <img
+                  src={agent.logo}
+                  alt={agent.name + " logo"}
+                  className="object-contain w-full h-full"
+                />
+              ) : agent.image ? (
+                <img
+                  src={agent.image}
+                  alt={agent.name}
+                  className="object-contain w-full h-full"
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-gray-400 text-center">
+                    <div className="w-20 h-20 bg-gray-300 mx-auto mb-3 flex items-center justify-center">
+                      <span className="text-xl font-bold text-gray-500">
+                        {agent.name.split(' ').map(n => n[0]).join('')}
+                      </span>
+                    </div>
+                    <p className="text-sm">Photo Coming Soon</p>
                   </div>
-                  <p className="text-sm">Photo Coming Soon</p>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Agent Info */}
-            <div className="p-6">
+            <div className="p-6 text-center">
               <h3 className="text-xl font-bold mb-1">{agent.name}</h3>
               <p className="text-[#60a5fa] font-semibold mb-4">{agent.title}</p>
               

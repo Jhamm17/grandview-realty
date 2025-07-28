@@ -25,44 +25,21 @@ export default function AgentPage({ params }: { params: { id: string } }) {
       languages: ["English"]
     },
     {
-      id: "michael-chen",
-      name: "Michael Chen",
-      title: "Commercial Real Estate Specialist",
-      image: "/agents/michael-chen.jpg",
-      phone: "(555) 234-5678",
-      email: "michael.chen@grandviewrealty.com",
-      specialties: ["Commercial Properties", "Investment Sales", "Property Management"],
-      experience: "12+ years",
-      description: "Michael focuses on commercial real estate and investment properties. His deep understanding of market trends and investment strategies has made him a go-to expert for business owners and investors.",
-      bio: "Michael brings a unique perspective to commercial real estate with his background in finance and investment analysis. He specializes in helping business owners and investors make informed decisions about their real estate portfolios. His analytical approach combined with extensive market knowledge allows him to identify opportunities that others might miss. Michael is known for his thorough due diligence and ability to structure complex transactions that benefit all parties involved.",
-      achievements: [
-        "Commercial Real Estate Specialist Designation",
-        "Investment Property Expert",
-        "Top Commercial Agent 2022",
-        "Over 200 commercial transactions"
-      ],
-      areas: ["Chicago Metro Area", "Suburban Office Parks", "Retail Centers", "Industrial Properties"],
-      languages: ["English", "Mandarin"]
-    },
-    {
-      id: "emily-rodriguez",
-      name: "Emily Rodriguez",
-      title: "Residential Sales Agent",
-      image: "/agents/emily-rodriguez.jpg",
-      phone: "(555) 345-6789",
-      email: "emily.rodriguez@grandviewrealty.com",
-      specialties: ["Residential Sales", "New Construction", "Relocation Services"],
-      experience: "8+ years",
-      description: "Emily excels in residential sales and new construction projects. Her attention to detail and commitment to client satisfaction has earned her numerous repeat clients and referrals.",
-      bio: "Emily's passion for real estate began when she helped her own family navigate the home buying process. This personal experience drives her commitment to making the process as smooth and enjoyable as possible for her clients. She specializes in new construction and relocation services, helping families transition smoothly into their new homes. Emily's attention to detail and proactive communication style ensures her clients are always informed and confident throughout their real estate journey.",
-      achievements: [
-        "New Construction Specialist",
-        "Relocation Expert Certification",
-        "Client Satisfaction Award 2023",
-        "Over 300 residential transactions"
-      ],
-      areas: ["Arlington Heights", "Schaumburg", "Palatine", "Mount Prospect"],
-      languages: ["English", "Spanish"]
+      id: "randall-glenn",
+      name: "Randall Glenn",
+      title: "Agent",
+      image: "/agents/randall-glenn.png",
+      logo: "/agents/randall-glenn-logo.png",
+      phone: "312-752-7415",
+      email: "randall@grandviewsells.com",
+      specialties: ["Sellers", "Investors"],
+      experience: undefined,
+      serviceArea: "Chicago and South Suburbs",
+      description: "Randall works primarily in the Chicagoland area, and he is extremely diligent to consistently provide his clients with the utmost transparency, professionalism, and respect.",
+      bio: "Randall works primarily in the Chicagoland area, and he is extremely diligent to consistently provide his clients with the utmost transparency, professionalism, and respect.",
+      achievements: ["Top Producer", "Client Service Award"],
+      areas: ["Chicago", "South Suburbs"],
+      languages: ["English"]
     },
     {
       id: "david-thompson",
@@ -74,14 +51,9 @@ export default function AgentPage({ params }: { params: { id: string } }) {
       specialties: ["Luxury Homes", "Estate Sales", "International Buyers"],
       experience: "20+ years",
       description: "David specializes in luxury properties and estate sales. His extensive network and international market knowledge make him the preferred choice for high-end real estate transactions.",
-      bio: "With two decades of experience in luxury real estate, David has established himself as the premier choice for high-end property transactions. His extensive network includes international buyers, estate attorneys, and luxury home builders. David understands that luxury real estate requires a different level of service and discretion. He provides white-glove service to his clients, ensuring every detail is handled with the utmost care and professionalism.",
-      achievements: [
-        "Luxury Home Specialist Designation",
-        "International Real Estate Expert",
-        "Estate Sales Specialist",
-        "Over 150 luxury transactions"
-      ],
-      areas: ["Lake Forest", "Winnetka", "Kenilworth", "Glencoe", "Highland Park"],
+      bio: "David specializes in luxury properties and estate sales. His extensive network and international market knowledge make him the preferred choice for high-end real estate transactions.",
+      achievements: ["Luxury Property Specialist", "International Sales Award"],
+      areas: ["Chicago", "International"],
       languages: ["English", "French"]
     }
   ];
@@ -118,16 +90,24 @@ export default function AgentPage({ params }: { params: { id: string } }) {
         {/* Agent Image */}
         <div className="lg:col-span-1">
           <div className="relative h-96 bg-gray-200 rounded-lg">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-gray-400 text-center">
-                <div className="w-32 h-32 bg-gray-300 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <span className="text-3xl font-bold text-gray-500">
-                    {agent.name.split(' ').map(n => n[0]).join('')}
-                  </span>
+            {agent.image ? (
+              <img
+                src={agent.image}
+                alt={agent.name}
+                className="object-cover w-full h-full rounded-lg"
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-gray-400 text-center">
+                  <div className="w-32 h-32 bg-gray-300 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <span className="text-3xl font-bold text-gray-500">
+                      {agent.name.split(' ').map(n => n[0]).join('')}
+                    </span>
+                  </div>
+                  <p className="text-lg">Photo Coming Soon</p>
                 </div>
-                <p className="text-lg">Photo Coming Soon</p>
               </div>
-            </div>
+            )}
           </div>
         </div>
 

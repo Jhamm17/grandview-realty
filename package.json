@@ -6,9 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "setup-cache": "node scripts/setup-cache.js"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.52.1",
     "@upstash/ratelimit": "^1.0.0",
     "@upstash/redis": "^1.28.4",
     "next": "^14.1.0",
