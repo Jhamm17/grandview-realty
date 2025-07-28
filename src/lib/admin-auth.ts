@@ -2,22 +2,21 @@ import { supabase } from './supabase';
 import { AdminUser, AuthUser } from './supabase';
 
 export class AdminAuthService {
-  // Sign up a new admin user
-  static async signUp(email: string, password: string, role: 'admin' | 'editor' = 'editor'): Promise<{ success: boolean; error?: string }> {
+  // Create a new admin user (admin-only function)
+  static async createAdminUser(email: string, password: string, role: 'admin' | 'editor' = 'editor'): Promise<{ success: boolean; error?: string }> {
     try {
       // First, create the user in Supabase Auth
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
         email,
         password,
-        options: {
-          data: {
-            role: role
-          }
+        email_confirm: true, // Auto-confirm the email
+        user_metadata: {
+          role: role
         }
       });
 
       if (authError) {
-        console.error('Auth signup error:', authError);
+        console.error('Auth user creation error:', authError);
         return { success: false, error: authError.message };
       }
 
@@ -42,8 +41,8 @@ export class AdminAuthService {
 
       return { success: false, error: 'User creation failed' };
     } catch (error) {
-      console.error('Error in signUp:', error);
-      return { success: false, error: 'Signup failed' };
+      console.error('Error in createAdminUser:', error);
+      return { success: false, error: 'Admin user creation failed' };
     }
   }
 

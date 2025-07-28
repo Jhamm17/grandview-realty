@@ -14,26 +14,17 @@ export default function AdminDashboard() {
   const [refreshing, setRefreshing] = useState(false);
   const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
   const [newAdminEmail, setNewAdminEmail] = useState('');
+  const [newAdminPassword, setNewAdminPassword] = useState('');
   const [newAdminRole, setNewAdminRole] = useState<'admin' | 'editor'>('editor');
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
   const [loginError, setLoginError] = useState('');
-  const [showSignUp, setShowSignUp] = useState(false);
-  const [signUpError, setSignUpError] = useState('');
-  const [signUpSuccess, setSignUpSuccess] = useState('');
   
   // Login form state
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-  
-  // Sign up form state
-  const [signUpEmail, setSignUpEmail] = useState('');
-  const [signUpPassword, setSignUpPassword] = useState('');
-  const [signUpConfirmPassword, setSignUpConfirmPassword] = useState('');
-  const [signUpRole, setSignUpRole] = useState<'admin' | 'editor'>('editor');
-  const [isSigningUp, setIsSigningUp] = useState(false);
   
   // Password change state
   const [showPasswordChange, setShowPasswordChange] = useState(false);
@@ -116,46 +107,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!signUpEmail || !signUpPassword || !signUpConfirmPassword) {
-      setSignUpError('Please fill in all fields');
-      return;
-    }
 
-    if (signUpPassword !== signUpConfirmPassword) {
-      setSignUpError('Passwords do not match');
-      return;
-    }
-
-    if (signUpPassword.length < 6) {
-      setSignUpError('Password must be at least 6 characters');
-      return;
-    }
-
-    try {
-      setIsSigningUp(true);
-      setSignUpError('');
-      
-      const result = await AdminAuthService.signUp(signUpEmail, signUpPassword, signUpRole);
-      
-      if (result.success) {
-        setSignUpSuccess('Account created successfully! You can now sign in.');
-        setSignUpEmail('');
-        setSignUpPassword('');
-        setSignUpConfirmPassword('');
-        setShowSignUp(false);
-        setTimeout(() => setSignUpSuccess(''), 5000);
-      } else {
-        setSignUpError(result.error || 'Sign up failed');
-      }
-    } catch (error) {
-      console.error('Sign up error:', error);
-      setSignUpError('Sign up failed. Please try again.');
-    } finally {
-      setIsSigningUp(false);
-    }
-  };
 
   const handleLogout = async () => {
     try {
@@ -221,14 +173,17 @@ export default function AdminDashboard() {
   };
 
   const addAdminUser = async () => {
-    if (!newAdminEmail.trim()) return;
+    if (!newAdminEmail.trim() || !newAdminPassword.trim()) return;
     
     try {
-      const success = await AdminAuthService.addAdminUser(newAdminEmail, newAdminRole);
-      if (success) {
+      const result = await AdminAuthService.createAdminUser(newAdminEmail, newAdminPassword, newAdminRole);
+      if (result.success) {
         setNewAdminEmail('');
+        setNewAdminPassword('');
         setNewAdminRole('editor');
         await loadData();
+      } else {
+        console.error('Error creating admin user:', result.error);
       }
     } catch (error) {
       console.error('Error adding admin user:', error);
@@ -307,154 +262,54 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-lg shadow-lg p-8">
             <h1 className="text-2xl font-bold mb-6 text-center">Admin Login</h1>
             
-            {signUpSuccess && (
-              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded mb-4">
-                {signUpSuccess}
-              </div>
-            )}
-            
             {loginError && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
                 {loginError}
               </div>
             )}
             
-            {!showSignUp ? (
-              // Login Form
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    value={loginEmail}
-                    onChange={(e) => setLoginEmail(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    value={loginPassword}
-                    onChange={(e) => setLoginPassword(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                
-                <button
-                  type="submit"
-                  disabled={isLoggingIn}
-                  className="w-full bg-blue-600 text-white px-4 py-3 rounded hover:bg-blue-700 font-medium disabled:opacity-50"
-                >
-                  {isLoggingIn ? 'Signing In...' : 'Sign In'}
-                </button>
-                
-                <div className="text-center">
-                  <button
-                    type="button"
-                    onClick={() => setShowSignUp(true)}
-                    className="text-blue-600 hover:text-blue-700 text-sm"
-                  >
-                    Need an account? Sign up
-                  </button>
-                </div>
-              </form>
-            ) : (
-              // Sign Up Form
-              <form onSubmit={handleSignUp} className="space-y-4">
-                <div>
-                  <label htmlFor="signup-email" className="block text-sm font-medium text-gray-700 mb-1">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="signup-email"
-                    value={signUpEmail}
-                    onChange={(e) => setSignUpEmail(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="signup-password" className="block text-sm font-medium text-gray-700 mb-1">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    id="signup-password"
-                    value={signUpPassword}
-                    onChange={(e) => setSignUpPassword(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="signup-confirm-password" className="block text-sm font-medium text-gray-700 mb-1">
-                    Confirm Password
-                  </label>
-                  <input
-                    type="password"
-                    id="signup-confirm-password"
-                    value={signUpConfirmPassword}
-                    onChange={(e) => setSignUpConfirmPassword(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="signup-role" className="block text-sm font-medium text-gray-700 mb-1">
-                    Role
-                  </label>
-                  <select
-                    id="signup-role"
-                    value={signUpRole}
-                    onChange={(e) => setSignUpRole(e.target.value as 'admin' | 'editor')}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="editor">Editor</option>
-                    <option value="admin">Admin</option>
-                  </select>
-                </div>
-                
-                {signUpError && (
-                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-                    {signUpError}
-                  </div>
-                )}
-                
-                <button
-                  type="submit"
-                  disabled={isSigningUp}
-                  className="w-full bg-green-600 text-white px-4 py-3 rounded hover:bg-green-700 font-medium disabled:opacity-50"
-                >
-                  {isSigningUp ? 'Creating Account...' : 'Create Account'}
-                </button>
-                
-                <div className="text-center">
-                  <button
-                    type="button"
-                    onClick={() => setShowSignUp(false)}
-                    className="text-blue-600 hover:text-blue-700 text-sm"
-                  >
-                    Already have an account? Sign in
-                  </button>
-                </div>
-              </form>
-            )}
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  value={loginEmail}
+                  onChange={(e) => setLoginEmail(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                />
+              </div>
+              
+              <button
+                type="submit"
+                disabled={isLoggingIn}
+                className="w-full bg-blue-600 text-white px-4 py-3 rounded hover:bg-blue-700 font-medium disabled:opacity-50"
+              >
+                {isLoggingIn ? 'Signing In...' : 'Sign In'}
+              </button>
+            </form>
             
-            <div className="mt-4 text-center">
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-600 mb-4">
+                Need admin access? Contact an existing administrator.
+              </p>
               <button
                 onClick={() => router.push('/')}
                 className="text-gray-500 hover:text-gray-700 text-sm"
@@ -768,13 +623,20 @@ export default function AdminDashboard() {
           {/* Add New Admin */}
           <div className="mb-6 p-4 bg-gray-50 rounded-lg">
             <h3 className="text-lg font-semibold mb-4">Add New Admin User</h3>
-            <div className="flex gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <input
                 type="email"
                 placeholder="Email address"
                 value={newAdminEmail}
                 onChange={(e) => setNewAdminEmail(e.target.value)}
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                value={newAdminPassword}
+                onChange={(e) => setNewAdminPassword(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <select
                 value={newAdminRole}
