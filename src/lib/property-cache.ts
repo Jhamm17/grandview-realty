@@ -1,15 +1,27 @@
-import { supabase } from './supabase';
+import { createClient } from '@supabase/supabase-js';
 import { Property } from './mred/types';
 import { MRED_CONFIG } from './mred/config';
 
 export class PropertyCacheService {
   private static CACHE_DURATION = 15 * 60 * 1000; // 15 minutes
+  
+  // Use service role for admin operations (cache management)
+  private static supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+  
+  // Use regular client for public read operations
+  private static supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   // Get a single property from cache or fetch from API
   static async getProperty(listingId: string): Promise<Property | null> {
     try {
       // First, try to get from cache
-      const { data: cachedProperty, error } = await supabase
+      const { data: cachedProperty, error } = await this.supabase
         .from('property_cache')
         .select('*')
         .eq('listing_id', listingId)
@@ -51,7 +63,7 @@ export class PropertyCacheService {
   static async getAllProperties(): Promise<Property[]> {
     try {
       // First, try to get from cache
-      const { data: cachedProperties, error } = await supabase
+      const { data: cachedProperties, error } = await this.supabase
         .from('property_cache')
         .select('*')
         .eq('is_active', true)
@@ -201,7 +213,7 @@ export class PropertyCacheService {
   // Cache a single property
   private static async cacheProperty(property: Property): Promise<void> {
     try {
-      const { error } = await supabase
+      const { error } = await this.supabaseAdmin
         .from('property_cache')
         .upsert({
           listing_id: property.ListingId,
@@ -226,7 +238,7 @@ export class PropertyCacheService {
   private static async cacheAllProperties(properties: Property[]): Promise<void> {
     try {
       // First, mark all existing properties as inactive
-      const { error: deactivateError } = await supabase
+      const { error: deactivateError } = await this.supabaseAdmin
         .from('property_cache')
         .update({ is_active: false })
         .eq('is_active', true);
@@ -243,7 +255,7 @@ export class PropertyCacheService {
         is_active: true
       }));
 
-      const { error } = await supabase
+      const { error } = await this.supabaseAdmin
         .from('property_cache')
         .upsert(cacheData, {
           onConflict: 'listing_id'
@@ -262,7 +274,7 @@ export class PropertyCacheService {
   // Clear all cache
   static async clearCache(): Promise<void> {
     try {
-      const { error } = await supabase
+      const { error } = await this.supabaseAdmin
         .from('property_cache')
         .delete()
         .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all
