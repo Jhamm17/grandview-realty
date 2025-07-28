@@ -20,8 +20,8 @@ export class PropertyCacheService {
   // Get a single property from cache or fetch from API
   static async getProperty(listingId: string): Promise<Property | null> {
     try {
-      // First, try to get from cache (use regular client for public reads)
-      const { data: cachedProperty, error } = await this.supabase
+      // Use service role client to bypass RLS during build process
+      const { data: cachedProperty, error } = await this.supabaseAdmin
         .from('property_cache')
         .select('*')
         .eq('listing_id', listingId)
@@ -61,8 +61,8 @@ export class PropertyCacheService {
   // Get all properties from cache or fetch from API
   static async getAllProperties(): Promise<Property[]> {
     try {
-      // First, try to get from cache (use regular client for public reads)
-      const { data: cachedProperties, error } = await this.supabase
+      // Use service role client to bypass RLS during build process
+      const { data: cachedProperties, error } = await this.supabaseAdmin
         .from('property_cache')
         .select('*')
         .order('last_updated', { ascending: false });
