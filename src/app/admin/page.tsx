@@ -14,10 +14,38 @@ export default function AdminDashboard() {
   const [newAdminEmail, setNewAdminEmail] = useState('');
   const [newAdminRole, setNewAdminRole] = useState<'admin' | 'editor'>('editor');
   const [currentUser, setCurrentUser] = useState<string>('');
+  const [cacheStatus, setCacheStatus] = useState<{
+    cache: {
+      totalProperties: number;
+      activeProperties: number;
+      propertiesWithImages: number;
+      lastUpdated: string | null;
+      cacheAgeHours: number | null;
+      isStale: boolean;
+    };
+    cronJob: {
+      schedule: string;
+      endpoint: string;
+      status: string;
+    };
+  } | null>(null);
 
   useEffect(() => {
     loadData();
+    loadCacheStatus();
   }, []);
+
+  const loadCacheStatus = async () => {
+    try {
+      const response = await fetch('/api/admin/cache-status');
+      if (response.ok) {
+        const data = await response.json();
+        setCacheStatus(data);
+      }
+    } catch (error) {
+      console.error('Error loading cache status:', error);
+    }
+  };
 
   const loadData = async () => {
     try {
@@ -49,6 +77,7 @@ export default function AdminDashboard() {
       await PropertyCacheService.clearCache();
       const propertiesData = await PropertyCacheService.getAllProperties();
       setProperties(propertiesData);
+      await loadCacheStatus(); // Reload cache status after refresh
     } catch (error) {
       console.error('Error refreshing properties:', error);
     } finally {
@@ -124,6 +153,68 @@ export default function AdminDashboard() {
             </p>
           )}
         </div>
+
+        {/* Cache Status Section */}
+        {cacheStatus && (
+          <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-semibold">Cache Status</h2>
+              <div className="flex items-center space-x-2">
+                <div className={`w-3 h-3 rounded-full ${cacheStatus.cache.isStale ? 'bg-red-500' : 'bg-green-500'}`}></div>
+                <span className="text-sm text-gray-600">
+                  {cacheStatus.cache.isStale ? 'Stale' : 'Fresh'}
+                </span>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h3 className="font-semibold text-blue-800">Total Properties</h3>
+                <p className="text-2xl font-bold text-blue-600">{cacheStatus.cache.totalProperties}</p>
+              </div>
+              
+              <div className="bg-green-50 p-4 rounded-lg">
+                <h3 className="font-semibold text-green-800">Active Properties</h3>
+                <p className="text-2xl font-bold text-green-600">{cacheStatus.cache.activeProperties}</p>
+              </div>
+              
+              <div className="bg-purple-50 p-4 rounded-lg">
+                <h3 className="font-semibold text-purple-800">With Images</h3>
+                <p className="text-2xl font-bold text-purple-600">{cacheStatus.cache.propertiesWithImages}</p>
+              </div>
+              
+              <div className="bg-orange-50 p-4 rounded-lg">
+                <h3 className="font-semibold text-orange-800">Cache Age</h3>
+                <p className="text-2xl font-bold text-orange-600">
+                  {cacheStatus.cache.cacheAgeHours !== null ? `${cacheStatus.cache.cacheAgeHours}h` : 'N/A'}
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h3 className="font-semibold text-gray-800 mb-2">Cron Job Status</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div>
+                  <span className="text-gray-600">Schedule:</span>
+                  <p className="font-medium">{cacheStatus.cronJob.schedule}</p>
+                </div>
+                <div>
+                  <span className="text-gray-600">Endpoint:</span>
+                  <p className="font-medium">{cacheStatus.cronJob.endpoint}</p>
+                </div>
+                <div>
+                  <span className="text-gray-600">Status:</span>
+                  <p className="font-medium text-green-600">{cacheStatus.cronJob.status}</p>
+                </div>
+              </div>
+              {cacheStatus.cache.lastUpdated && (
+                <div className="mt-2 text-sm text-gray-500">
+                  Last updated: {new Date(cacheStatus.cache.lastUpdated).toLocaleString()}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Properties Section */}
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">

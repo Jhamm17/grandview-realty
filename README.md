@@ -10,6 +10,8 @@ A modern real estate website built with Next.js, featuring MRED API integration 
 - Responsive design
 - Error handling and monitoring
 - Rate limiting and caching
+- **Automated cache refresh every hour via Vercel cron jobs**
+- Admin dashboard with cache monitoring
 
 ## Tech Stack
 

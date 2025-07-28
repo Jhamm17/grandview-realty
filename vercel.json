@@ -11,6 +11,12 @@
         "MRED_CLIENT_ID": "development_id",
         "MRED_CLIENT_SECRET": "development_secret"
     },
+    "crons": [
+        {
+            "path": "/api/admin/refresh-cache",
+            "schedule": "0 * * * *"
+        }
+    ],
     "headers": [
         {
             "source": "/api/(.*)",
