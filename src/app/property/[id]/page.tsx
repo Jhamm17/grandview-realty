@@ -1,5 +1,5 @@
 import { PropertyCacheService } from '@/lib/property-cache';
-import Image from 'next/image';
+import PropertyGallery from '@/components/PropertyGallery';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -67,27 +67,12 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
 
       {/* Property Header */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-        {/* Property Image */}
+        {/* Property Gallery */}
         <div className="lg:col-span-1">
-          {property.Media && property.Media.length > 0 ? (
-            <div className="relative h-96 bg-gray-200 rounded-lg overflow-hidden">
-              <Image
-                src={property.Media[0].MediaURL}
-                alt={property.UnparsedAddress || 'Property'}
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
-          ) : (
-            <div className="relative h-96 bg-gray-200 rounded-lg">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-gray-400 text-center">
-                  <p className="text-lg">No Image Available</p>
-                </div>
-              </div>
-            </div>
-          )}
+          <PropertyGallery 
+            images={property.Media || []}
+            propertyAddress={property.UnparsedAddress || 'Property'}
+          />
         </div>
 
         {/* Property Info */}
