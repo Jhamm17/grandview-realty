@@ -1,8 +1,29 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
+import { AdminAuthService } from '@/lib/admin-auth';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    // Check for admin authentication
+    const authHeader = request.headers.get('authorization');
+    const adminEmail = request.headers.get('x-admin-email');
+    
+    if (!authHeader || !adminEmail) {
+      return NextResponse.json(
+        { error: 'Unauthorized - Admin authentication required' },
+        { status: 401 }
+      );
+    }
+
+    // Verify admin status
+    const isAdmin = await AdminAuthService.isAdmin(adminEmail);
+    if (!isAdmin) {
+      return NextResponse.json(
+        { error: 'Access denied - Not an admin user' },
+        { status: 403 }
+      );
+    }
+
     // Get cache statistics
     const { data: properties, error: propertiesError } = await supabase
       .from('property_cache')
@@ -46,7 +67,7 @@ export async function GET() {
         isStale: cacheAge !== null && cacheAge > 2 // Consider stale if older than 2 hours
       },
       cronJob: {
-        schedule: 'Every hour (0 * * * *)',
+        schedule: 'Every day at 6 AM (0 6 * * *)',
         endpoint: '/api/admin/refresh-cache',
         status: 'active'
       },

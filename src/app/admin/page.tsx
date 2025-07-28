@@ -5,8 +5,10 @@ import { Property } from '@/lib/mred/types';
 import { PropertyCacheService } from '@/lib/property-cache';
 import { AdminAuthService } from '@/lib/admin-auth';
 import { AdminUser } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
 
 export default function AdminDashboard() {
+  const router = useRouter();
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -14,6 +16,9 @@ export default function AdminDashboard() {
   const [newAdminEmail, setNewAdminEmail] = useState('');
   const [newAdminRole, setNewAdminRole] = useState<'admin' | 'editor'>('editor');
   const [currentUser, setCurrentUser] = useState<string>('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [loginError, setLoginError] = useState('');
   const [cacheStatus, setCacheStatus] = useState<{
     cache: {
       totalProperties: number;
@@ -31,13 +36,78 @@ export default function AdminDashboard() {
   } | null>(null);
 
   useEffect(() => {
-    loadData();
-    loadCacheStatus();
+    checkAuthentication();
   }, []);
+
+  const checkAuthentication = async () => {
+    try {
+      setAuthLoading(true);
+      const storedEmail = localStorage.getItem('admin_user');
+      
+      if (!storedEmail) {
+        setIsAuthenticated(false);
+        setAuthLoading(false);
+        return;
+      }
+
+      // Verify the stored email is actually an admin
+      const isAdmin = await AdminAuthService.isAdmin(storedEmail);
+      
+      if (isAdmin) {
+        setCurrentUser(storedEmail);
+        setIsAuthenticated(true);
+        await loadData();
+        await loadCacheStatus();
+      } else {
+        // Clear invalid stored email
+        localStorage.removeItem('admin_user');
+        setIsAuthenticated(false);
+      }
+    } catch (error) {
+      console.error('Authentication error:', error);
+      setIsAuthenticated(false);
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleLogin = async (email: string) => {
+    try {
+      setLoginError('');
+      const isAdmin = await AdminAuthService.isAdmin(email);
+      
+      if (isAdmin) {
+        localStorage.setItem('admin_user', email);
+        setCurrentUser(email);
+        setIsAuthenticated(true);
+        await loadData();
+        await loadCacheStatus();
+      } else {
+        setLoginError('Access denied. This email is not authorized as an admin.');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setLoginError('Authentication failed. Please try again.');
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('admin_user');
+    setCurrentUser('');
+    setIsAuthenticated(false);
+    setProperties([]);
+    setAdminUsers([]);
+    setCacheStatus(null);
+  };
 
   const loadCacheStatus = async () => {
     try {
-      const response = await fetch('/api/admin/cache-status');
+      const response = await fetch('/api/admin/cache-status', {
+        headers: {
+          'Authorization': 'Bearer admin',
+          'x-admin-email': currentUser
+        }
+      });
       if (response.ok) {
         const data = await response.json();
         setCacheStatus(data);
@@ -58,11 +128,6 @@ export default function AdminDashboard() {
       // Load admin users
       const usersData = await AdminAuthService.getAllAdminUsers();
       setAdminUsers(usersData);
-      
-      // Get current user (you might want to implement proper auth)
-      // For now, we'll use a simple prompt
-      const user = localStorage.getItem('admin_user') || '';
-      setCurrentUser(user);
       
     } catch (error) {
       console.error('Error loading admin data:', error);
@@ -114,10 +179,56 @@ export default function AdminDashboard() {
   const setCurrentUserEmail = () => {
     const email = prompt('Enter your admin email:');
     if (email) {
-      localStorage.setItem('admin_user', email);
-      setCurrentUser(email);
+      handleLogin(email);
     }
   };
+
+  // Show loading while checking authentication
+  if (authLoading) {
+    return (
+      <div className="container-padding py-12">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Verifying authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login form if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="container-padding py-12">
+        <div className="max-w-md mx-auto">
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <h1 className="text-2xl font-bold mb-6 text-center">Admin Login</h1>
+            
+            {loginError && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+                {loginError}
+              </div>
+            )}
+            
+            <button
+              onClick={setCurrentUserEmail}
+              className="w-full bg-blue-600 text-white px-4 py-3 rounded hover:bg-blue-700 font-medium"
+            >
+              Login with Admin Email
+            </button>
+            
+            <div className="mt-4 text-center">
+              <button
+                onClick={() => router.push('/')}
+                className="text-gray-500 hover:text-gray-700 text-sm"
+              >
+                ← Back to Home
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -135,23 +246,25 @@ export default function AdminDashboard() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Admin Dashboard</h1>
-          <p className="text-gray-600">Manage properties and admin users</p>
-          
-          {!currentUser && (
-            <button
-              onClick={setCurrentUserEmail}
-              className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            >
-              Set Admin Email
-            </button>
-          )}
-          
-          {currentUser && (
-            <p className="mt-2 text-sm text-gray-500">
-              Logged in as: {currentUser}
-            </p>
-          )}
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-4xl font-bold mb-2">Admin Dashboard</h1>
+              <p className="text-gray-600">Manage properties and admin users</p>
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              <div className="text-right">
+                <p className="text-sm text-gray-500">Logged in as:</p>
+                <p className="font-medium text-gray-900">{currentUser}</p>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 text-sm"
+              >
+                Logout
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Cache Status Section */}
