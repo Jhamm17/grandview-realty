@@ -1,7 +1,146 @@
 import { supabase } from './supabase';
-import { AdminUser } from './supabase';
+import { AdminUser, AuthUser } from './supabase';
 
 export class AdminAuthService {
+  // Sign up a new admin user
+  static async signUp(email: string, password: string, role: 'admin' | 'editor' = 'editor'): Promise<{ success: boolean; error?: string }> {
+    try {
+      // First, create the user in Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            role: role
+          }
+        }
+      });
+
+      if (authError) {
+        console.error('Auth signup error:', authError);
+        return { success: false, error: authError.message };
+      }
+
+      if (authData.user) {
+        // Then add them to our admin_users table
+        const { error: dbError } = await supabase
+          .from('admin_users')
+          .insert({
+            id: authData.user.id,
+            email: email,
+            role: role,
+            created_at: new Date().toISOString()
+          });
+
+        if (dbError) {
+          console.error('Database insert error:', dbError);
+          return { success: false, error: 'Failed to create admin user' };
+        }
+
+        return { success: true };
+      }
+
+      return { success: false, error: 'User creation failed' };
+    } catch (error) {
+      console.error('Error in signUp:', error);
+      return { success: false, error: 'Signup failed' };
+    }
+  }
+
+  // Sign in with email and password
+  static async signIn(email: string, password: string): Promise<{ success: boolean; user?: AuthUser; error?: string }> {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) {
+        console.error('Sign in error:', error);
+        return { success: false, error: error.message };
+      }
+
+      if (data.user) {
+        // Check if user is in admin_users table
+        const { data: adminUser, error: adminError } = await supabase
+          .from('admin_users')
+          .select('*')
+          .eq('id', data.user.id)
+          .single();
+
+        if (adminError || !adminUser) {
+          return { success: false, error: 'Not authorized as admin' };
+        }
+
+        // Update last login
+        await supabase
+          .from('admin_users')
+          .update({ last_login: new Date().toISOString() })
+          .eq('id', data.user.id);
+
+        return {
+          success: true,
+          user: {
+            id: data.user.id,
+            email: data.user.email!,
+            role: adminUser.role
+          }
+        };
+      }
+
+      return { success: false, error: 'Sign in failed' };
+    } catch (error) {
+      console.error('Error in signIn:', error);
+      return { success: false, error: 'Sign in failed' };
+    }
+  }
+
+  // Sign out
+  static async signOut(): Promise<{ success: boolean; error?: string }> {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('Sign out error:', error);
+        return { success: false, error: error.message };
+      }
+      return { success: true };
+    } catch (error) {
+      console.error('Error in signOut:', error);
+      return { success: false, error: 'Sign out failed' };
+    }
+  }
+
+  // Get current user
+  static async getCurrentUser(): Promise<AuthUser | null> {
+    try {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      
+      if (error || !user) {
+        return null;
+      }
+
+      // Get admin user details
+      const { data: adminUser, error: adminError } = await supabase
+        .from('admin_users')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (adminError || !adminUser) {
+        return null;
+      }
+
+      return {
+        id: user.id,
+        email: user.email!,
+        role: adminUser.role
+      };
+    } catch (error) {
+      console.error('Error in getCurrentUser:', error);
+      return null;
+    }
+  }
+
   // Check if user is admin
   static async isAdmin(email: string): Promise<boolean> {
     try {
@@ -67,12 +206,28 @@ export class AdminAuthService {
     }
   }
 
-  // Add admin user
+  // Add admin user (for existing Supabase users)
   static async addAdminUser(email: string, role: 'admin' | 'editor' = 'editor'): Promise<boolean> {
     try {
+      // First check if user exists in Supabase Auth
+      const { data: { users }, error: authError } = await supabase.auth.admin.listUsers();
+      
+      if (authError) {
+        console.error('Error listing users:', authError);
+        return false;
+      }
+
+      const authUser = users.find(u => u.email === email);
+      if (!authUser) {
+        console.error('User not found in Supabase Auth');
+        return false;
+      }
+
+      // Add to admin_users table
       const { error } = await supabase
         .from('admin_users')
         .insert({
+          id: authUser.id,
           email,
           role,
           created_at: new Date().toISOString()
@@ -119,7 +274,7 @@ export class AdminAuthService {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Error getting all admin users:', error);
+        console.error('Error getting admin users:', error);
         return [];
       }
 

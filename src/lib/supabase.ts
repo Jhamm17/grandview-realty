@@ -8,7 +8,13 @@ if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('Missing Supabase environment variables');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true
+  }
+});
 
 // Database types
 export interface PropertyCache {
@@ -24,4 +30,12 @@ export interface AdminUser {
   email: string;
   role: 'admin' | 'editor';
   created_at: string;
+  last_login?: string;
+}
+
+// Auth types
+export interface AuthUser {
+  id: string;
+  email: string;
+  role: 'admin' | 'editor';
 } 

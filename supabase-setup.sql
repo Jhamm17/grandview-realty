@@ -8,12 +8,14 @@ CREATE TABLE IF NOT EXISTS property_cache (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Create admin_users table
+-- Create admin_users table with password support
 CREATE TABLE IF NOT EXISTS admin_users (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
   role TEXT NOT NULL CHECK (role IN ('admin', 'editor')),
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  last_login TIMESTAMP WITH TIME ZONE
 );
 
 -- Create indexes for better performance
@@ -23,8 +25,9 @@ CREATE INDEX IF NOT EXISTS idx_property_cache_last_updated ON property_cache(las
 CREATE INDEX IF NOT EXISTS idx_admin_users_email ON admin_users(email);
 CREATE INDEX IF NOT EXISTS idx_admin_users_role ON admin_users(role);
 
--- Insert a default admin user (replace with your email)
--- INSERT INTO admin_users (email, role) VALUES ('your-email@example.com', 'admin');
+-- Insert a default admin user (replace with your email and password)
+-- You'll need to hash the password first using bcrypt
+-- INSERT INTO admin_users (email, password_hash, role) VALUES ('your-email@example.com', 'hashed_password_here', 'admin');
 
 -- Enable Row Level Security (RLS)
 ALTER TABLE property_cache ENABLE ROW LEVEL SECURITY;
