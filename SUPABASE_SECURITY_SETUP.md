@@ -82,9 +82,9 @@ The security lockdown will require some code changes:
 ### Row Level Security (RLS) Policies
 
 1. **Property Cache Table**:
-   - ✅ Public can only read active properties
-   - ✅ Authenticated users can read all properties
-   - ✅ Only admins/service role can write
+   - ✅ Public can read ALL properties (website visitors)
+   - ✅ Only admins/service role can write/modify
+   - ✅ Admin portal remains secure
 
 2. **Admin Users Table**:
    - ✅ Users can only read their own record
@@ -119,15 +119,16 @@ The security lockdown will require some code changes:
 ## 🛡️ What This Prevents
 
 ### REST API Abuse
-- ❌ No anonymous access to sensitive data
 - ❌ No unauthorized property cache modifications
 - ❌ No unauthorized admin user creation
 - ❌ No brute force attacks (rate limited)
+- ✅ Public can still view properties (website works)
 
 ### Data Breaches
 - ❌ No public access to admin user data
-- ❌ No unauthorized property data access
+- ❌ No unauthorized property data modifications
 - ❌ No SQL injection (parameterized queries only)
+- ✅ Public can still view property listings
 
 ### Account Takeover
 - ❌ No public signup

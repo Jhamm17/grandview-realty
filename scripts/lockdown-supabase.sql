@@ -15,13 +15,9 @@ ALTER TABLE admin_users ENABLE ROW LEVEL SECURITY;
 
 -- 3. CREATE SECURE POLICIES FOR PROPERTY_CACHE TABLE
 
--- Allow public read access to active properties only (for website visitors)
-CREATE POLICY "Public read access to active properties" ON property_cache
-  FOR SELECT USING (is_active = true);
-
--- Allow authenticated users to read all properties (for admin dashboard)
-CREATE POLICY "Authenticated users can read all properties" ON property_cache
-  FOR SELECT USING (auth.role() = 'authenticated');
+-- Allow public read access to ALL properties (for website visitors)
+CREATE POLICY "Public read access to all properties" ON property_cache
+  FOR SELECT USING (true);
 
 -- Allow only service role or admin users to insert/update/delete
 CREATE POLICY "Service role and admins can write properties" ON property_cache
@@ -130,8 +126,10 @@ REVOKE ALL ON ALL TABLES IN SCHEMA public FROM public;
 REVOKE ALL ON ALL SEQUENCES IN SCHEMA public FROM public;
 REVOKE ALL ON ALL FUNCTIONS IN SCHEMA public FROM public;
 
+-- Grant SELECT permissions to public for property_cache (for website visitors)
+GRANT SELECT ON property_cache TO public;
+
 -- Grant minimal permissions to authenticated users
-GRANT SELECT ON property_cache TO authenticated;
 GRANT SELECT ON admin_users TO authenticated;
 
 -- Grant full permissions to service role (for server-side operations)

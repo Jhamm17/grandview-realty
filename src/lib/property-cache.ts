@@ -20,12 +20,11 @@ export class PropertyCacheService {
   // Get a single property from cache or fetch from API
   static async getProperty(listingId: string): Promise<Property | null> {
     try {
-      // First, try to get from cache
+      // First, try to get from cache (use regular client for public reads)
       const { data: cachedProperty, error } = await this.supabase
         .from('property_cache')
         .select('*')
         .eq('listing_id', listingId)
-        .eq('is_active', true)
         .single();
 
       if (error && error.code !== 'PGRST116') { // PGRST116 is "not found"
@@ -59,14 +58,13 @@ export class PropertyCacheService {
     }
   }
 
-  // Get all active properties from cache or fetch from API
+  // Get all properties from cache or fetch from API
   static async getAllProperties(): Promise<Property[]> {
     try {
-      // First, try to get from cache
+      // First, try to get from cache (use regular client for public reads)
       const { data: cachedProperties, error } = await this.supabase
         .from('property_cache')
         .select('*')
-        .eq('is_active', true)
         .order('last_updated', { ascending: false });
 
       if (error) {
