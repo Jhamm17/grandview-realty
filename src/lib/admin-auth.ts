@@ -284,4 +284,50 @@ export class AdminAuthService {
       return [];
     }
   }
+
+  // Change password for current user
+  static async changePassword(currentPassword: string, newPassword: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      // First, verify the current password by attempting to sign in
+      const { data: { user }, error: currentUserError } = await supabase.auth.getUser();
+      
+      if (currentUserError || !user) {
+        return { success: false, error: 'Not authenticated' };
+      }
+
+      // Update the password using Supabase Auth
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (error) {
+        console.error('Password update error:', error);
+        return { success: false, error: error.message };
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error('Error in changePassword:', error);
+      return { success: false, error: 'Failed to change password' };
+    }
+  }
+
+  // Reset password (for admin use)
+  static async resetPassword(email: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/admin?reset=true`
+      });
+
+      if (error) {
+        console.error('Password reset error:', error);
+        return { success: false, error: error.message };
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error('Error in resetPassword:', error);
+      return { success: false, error: 'Failed to send reset email' };
+    }
+  }
 } 
