@@ -11,6 +11,10 @@ export const metadata: Metadata = {
   },
 };
 
+// Force dynamic rendering to avoid API calls during build
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function PropertiesPage() {
   try {
     const properties = await PropertyCacheService.getAllProperties();

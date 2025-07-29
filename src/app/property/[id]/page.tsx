@@ -7,26 +7,7 @@ interface PropertyPageProps {
   params: { id: string };
 }
 
-// Generate static params for all properties
-export async function generateStaticParams() {
-  try {
-    const properties = await PropertyCacheService.getAllProperties();
-    if (properties && properties.length > 0) {
-      return properties.map((property) => ({
-        id: property.ListingId,
-      }));
-    }
-    // If no properties found, return empty array to prevent build failure
-    console.log('No properties found for static generation');
-    return [];
-  } catch (error) {
-    console.error('Error generating static params:', error);
-    // Return empty array to prevent build failure, pages will be generated dynamically
-    return [];
-  }
-}
-
-// Force dynamic rendering when static generation fails
+// Force dynamic rendering - no static generation to avoid API calls during build
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
