@@ -51,9 +51,17 @@ export default function Home() {
 
         {/* Scroll arrow indicator */}
         <div className="absolute left-8 bottom-8 z-10 animate-bounce">
-          <div className="flex items-center space-x-2 text-white/80 hover:text-white transition-colors cursor-pointer group">
+          <button 
+            onClick={() => {
+              const buySellSection = document.getElementById('buy-sell-section');
+              if (buySellSection) {
+                buySellSection.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
+            className="flex items-center space-x-2 text-white/80 hover:text-white transition-colors cursor-pointer group"
+          >
             <svg 
-              className="w-8 h-8 transform rotate-90 group-hover:scale-110 transition-transform" 
+              className="w-8 h-8 group-hover:scale-110 transition-transform" 
               fill="none" 
               stroke="currentColor" 
               viewBox="0 0 24 24"
@@ -68,12 +76,12 @@ export default function Home() {
             <span className="text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
               Scroll
             </span>
-          </div>
+          </button>
         </div>
       </section>
 
       {/* Buy/Sell Section */}
-      <section className="relative py-16 md:py-24 bg-white">
+      <section id="buy-sell-section" className="relative py-16 md:py-24 bg-white">
         <div className="container-padding">
           <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-gray-800">
             WHAT ARE YOU LOOKING FOR?
@@ -81,8 +89,8 @@ export default function Home() {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 h-screen">
             {/* Buy Section */}
-            <Link href="/properties" className="block">
-              <div className="group relative overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-[1.02]">
+            <div className="group relative overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-[1.02] h-full">
+              <Link href="/properties" className="block h-full">
                 <div className="absolute inset-0">
                   <Image
                     src="/buyimage.jpg"
@@ -106,12 +114,12 @@ export default function Home() {
                 
                 {/* Hover overlay */}
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-              </div>
-            </Link>
+              </Link>
+            </div>
 
             {/* Sell Section */}
-            <Link href="/contact" className="block">
-              <div className="group relative overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-[1.02]">
+            <div className="group relative overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-[1.02] h-full">
+              <Link href="/contact" className="block h-full">
                 <div className="absolute inset-0">
                   <Image
                     src="/sellimage.jpg"
@@ -135,8 +143,8 @@ export default function Home() {
                 
                 {/* Hover overlay */}
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-              </div>
-            </Link>
+              </Link>
+            </div>
           </div>
         </div>
       </section>

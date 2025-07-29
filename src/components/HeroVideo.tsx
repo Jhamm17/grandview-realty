@@ -60,7 +60,7 @@ export default function HeroVideo({ posterImage, posterAlt }: HeroVideoProps) {
               loop
               playsInline
               className="w-full h-full object-cover"
-              style={{ objectPosition: "center 20%" }}
+              style={{ objectPosition: "center 80%" }}
               poster={posterImage}
               preload="metadata"
               onLoadedData={handleVideoLoad}
@@ -89,7 +89,7 @@ export default function HeroVideo({ posterImage, posterAlt }: HeroVideoProps) {
                     src={posterImage}
                     alt={posterAlt}
                     fill
-                    style={{ objectFit: "cover", objectPosition: "center 20%" }}
+                    style={{ objectFit: "cover", objectPosition: "center 80%" }}
                     priority
                     quality={90}
                   />
