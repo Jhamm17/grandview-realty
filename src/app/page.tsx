@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-
-export default function Home() {
+import HeroVideo from "@/components/HeroVideo";
+  
   const featuredAreas = [
     { name: "Geneva", description: "Historic charm meets modern luxury" },
     { name: "St. Charles", description: "Riverside living and vibrant community" },
@@ -11,40 +11,48 @@ export default function Home() {
     { name: "Arlington Heights", description: "Dynamic suburban lifestyle" }
   ];
 
+export default function Home() {
   return (
     <>
-      {/* Hero Section */}
-      <section className="relative h-[70vh] min-h-[600px] flex items-center">
+      {/* Hero Section with Full-Page Video Background */}
+      <section className="relative h-screen min-h-[600px] flex items-center">
+        {/* Video Background */}
         <div className="absolute inset-0 z-0">
           <div className="relative w-full h-full">
-            <Image
-              src="/hero-image.jpg"
-              alt="Beautiful homes in Chicagoland"
-              fill
-              style={{ objectFit: "cover" }}
-              priority
-              quality={90}
+            <HeroVideo 
+              posterImage="/hero-image.jpg"
+              posterAlt="Beautiful homes in Chicagoland"
             />
-            <div className="absolute inset-0 bg-black/40" />
+            
+            {/* Overlay for better text readability */}
+            <div className="absolute inset-0 bg-black/50" />
           </div>
         </div>
         
+        {/* Content */}
         <div className="container-padding relative z-10">
           <div className="max-w-2xl">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 text-white drop-shadow-lg">
               Your Gateway to Chicagoland Living
             </h1>
-            <p className="text-lg md:text-xl mb-8 text-white/90">
+            <p className="text-lg md:text-xl lg:text-2xl mb-8 text-white/90 drop-shadow-md">
               Discover exceptional properties across the Chicago metropolitan area with Grandview Realty&apos;s expert guidance.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/properties" className="btn-primary text-center">
+              <Link href="/properties" className="btn-primary text-center text-lg px-8 py-3">
                 View Properties
               </Link>
-              <Link href="/contact" className="btn-secondary bg-white/10 text-white border-white text-center">
+              <Link href="/contact" className="btn-secondary bg-white/10 text-white border-white text-center text-lg px-8 py-3 backdrop-blur-sm">
                 Contact Us
               </Link>
             </div>
+          </div>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
+          <div className="w-6 h-10 border-2 border-white/60 rounded-full flex justify-center">
+            <div className="w-1 h-3 bg-white/60 rounded-full mt-2 animate-pulse"></div>
           </div>
         </div>
       </section>
