@@ -53,19 +53,20 @@ export default function HeroVideo({ posterImage, posterAlt }: HeroVideoProps) {
     <div className="relative w-full h-full">
       {/* Video Element */}
       {shouldLoadVideo && !isVideoError && (
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="w-full h-full object-cover"
-          poster={posterImage}
-          preload="metadata"
-          onLoadedData={handleVideoLoad}
-          onCanPlay={handleVideoCanPlay}
-          onError={handleVideoError}
-        >
+                    <video
+              ref={videoRef}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full h-full object-cover"
+              style={{ objectPosition: "center 20%" }}
+              poster={posterImage}
+              preload="metadata"
+              onLoadedData={handleVideoLoad}
+              onCanPlay={handleVideoCanPlay}
+              onError={handleVideoError}
+            >
           {/* Desktop video (larger screens) */}
           <source 
             src="/GrandviewHome.mp4" 
@@ -84,14 +85,14 @@ export default function HeroVideo({ posterImage, posterAlt }: HeroVideoProps) {
       
       {/* Fallback image */}
       {(!shouldLoadVideo || isVideoError) && (
-        <Image
-          src={posterImage}
-          alt={posterAlt}
-          fill
-          style={{ objectFit: "cover" }}
-          priority
-          quality={90}
-        />
+                          <Image
+                    src={posterImage}
+                    alt={posterAlt}
+                    fill
+                    style={{ objectFit: "cover", objectPosition: "center 20%" }}
+                    priority
+                    quality={90}
+                  />
       )}
       
       {/* Loading overlay */}

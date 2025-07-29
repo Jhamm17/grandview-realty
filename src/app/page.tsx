@@ -79,7 +79,7 @@ export default function Home() {
             WHAT ARE YOU LOOKING FOR?
           </h2>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 h-[500px] md:h-[600px] lg:h-[700px]">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 h-screen">
             {/* Buy Section */}
             <Link href="/properties" className="block">
               <div className="group relative overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-[1.02]">
