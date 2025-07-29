@@ -5,12 +5,21 @@ export default {
     // Forward to Vercel deployment
     const vercelUrl = 'https://grandview-realty.vercel.app';
     
-    // Create new request to Vercel
+    // Create new request to Vercel with additional headers
     const modifiedRequest = new Request(
       `${vercelUrl}${url.pathname}${url.search}`,
       {
         method: request.method,
-        headers: request.headers,
+        headers: {
+          ...Object.fromEntries(request.headers),
+          'User-Agent': 'Mozilla/5.0 (compatible; GrandViewRealty/1.0)',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+          'Accept-Language': 'en-US,en;q=0.5',
+          'Accept-Encoding': 'gzip, deflate, br',
+          'DNT': '1',
+          'Connection': 'keep-alive',
+          'Upgrade-Insecure-Requests': '1',
+        },
         body: request.body,
         redirect: 'follow',
       }
