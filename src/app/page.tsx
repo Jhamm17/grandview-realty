@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <>
       {/* Hero Section with Full-Page Video Background */}
-      <section className="relative h-screen min-h-[600px] flex items-center">
+      <section className="relative h-[calc(100vh-6rem)] min-h-[600px] flex items-center">
         {/* Video Background */}
         <div className="absolute inset-0 z-0">
           <div className="relative w-full h-full">
@@ -30,15 +30,15 @@ export default function Home() {
         </div>
         
         {/* Content */}
-        <div className="container-padding relative z-10">
-          <div className="max-w-2xl">
+        <div className="container-padding relative z-10 flex items-center justify-center min-h-full">
+          <div className="max-w-2xl text-center">
             <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 text-white drop-shadow-lg">
               Your Gateway to Chicagoland Living
             </h1>
             <p className="text-lg md:text-xl lg:text-2xl mb-8 text-white/90 drop-shadow-md">
               Discover exceptional properties across the Chicago metropolitan area with Grandview Realty&apos;s expert guidance.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/properties" className="btn-primary text-center text-lg px-8 py-3">
                 View Properties
               </Link>
@@ -49,10 +49,94 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 animate-bounce">
-          <div className="w-6 h-10 border-2 border-white/60 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-white/60 rounded-full mt-2 animate-pulse"></div>
+        {/* Scroll arrow indicator */}
+        <div className="absolute left-8 bottom-8 z-10 animate-bounce">
+          <div className="flex items-center space-x-2 text-white/80 hover:text-white transition-colors cursor-pointer group">
+            <svg 
+              className="w-8 h-8 transform rotate-90 group-hover:scale-110 transition-transform" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M19 14l-7 7m0 0l-7-7m7 7V3"
+              />
+            </svg>
+            <span className="text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+              Scroll
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* Buy/Sell Section */}
+      <section className="relative py-16 md:py-24 bg-white">
+        <div className="container-padding">
+          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-gray-800">
+            WHAT ARE YOU LOOKING FOR?
+          </h2>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 h-[500px] md:h-[600px] lg:h-[700px]">
+            {/* Buy Section */}
+            <Link href="/properties" className="block">
+              <div className="group relative overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-[1.02]">
+                <div className="absolute inset-0">
+                  <Image
+                    src="/buyimage.jpg"
+                    alt="Buy a home"
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-blue-900/40 group-hover:bg-blue-900/30 transition-colors duration-300" />
+                </div>
+                
+                <div className="relative z-10 flex items-center justify-center h-full">
+                  <div className="text-center">
+                    <h3 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 drop-shadow-lg">
+                      Buy
+                    </h3>
+                    <p className="text-lg md:text-xl text-white/90 drop-shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      Find your dream home
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Hover overlay */}
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+              </div>
+            </Link>
+
+            {/* Sell Section */}
+            <Link href="/contact" className="block">
+              <div className="group relative overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-[1.02]">
+                <div className="absolute inset-0">
+                  <Image
+                    src="/sellimage.jpg"
+                    alt="Sell your home"
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-blue-800/40 group-hover:bg-blue-800/30 transition-colors duration-300" />
+                </div>
+                
+                <div className="relative z-10 flex items-center justify-center h-full">
+                  <div className="text-center">
+                    <h3 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 drop-shadow-lg">
+                      Sell
+                    </h3>
+                    <p className="text-lg md:text-xl text-white/90 drop-shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      List your property
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Hover overlay */}
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+              </div>
+            </Link>
           </div>
         </div>
       </section>
