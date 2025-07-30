@@ -27,7 +27,7 @@ export default function CharityPage() {
       </div>
 
       {/* Main Content - Floating over background */}
-      <div className="relative z-10 pt-20">
+      <div className="relative z-10 pt-32">
         <div className="px-4 md:px-8 lg:px-12">
           {/* Hero Section - Takes up about 50% of viewport */}
           <section className="h-[30vh] flex items-center justify-center text-center text-white mb-8">
@@ -43,7 +43,7 @@ export default function CharityPage() {
           </section>
 
           {/* Main Content Section */}
-          <section className="p-8 md:p-12 lg:p-16 -mx-4 md:-mx-8 lg:-mx-12">
+          <section className="bg-white/95 p-8 md:p-12 lg:p-16 -mx-4 md:-mx-8 lg:-mx-12">
             <div className="text-center mb-12">
               <h1 className="text-5xl md:text-7xl font-bold text-primary mb-4">
                 Miracle on State Street
