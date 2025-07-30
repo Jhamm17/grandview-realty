@@ -22,12 +22,10 @@ export default function CharityPage() {
           className="object-cover"
           priority
         />
-        {/* Overlay for better text readability */}
-        <div className="absolute inset-0 bg-black/30"></div>
       </div>
 
       {/* Main Content - Floating over background */}
-      <div className="relative z-10 pt-32">
+      <div className="relative z-10 pt-16">
         <div className="px-4 md:px-8 lg:px-12">
           {/* Hero Section - Takes up about 50% of viewport */}
           <section className="h-[30vh] flex items-center justify-center text-center text-white mb-8">
@@ -321,7 +319,7 @@ export default function CharityPage() {
             </div>
 
             {/* Become a Sponsor Contact Form */}
-            <div className="mt-16 bg-[#081d36] p-8 md:p-12 lg:p-16 -mx-8 md:-mx-12 lg:-mx-16">
+            <div className="mt-16 bg-[#081d36] px-8 md:px-12 lg:px-16 pt-8 md:pt-12 lg:pt-16 pb-0 -mx-8 md:-mx-12 lg:-mx-16">
               <div className="text-center mb-8">
                 <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Become a Sponsor!</h2>
                 <p className="text-lg text-white/80">
