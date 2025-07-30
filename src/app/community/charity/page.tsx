@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function CharityPage() {
   return (
-    <div className="relative">
+    <>
       {/* Fixed Background Image */}
       <div className="fixed inset-0 z-0">
         <Image
@@ -27,7 +27,7 @@ export default function CharityPage() {
       </div>
 
       {/* Main Content - Floating over background */}
-      <div className="relative z-10 pt-32 pb-16">
+      <div className="relative z-10 pt-32">
         <div className="px-4 md:px-8 lg:px-12">
           {/* Hero Section - Takes up about 50% of viewport */}
           <section className="h-[50vh] flex items-center justify-center text-center text-white mb-16">
@@ -43,7 +43,7 @@ export default function CharityPage() {
           </section>
 
           {/* Main Content Section */}
-          <section className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 md:p-12 lg:p-16">
+          <section className="bg-white/95 backdrop-blur-sm p-8 md:p-12 lg:p-16 -mx-4 md:-mx-8 lg:-mx-12">
             <div className="text-center mb-12">
               <h1 className="text-5xl md:text-7xl font-bold text-gray-800 mb-6">
                 Miracle on State Street
@@ -70,8 +70,8 @@ export default function CharityPage() {
             </div>
 
             {/* Bones Bar Section with Quote */}
-            <div className="mt-16 -mx-8 md:-mx-12 lg:-mx-16">
-              <div className="relative h-32 md:h-40 overflow-hidden">
+            <div className="-mx-8 md:-mx-12 lg:-mx-16">
+              <div className="relative h-32 md:h-40 overflow-hidden shadow-none">
                 <Image
                   src="/community/bonesbar.jpg"
                   alt="Bones Bar Background"
@@ -83,7 +83,7 @@ export default function CharityPage() {
                 {/* Quote Overlay */}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center">
-                    <p className="text-3xl md:text-4xl lg:text-5xl font-bold italic" style={{ fontFamily: 'cursive', color: '#081d36' }}>
+                    <p className="text-3xl md:text-4xl lg:text-5xl font-black italic" style={{ fontFamily: 'cursive', color: '#081d36' }}>
                       &ldquo;Rescue is our favorite breed&rdquo;
                     </p>
                   </div>
@@ -92,9 +92,9 @@ export default function CharityPage() {
             </div>
 
             {/* Split Section: Anderson Humane & Mission */}
-            <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Left Side: Anderson Humane */}
-              <div className="relative h-80 lg:h-96 overflow-hidden -mx-8 md:-mx-12 lg:-mx-16 lg:mr-0">
+              <div className="relative h-96 lg:h-[28rem] overflow-hidden -mx-8 md:-mx-12 lg:-mx-16 lg:mr-0">
                 <Image
                   src="/community/ahbackground.jpg"
                   alt="Anderson Humane Background"
@@ -133,7 +133,7 @@ export default function CharityPage() {
             </div>
 
             {/* Sponsor Hall of Fame Bar */}
-            <div className="mt-16 -mx-8 md:-mx-12 lg:-mx-16">
+            <div className="-mx-8 md:-mx-12 lg:-mx-16">
               <div className="bg-[#081d36] text-white py-8 px-4">
                 <div className="text-center">
                   <h2 className="text-3xl md:text-4xl font-bold">Sponsor Hall of Fame</h2>
@@ -142,7 +142,7 @@ export default function CharityPage() {
             </div>
 
             {/* Sponsor Grid */}
-            <div className="mt-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            <div className="mt-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
               {/* Grandview Homes */}
               <a 
                 href="https://www.grandviewhomes.com/" 
@@ -321,10 +321,10 @@ export default function CharityPage() {
             </div>
 
             {/* Become a Sponsor Contact Form */}
-            <div className="mt-16">
+            <div className="mt-16 bg-[#081d36] p-8 md:p-12 lg:p-16 -mx-8 md:-mx-12 lg:-mx-16">
               <div className="text-center mb-8">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Become a Sponsor!</h2>
-                <p className="text-lg text-gray-600">
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Become a Sponsor!</h2>
+                <p className="text-lg text-white/80">
                   Interested in supporting our community events? Join our sponsor family!
                 </p>
               </div>
@@ -333,7 +333,7 @@ export default function CharityPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* First Name */}
                   <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="firstName" className="block text-sm font-medium text-white mb-2">
                       First Name *
                     </label>
                     <input
@@ -347,7 +347,7 @@ export default function CharityPage() {
 
                   {/* Last Name */}
                   <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="lastName" className="block text-sm font-medium text-white mb-2">
                       Last Name *
                     </label>
                     <input
@@ -362,7 +362,7 @@ export default function CharityPage() {
 
                 {/* Company Name */}
                 <div>
-                  <label htmlFor="companyName" className="block text-sm font-medium text-gray-700 mb-2">
+                  <label htmlFor="companyName" className="block text-sm font-medium text-white mb-2">
                     Company Name *
                   </label>
                   <input
@@ -377,7 +377,7 @@ export default function CharityPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Email */}
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="email" className="block text-sm font-medium text-white mb-2">
                       Email Address *
                     </label>
                     <input
@@ -391,7 +391,7 @@ export default function CharityPage() {
 
                   {/* Phone Number */}
                   <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="phone" className="block text-sm font-medium text-white mb-2">
                       Phone Number *
                     </label>
                     <input
@@ -408,7 +408,7 @@ export default function CharityPage() {
                 <div className="text-center pt-4">
                   <button
                     type="submit"
-                    className="bg-primary text-white px-12 py-4 text-lg font-semibold hover:bg-primary/90 transition-colors"
+                    className="bg-white text-[#081d36] px-12 py-4 text-lg font-semibold hover:bg-gray-100 transition-colors"
                   >
                     Submit Application
                   </button>
@@ -418,6 +418,6 @@ export default function CharityPage() {
           </section>
         </div>
       </div>
-    </div>
+    </>
   );
 } 
