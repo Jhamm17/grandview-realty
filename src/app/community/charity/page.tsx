@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 
 export default function CharityPage() {
   return (
-    <>
-      {/* Fixed Background Image */}
-      <div className="fixed inset-0 z-0">
+    <div className="relative min-h-screen">
+      {/* Background Image - Not fixed to allow footer to show */}
+      <div className="absolute inset-0 z-0">
         <Image
           src="/community/communitybackground.jpg"
           alt="Community Background"
@@ -30,14 +30,14 @@ export default function CharityPage() {
       <div className="relative z-10 pt-32">
         <div className="px-4 md:px-8 lg:px-12">
           {/* Hero Section - Takes up about 50% of viewport */}
-          <section className="h-[50vh] flex items-center justify-center text-center text-white mb-16">
+          <section className="h-[30vh] flex items-center justify-center text-center text-white mb-8">
             <div className="max-w-4xl">
               <Image
                 src="/community/PawtyTime.png"
                 alt="PawtyTime"
                 width={600}
                 height={300}
-                className="w-auto h-32 md:h-48 mx-auto mb-6"
+                className="w-auto h-24 md:h-32 mx-auto mb-4"
               />
             </div>
           </section>
@@ -45,7 +45,7 @@ export default function CharityPage() {
           {/* Main Content Section */}
           <section className="bg-white/95 backdrop-blur-sm p-8 md:p-12 lg:p-16 -mx-4 md:-mx-8 lg:-mx-12">
             <div className="text-center mb-12">
-              <h1 className="text-5xl md:text-7xl font-bold text-blue-800 mb-4">
+              <h1 className="text-5xl md:text-7xl font-bold text-primary mb-4">
                 Miracle on State Street
               </h1>
               <p className="text-xl md:text-2xl font-medium text-gray-700">
@@ -92,7 +92,7 @@ export default function CharityPage() {
             {/* Split Section: Anderson Humane & Mission */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Left Side: Anderson Humane */}
-              <div className="relative h-[30rem] lg:h-[42rem] overflow-hidden -mx-8 md:-mx-12 lg:-mx-16 lg:mr-0">
+              <div className="relative h-[30rem] lg:h-[42rem] overflow-hidden -mx-8 md:-mx-12 lg:-mx-16 lg:mr-0 shadow-2xl">
                 <Image
                   src="/community/ahbackground.jpg"
                   alt="Anderson Humane Background"
@@ -108,7 +108,7 @@ export default function CharityPage() {
                     alt="Anderson Humane"
                     width={300}
                     height={150}
-                    className="w-auto h-32 md:h-40"
+                    className="w-auto h-48 md:h-60"
                   />
                 </div>
               </div>
@@ -116,7 +116,7 @@ export default function CharityPage() {
               {/* Right Side: Mission Statement */}
               <div className="flex flex-col justify-center p-8 bg-gray-50 rounded-lg">
                 <div className="max-w-md">
-                  <h2 className="text-4xl lg:text-5xl font-bold mb-8 text-blue-800 text-left font-poppins">Our Mission</h2>
+                  <h2 className="text-4xl lg:text-5xl font-bold mb-8 text-primary text-left font-poppins">Our Mission</h2>
                   <p className="text-xl leading-relaxed text-gray-700 mb-10 text-left font-poppins">
                     Pawty Time is committed to creating a brighter future for our furry friends. Teaming up with Anderson Humane and our generous sponsors, we strive to make a difference in the lives of dogs by organizing adoption events that connect them with loving families.
                   </p>
@@ -408,7 +408,7 @@ export default function CharityPage() {
                 <div className="text-center pt-4">
                   <button
                     type="submit"
-                    className="bg-blue-800 text-white px-12 py-4 text-lg font-semibold hover:bg-blue-900 transition-colors"
+                    className="bg-primary text-white px-12 py-4 text-lg font-semibold hover:bg-primary/80 transition-colors"
                   >
                     Submit Application
                   </button>
@@ -418,9 +418,6 @@ export default function CharityPage() {
           </section>
         </div>
       </div>
-      
-      {/* Spacer to ensure footer appears */}
-      <div className="h-16"></div>
-    </>
+    </div>
   );
 } 
