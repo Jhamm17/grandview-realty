@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 
 export default function CharityPage() {
   return (
-    <>
-      {/* Fixed Background Image */}
-      <div className="fixed inset-0 z-0">
+    <div className="relative min-h-screen">
+      {/* Background Image - Not fixed to allow footer to show */}
+      <div className="absolute inset-0 z-0">
         <Image
           src="/community/communitybackground.jpg"
           alt="Community Background"
@@ -37,7 +37,7 @@ export default function CharityPage() {
                 alt="PawtyTime"
                 width={600}
                 height={300}
-                className="w-auto h-24 md:h-32 mx-auto mb-4"
+                className="w-auto h-32 md:h-48 mx-auto mb-4"
               />
             </div>
           </section>
@@ -418,6 +418,6 @@ export default function CharityPage() {
           </section>
         </div>
       </div>
-    </>
+    </div>
   );
 } 
