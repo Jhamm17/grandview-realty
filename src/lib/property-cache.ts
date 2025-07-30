@@ -65,6 +65,7 @@ export class PropertyCacheService {
       const { data: cachedProperties, error } = await this.supabaseAdmin
         .from('property_cache')
         .select('*')
+        .eq('is_active', true)
         .order('last_updated', { ascending: false });
 
       if (error) {

@@ -11,9 +11,8 @@ export const metadata: Metadata = {
   },
 };
 
-// Force dynamic rendering to avoid API calls during build
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// Cache for 15 minutes (same as PropertyCacheService)
+export const revalidate = 900; // 15 minutes in seconds
 
 export default async function PropertiesPage() {
   try {

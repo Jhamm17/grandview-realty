@@ -2,15 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import HeroVideo from "@/components/HeroVideo";
 import ScrollArrow from "@/components/ScrollArrow";
-  
-  const featuredAreas = [
-    { name: "Geneva", description: "Historic charm meets modern luxury" },
-    { name: "St. Charles", description: "Riverside living and vibrant community" },
-    { name: "Naperville", description: "Award-winning schools and family-friendly neighborhoods" },
-    { name: "Oak Brook", description: "Upscale living and premier shopping" },
-    { name: "Hinsdale", description: "Prestigious homes and excellent schools" },
-    { name: "Arlington Heights", description: "Dynamic suburban lifestyle" }
-  ];
+import TestimonialsGallery from "@/components/TestimonialsGallery";
 
 export default function Home() {
   return (
@@ -60,7 +52,7 @@ export default function Home() {
             WHAT ARE YOU LOOKING FOR?
           </h2>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 h-screen">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 h-80 md:h-[400px] lg:h-[480px] max-w-[90rem] mx-auto">
             {/* Buy Section */}
             <div className="group relative overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-[1.02] h-full">
               <Link href="/properties" className="block h-full">
@@ -76,10 +68,10 @@ export default function Home() {
                 
                 <div className="relative z-10 flex items-center justify-center h-full">
                   <div className="text-center">
-                    <h3 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 drop-shadow-lg">
+                    <h3 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 drop-shadow-lg">
                       Buy
                     </h3>
-                    <p className="text-lg md:text-xl text-white/90 drop-shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <p className="text-base md:text-lg text-white/90 drop-shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       Find your dream home
                     </p>
                   </div>
@@ -105,10 +97,10 @@ export default function Home() {
                 
                 <div className="relative z-10 flex items-center justify-center h-full">
                   <div className="text-center">
-                    <h3 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-4 drop-shadow-lg">
+                    <h3 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 drop-shadow-lg">
                       Sell
                     </h3>
-                    <p className="text-lg md:text-xl text-white/90 drop-shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <p className="text-base md:text-lg text-white/90 drop-shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       List your property
                     </p>
                   </div>
@@ -122,39 +114,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Areas */}
-      <section className="py-16 md:py-24 bg-gray-50">
-        <div className="container-padding">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Featured Areas</h2>
-          <p className="text-gray-600 mb-12 max-w-2xl">
-            From historic Geneva to vibrant Naperville, we serve communities throughout the Chicagoland area.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featuredAreas.map((area, index) => (
-              <div key={area.name} className="bg-white rounded-lg overflow-hidden shadow-md transition-transform hover:scale-[1.02]">
-                <div className="relative h-48">
-                  <Image
-                    src={`/area-${index + 1}.jpg`}
-                    alt={area.name}
-                    fill
-                    style={{ objectFit: "cover" }}
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-2">{area.name}</h3>
-                  <p className="text-gray-600">{area.description}</p>
-                  <Link 
-                    href={`/properties/${area.name.toLowerCase().replace(' ', '-')}`}
-                    className="mt-4 inline-block text-primary hover:text-primary/80 font-medium"
-                  >
-                    View Listings →
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+
 
       {/* Featured Properties */}
       <section className="py-16 md:py-24">
@@ -213,6 +173,17 @@ export default function Home() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Client Testimonials */}
+      <section className="py-16 md:py-24 bg-primary">
+        <div className="container-padding">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center text-white">What Our Clients Say</h2>
+          <p className="text-white/90 mb-12 max-w-2xl mx-auto text-center">
+            Don&apos;t just take our word for it. Here&apos;s what our satisfied clients have to say about their experience with Grandview Realty.
+          </p>
+          <TestimonialsGallery />
         </div>
       </section>
 
