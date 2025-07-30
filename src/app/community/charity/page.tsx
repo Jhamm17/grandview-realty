@@ -45,7 +45,7 @@ export default function CharityPage() {
           {/* Main Content Section */}
           <section className="bg-white/95 backdrop-blur-sm p-8 md:p-12 lg:p-16 -mx-4 md:-mx-8 lg:-mx-12">
             <div className="text-center mb-12">
-              <h1 className="text-5xl md:text-7xl font-bold text-gray-800 mb-6">
+              <h1 className="text-5xl md:text-7xl font-bold text-blue-800 mb-4">
                 Miracle on State Street
               </h1>
               <p className="text-xl md:text-2xl font-medium text-gray-700">
@@ -78,8 +78,6 @@ export default function CharityPage() {
                   fill
                   className="object-cover"
                 />
-                {/* Overlay for better text readability */}
-                <div className="absolute inset-0 bg-black/40"></div>
                 {/* Quote Overlay */}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center">
@@ -94,7 +92,7 @@ export default function CharityPage() {
             {/* Split Section: Anderson Humane & Mission */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Left Side: Anderson Humane */}
-              <div className="relative h-96 lg:h-[28rem] overflow-hidden -mx-8 md:-mx-12 lg:-mx-16 lg:mr-0">
+              <div className="relative h-[30rem] lg:h-[42rem] overflow-hidden -mx-8 md:-mx-12 lg:-mx-16 lg:mr-0">
                 <Image
                   src="/community/ahbackground.jpg"
                   alt="Anderson Humane Background"
@@ -117,26 +115,28 @@ export default function CharityPage() {
 
               {/* Right Side: Mission Statement */}
               <div className="flex flex-col justify-center p-8 bg-gray-50 rounded-lg">
-                <h2 className="text-4xl lg:text-5xl font-bold mb-8 text-gray-800">Our Mission</h2>
-                <p className="text-xl leading-relaxed text-gray-700 mb-10">
-                  Pawty Time is committed to creating a brighter future for our furry friends. Teaming up with Anderson Humane and our generous sponsors, we strive to make a difference in the lives of dogs by organizing adoption events that connect them with loving families.
-                </p>
-                <a 
-                  href="https://ahconnects.org/aboutus/" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="inline-block bg-primary text-white px-10 py-4 hover:bg-primary/80 transition-colors font-semibold text-lg w-fit"
-                >
-                  Anderson Humane
-                </a>
+                <div className="max-w-md">
+                  <h2 className="text-4xl lg:text-5xl font-bold mb-8 text-blue-800 text-left font-poppins">Our Mission</h2>
+                  <p className="text-xl leading-relaxed text-gray-700 mb-10 text-left font-poppins">
+                    Pawty Time is committed to creating a brighter future for our furry friends. Teaming up with Anderson Humane and our generous sponsors, we strive to make a difference in the lives of dogs by organizing adoption events that connect them with loving families.
+                  </p>
+                  <a 
+                    href="https://ahconnects.org/aboutus/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-block bg-primary text-white px-10 py-4 hover:bg-primary/80 transition-colors font-semibold text-lg w-fit font-poppins"
+                  >
+                    Anderson Humane
+                  </a>
+                </div>
               </div>
             </div>
 
             {/* Sponsor Hall of Fame Bar */}
             <div className="-mx-8 md:-mx-12 lg:-mx-16">
-              <div className="bg-[#081d36] text-white py-8 px-4">
+              <div className="bg-[#081d36] text-white py-16 px-8">
                 <div className="text-center">
-                  <h2 className="text-3xl md:text-4xl font-bold">Sponsor Hall of Fame</h2>
+                  <h2 className="text-6xl md:text-8xl font-bold">Sponsor Hall of Fame</h2>
                 </div>
               </div>
             </div>
@@ -408,7 +408,7 @@ export default function CharityPage() {
                 <div className="text-center pt-4">
                   <button
                     type="submit"
-                    className="bg-white text-[#081d36] px-12 py-4 text-lg font-semibold hover:bg-gray-100 transition-colors"
+                    className="bg-blue-800 text-white px-12 py-4 text-lg font-semibold hover:bg-blue-900 transition-colors"
                   >
                     Submit Application
                   </button>
@@ -418,6 +418,9 @@ export default function CharityPage() {
           </section>
         </div>
       </div>
+      
+      {/* Spacer to ensure footer appears */}
+      <div className="h-16"></div>
     </>
   );
 } 
