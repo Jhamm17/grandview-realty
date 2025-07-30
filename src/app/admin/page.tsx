@@ -53,12 +53,29 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     checkAuthentication();
-  }, []);
+    
+    // Fallback: if still loading after 15 seconds, show login form
+    const fallbackTimer = setTimeout(() => {
+      if (authLoading) {
+        setAuthLoading(false);
+        setIsAuthenticated(false);
+      }
+    }, 15000);
+    
+    return () => clearTimeout(fallbackTimer);
+  }, [authLoading]);
 
   const checkAuthentication = async () => {
     try {
       setAuthLoading(true);
-      const user = await AdminAuthService.getCurrentUser();
+      
+      // Add timeout to prevent infinite loading
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Authentication timeout')), 10000)
+      );
+      
+      const userPromise = AdminAuthService.getCurrentUser();
+      const user = await Promise.race([userPromise, timeoutPromise]) as AuthUser | null;
       
       if (user) {
         setCurrentUser(user);
@@ -249,6 +266,7 @@ export default function AdminDashboard() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Verifying authentication...</p>
+          <p className="mt-2 text-sm text-gray-500">This may take a few seconds</p>
         </div>
       </div>
     );
