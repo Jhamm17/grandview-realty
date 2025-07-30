@@ -56,7 +56,7 @@ function filterProperties(properties: Property[], filters: FilterState): Propert
 function getStatusBadgeStyle(status: string): string {
   if (status === 'Active') {
     return 'bg-blue-400';
-  } else if (status === 'Active Under Contract' || status === 'Under Contract' || status === 'Pending' || status === 'Contingent') {
+  } else if (status === 'ActiveUnderContract' || status === 'Under Contract' || status === 'Pending' || status === 'Contingent') {
     return 'bg-orange-500';
   } else if (status === 'Sold') {
     return 'bg-green-600';
@@ -69,7 +69,7 @@ function getStatusBadgeStyle(status: string): string {
 function getStatusBadgeText(status: string): string {
   if (status === 'Active') {
     return 'LISTED';
-  } else if (status === 'Active Under Contract') {
+  } else if (status === 'ActiveUnderContract') {
     return 'UNDER CONTRACT';
   } else if (status === 'Under Contract') {
     return 'UNDER CONTRACT';

@@ -106,7 +106,7 @@ export class PropertyCacheService {
       
       // Filter for properties under contract
       const underContractProperties = allProperties.filter(property => 
-        property.StandardStatus === 'Active Under Contract' || 
+        property.StandardStatus === 'ActiveUnderContract' || 
         property.StandardStatus === 'Under Contract' ||
         property.StandardStatus === 'Pending' ||
         property.StandardStatus === 'Contingent' ||
