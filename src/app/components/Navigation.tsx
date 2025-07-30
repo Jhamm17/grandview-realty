@@ -291,6 +291,7 @@ export function Footer() {
             <div className="flex flex-col space-y-2">
               <Link href="/" className="text-white/80 hover:text-[#60a5fa] transition-colors">Home</Link>
               <Link href="/properties" className="text-white/80 hover:text-[#60a5fa] transition-colors">Active Listings</Link>
+              <Link href="/properties/under-contract" className="text-white/80 hover:text-[#60a5fa] transition-colors">Under Contract</Link>
               <Link href="/team/agents" className="text-white/80 hover:text-[#60a5fa] transition-colors">Agents</Link>
               <Link href="/team/office-staff" className="text-white/80 hover:text-[#60a5fa] transition-colors">Office Staff</Link>
               <Link href="/contact" className="text-white/80 hover:text-[#60a5fa] transition-colors">Contact</Link>

@@ -99,6 +99,29 @@ export class PropertyCacheService {
     }
   }
 
+  // Get under contract properties
+  static async getUnderContractProperties(): Promise<Property[]> {
+    try {
+      const allProperties = await this.getAllProperties();
+      
+      // Filter for properties under contract
+      const underContractProperties = allProperties.filter(property => 
+        property.StandardStatus === 'Active Under Contract' || 
+        property.StandardStatus === 'Under Contract' ||
+        property.StandardStatus === 'Pending' ||
+        property.StandardStatus === 'Contingent' ||
+        property.StandardStatus.includes('Contract') ||
+        property.StandardStatus.includes('Pending')
+      );
+
+      console.log(`[Cache] Found ${underContractProperties.length} under contract properties`);
+      return underContractProperties;
+    } catch (error) {
+      console.error('Error in getUnderContractProperties:', error);
+      return [];
+    }
+  }
+
   // Fetch a single property from the MLS API
   private static async fetchPropertyFromAPI(listingId: string): Promise<Property | null> {
     try {

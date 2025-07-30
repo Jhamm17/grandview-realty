@@ -52,6 +52,38 @@ function filterProperties(properties: Property[], filters: FilterState): Propert
   });
 }
 
+// Helper function to get status badge style
+function getStatusBadgeStyle(status: string): string {
+  if (status === 'Active') {
+    return 'bg-blue-400';
+  } else if (status === 'Active Under Contract' || status === 'Under Contract' || status === 'Pending' || status === 'Contingent') {
+    return 'bg-orange-500';
+  } else if (status === 'Sold') {
+    return 'bg-green-600';
+  } else {
+    return 'bg-gray-500';
+  }
+}
+
+// Helper function to get status badge text
+function getStatusBadgeText(status: string): string {
+  if (status === 'Active') {
+    return 'LISTED';
+  } else if (status === 'Active Under Contract') {
+    return 'UNDER CONTRACT';
+  } else if (status === 'Under Contract') {
+    return 'UNDER CONTRACT';
+  } else if (status === 'Pending') {
+    return 'PENDING';
+  } else if (status === 'Contingent') {
+    return 'CONTINGENT';
+  } else if (status === 'Sold') {
+    return 'SOLD';
+  } else {
+    return status.toUpperCase();
+  }
+}
+
 export default function PropertyFilter({ initialProperties }: FilterProps) {
   const [filters, setFilters] = useState<FilterState>({
     city: '',
@@ -244,9 +276,9 @@ export default function PropertyFilter({ initialProperties }: FilterProps) {
                           style={{ objectFit: "cover" }}
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
-                        {/* Listed Badge */}
-                        <div className="absolute bottom-0 left-0 bg-blue-400 text-white px-2 py-1 text-lg font-black tracking-wider" style={{ borderRadius: '0' }}>
-                          LISTED
+                        {/* Status Badge */}
+                        <div className={`absolute bottom-0 left-0 text-white px-2 py-1 text-lg font-black tracking-wider ${getStatusBadgeStyle(property.StandardStatus)}`} style={{ borderRadius: '0' }}>
+                          {getStatusBadgeText(property.StandardStatus)}
                         </div>
                       </>
                     );
