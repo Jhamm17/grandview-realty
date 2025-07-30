@@ -104,14 +104,14 @@ export class PropertyCacheService {
     try {
       const allProperties = await this.getAllProperties();
       
-      // Filter for properties under contract
+      // Filter for properties under contract using StandardStatus
       const underContractProperties = allProperties.filter(property => 
         property.StandardStatus === 'ActiveUnderContract' || 
-        property.StandardStatus === 'Under Contract' ||
+        property.StandardStatus === 'UnderContract' ||
         property.StandardStatus === 'Pending' ||
         property.StandardStatus === 'Contingent' ||
-        property.StandardStatus.includes('Contract') ||
-        property.StandardStatus.includes('Pending')
+        property.StandardStatus?.includes('Contract') ||
+        property.StandardStatus?.includes('Pending')
       );
 
       console.log(`[Cache] Found ${underContractProperties.length} under contract properties`);

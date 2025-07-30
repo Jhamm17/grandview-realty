@@ -13,6 +13,7 @@ export interface Property {
   ModificationTimestamp: string;
   OriginatingSystemName: string;
   StandardStatus: string;
+  StandardName?: string;
   MlgCanView: boolean;
 
   // Common Property Fields
