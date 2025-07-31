@@ -13,8 +13,8 @@ export const metadata: Metadata = {
 export default function CharityPage() {
   return (
     <div className="relative min-h-screen">
-      {/* Background Image - Not fixed to allow footer to show */}
-      <div className="absolute inset-0 z-0">
+      {/* Background Image - Fixed and spans full width */}
+      <div className="fixed inset-0 z-0">
         <Image
           src="/community/communitybackground.jpg"
           alt="Community Background"
@@ -25,23 +25,23 @@ export default function CharityPage() {
       </div>
 
       {/* Main Content - Floating over background */}
-      <div className="relative z-10 pt-16">
-        <div className="px-4 md:px-8 lg:px-12">
-          {/* Hero Section - Takes up about 50% of viewport */}
-          <section className="h-[30vh] flex items-center justify-center text-center text-white mb-8">
-            <div className="max-w-4xl">
-              <Image
-                src="/community/PawtyTime.png"
-                alt="PawtyTime"
-                width={600}
-                height={300}
-                className="w-auto h-32 md:h-48 mx-auto mb-4"
-              />
-            </div>
-          </section>
+      <div className="relative z-10">
+        {/* Hero Section - PawtyTime logo that disappears behind nav */}
+        <section className="h-[50vh] flex items-center justify-center text-center text-white">
+          <div className="max-w-4xl">
+            <Image
+              src="/community/PawtyTime.png"
+              alt="PawtyTime"
+              width={600}
+              height={300}
+              className="w-auto h-32 md:h-48 mx-auto mb-4"
+            />
+          </div>
+        </section>
 
-          {/* Main Content Section */}
-          <section className="bg-white/95 p-8 md:p-12 lg:p-16 -mx-4 md:-mx-8 lg:-mx-12">
+        {/* Main Content Section - Full width white background */}
+        <section className="bg-white w-full">
+          <div className="px-4 md:px-8 lg:px-12 py-8 md:py-12 lg:py-16">
             <div className="text-center mb-12">
               <h1 className="text-5xl md:text-7xl font-bold text-primary mb-4">
                 Miracle on State Street
@@ -52,45 +52,47 @@ export default function CharityPage() {
             </div>
             <div className="prose prose-lg mx-auto text-center max-w-4xl">
               <p className="text-xl leading-relaxed text-gray-700 mb-8">
-                We are already preparing for our next adoption event! We&apos;d love to personally invite you, your family, and friends to join us on <strong>November 16th, from 11 AM to 3 PM</strong>, for a day packed with games, snacks, and, of course, lots of adorable furry friends looking for their forever homes!
-              </p>
-              
-              <p className="text-xl leading-relaxed text-gray-700 mb-8">
-                All dogs at the event will be available for adoption, so come out, show your support, and help make a difference. A big thank you to <a 
+                We proudly partner with <a 
                   href="https://ahconnects.org/" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-primary hover:text-primary/80 underline font-semibold"
                 >
                   Anderson Humane
-                </a> for helping us put on this event. We can&apos;t wait to see you there!
+                </a> to host adoption events at least once a year — fun-filled days with games, snacks, and, most importantly, plenty of lovable pups ready to meet their forever families.
+              </p>
+              
+              <p className="text-xl leading-relaxed text-gray-700 mb-8">
+                All dogs at these events are available for adoption, and each gathering is a great opportunity to support a wonderful cause. Stay tuned for details on our next event — we&apos;d love to see you, your family, and friends there!
+              </p>
+              
+              <p className="text-xl leading-relaxed text-gray-700 mb-8">
+                A big thank you to Anderson Humane for continuing to help us make these events a success.
               </p>
             </div>
 
             {/* Bones Bar Section with Quote */}
-            <div className="-mx-8 md:-mx-12 lg:-mx-16">
-              <div className="relative h-32 md:h-40 overflow-hidden shadow-none">
-                <Image
-                  src="/community/bonesbar.jpg"
-                  alt="Bones Bar Background"
-                  fill
-                  className="object-cover"
-                />
-                {/* Quote Overlay */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <p className="text-3xl md:text-4xl lg:text-5xl font-black italic" style={{ fontFamily: 'cursive', color: '#081d36' }}>
-                      &ldquo;Rescue is our favorite breed&rdquo;
-                    </p>
-                  </div>
+            <div className="relative h-32 md:h-40 overflow-hidden shadow-none -mx-4 md:-mx-8 lg:-mx-12">
+              <Image
+                src="/community/bonesbar.jpg"
+                alt="Bones Bar Background"
+                fill
+                className="object-cover"
+              />
+              {/* Quote Overlay */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-center">
+                  <p className="text-3xl md:text-4xl lg:text-5xl font-black italic" style={{ fontFamily: 'cursive', color: '#081d36' }}>
+                    &ldquo;Rescue is our favorite breed&rdquo;
+                  </p>
                 </div>
               </div>
             </div>
 
             {/* Split Section: Anderson Humane & Mission */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
               {/* Left Side: Anderson Humane */}
-              <div className="relative h-[30rem] lg:h-[42rem] overflow-hidden -mx-8 md:-mx-12 lg:-mx-16 lg:mr-0 shadow-2xl">
+              <div className="relative h-[30rem] lg:h-[42rem] overflow-hidden shadow-2xl">
                 <Image
                   src="/community/ahbackground.jpg"
                   alt="Anderson Humane Background"
@@ -131,11 +133,9 @@ export default function CharityPage() {
             </div>
 
             {/* Sponsor Hall of Fame Bar */}
-            <div className="-mx-8 md:-mx-12 lg:-mx-16">
-              <div className="bg-[#081d36] text-white py-16 px-8">
-                <div className="text-center">
-                  <h2 className="text-6xl md:text-8xl font-bold">Sponsor Hall of Fame</h2>
-                </div>
+            <div className="bg-[#081d36] text-white py-16 px-8 -mx-4 md:-mx-8 lg:-mx-12 mt-8">
+              <div className="text-center">
+                <h2 className="text-6xl md:text-8xl font-bold">Sponsor Hall of Fame</h2>
               </div>
             </div>
 
@@ -319,7 +319,7 @@ export default function CharityPage() {
             </div>
 
             {/* Become a Sponsor Contact Form */}
-            <div className="mt-16 bg-[#081d36] px-8 md:px-12 lg:px-16 pt-8 md:pt-12 lg:pt-16 pb-0 -mx-8 md:-mx-12 lg:-mx-16">
+            <div className="mt-16 bg-[#081d36] px-8 md:px-12 lg:px-16 pt-8 md:pt-12 lg:pt-16 pb-8 md:pb-12 lg:pb-16 -mx-4 md:-mx-8 lg:-mx-12">
               <div className="text-center mb-8">
                 <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Become a Sponsor!</h2>
                 <p className="text-lg text-white/80">
@@ -413,8 +413,8 @@ export default function CharityPage() {
                 </div>
               </form>
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
       </div>
     </div>
   );

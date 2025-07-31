@@ -45,9 +45,9 @@ export default function OfficeStaffPage() {
       {/* Staff Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-12">
         {staff.map((member, index) => (
-          <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden">
+          <div key={index} className="bg-white shadow-lg overflow-hidden">
             {/* Staff Image */}
-            <div className="relative h-80 bg-gray-200">
+            <div className="relative h-96 bg-gray-200">
               {member.image ? (
                 <img 
                   src={member.image} 
