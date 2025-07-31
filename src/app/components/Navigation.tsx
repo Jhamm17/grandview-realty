@@ -32,7 +32,7 @@ function NavDropdown({ title, items }: { title: string; items: { name: string; h
   return (
     <div className="relative" ref={dropdownRef}>
       <button 
-        className={`flex items-center text-white hover:text-white/80 transition-colors py-4 px-3 text-base font-medium ${
+        className={`flex items-center text-white hover:text-white/80 transition-colors py-4 px-4 text-base font-medium ${
           isActive ? 'text-[#60a5fa]' : ''
         }`}
         onClick={(e) => {
@@ -118,9 +118,9 @@ export function Header() {
 
   return (
     <header className="bg-[#081d36] shadow-sm sticky top-0 z-50">
-      <nav className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-24">
-          <Link href="/" className="flex items-center hover:opacity-90 transition-opacity">
+          <Link href="/" className="flex items-center hover:opacity-90 transition-opacity ml-0">
             <Image
               src="/logo.png"
               alt="Grandview Realty"
@@ -133,10 +133,10 @@ export function Header() {
           </Link>
           
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
+          <div className="hidden md:flex items-center space-x-6 mr-0">
             <Link 
               href="/" 
-              className={`text-white hover:text-white/80 transition-colors text-base font-medium py-4 px-3 ${
+              className={`text-white hover:text-white/80 transition-colors text-base font-medium py-4 px-4 ${
                 pathname === '/' ? 'text-[#60a5fa]' : ''
               }`}
             >
@@ -148,7 +148,7 @@ export function Header() {
             <NavDropdown title="Community" items={navItems.community} />
             <Link 
               href="/careers" 
-              className={`text-white hover:text-white/80 transition-colors text-base font-medium py-4 px-3 ${
+              className={`text-white hover:text-white/80 transition-colors text-base font-medium py-4 px-4 ${
                 pathname === '/careers' ? 'text-[#60a5fa]' : ''
               }`}
             >
@@ -156,7 +156,7 @@ export function Header() {
             </Link>
             <Link 
               href="/contact" 
-              className={`text-white hover:text-white/80 transition-colors text-base font-medium py-4 px-3 ${
+              className={`text-white hover:text-white/80 transition-colors text-base font-medium py-4 px-4 ${
                 pathname === '/contact' ? 'text-[#60a5fa]' : ''
               }`}
             >

@@ -52,18 +52,18 @@ export default function Home() {
             WHAT ARE YOU LOOKING FOR?
           </h2>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 h-80 md:h-[400px] lg:h-[480px] max-w-[90rem] mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 h-80 md:h-[400px] lg:h-[480px] max-w-[120rem] mx-auto">
             {/* Buy Section */}
             <div className="group relative overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-[1.02] h-full">
               <Link href="/properties" className="block h-full">
                 <div className="absolute inset-0">
                   <Image
-                    src="/buyimage.jpg"
+                    src="/buyimage.png"
                     alt="Buy a home"
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-blue-900/40 group-hover:bg-blue-900/30 transition-colors duration-300" />
+                  <div className="absolute inset-0 bg-blue-600/50 group-hover:bg-blue-600/40 transition-colors duration-300" />
                 </div>
                 
                 <div className="relative z-10 flex items-center justify-center h-full">
@@ -87,12 +87,12 @@ export default function Home() {
               <Link href="/contact" className="block h-full">
                 <div className="absolute inset-0">
                   <Image
-                    src="/sellimage.jpg"
+                    src="/sellimage.png"
                     alt="Sell your home"
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-blue-800/40 group-hover:bg-blue-800/30 transition-colors duration-300" />
+                  <div className="absolute inset-0 bg-blue-700/50 group-hover:bg-blue-700/40 transition-colors duration-300" />
                 </div>
                 
                 <div className="relative z-10 flex items-center justify-center h-full">
@@ -177,7 +177,7 @@ export default function Home() {
       </section>
 
       {/* Client Testimonials */}
-      <section className="py-16 md:py-24 bg-primary">
+      <section className="py-16 md:py-24 bg-[#081d36]">
         <div className="container-padding">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-center text-white">What Our Clients Say</h2>
           <p className="text-white/90 mb-12 max-w-2xl mx-auto text-center">

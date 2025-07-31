@@ -44,26 +44,26 @@ export default function TestimonialsGallery() {
   return (
     <div className="relative max-w-4xl mx-auto">
       {/* Main Testimonial Card */}
-      <div className="bg-white rounded-lg p-8 md:p-12 shadow-lg transition-all duration-300 relative">
-        <div className="absolute -top-4 left-8">
-          <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+      <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 md:p-12 shadow-2xl transition-all duration-300 relative border border-white/20">
+        <div className="absolute -top-6 left-8">
+          <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center shadow-lg">
+            <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
               <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
             </svg>
           </div>
         </div>
         
-        <div className="mt-4">
-          <p className="text-gray-700 mb-8 leading-relaxed italic text-lg md:text-xl">
+        <div className="mt-6">
+          <p className="text-gray-800 mb-8 leading-relaxed italic text-lg md:text-xl font-medium">
             &ldquo;{currentTestimonial.quote}&rdquo;
           </p>
           <div className="flex items-center">
-            <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mr-6">
-              <span className="text-primary font-semibold text-xl">{currentTestimonial.initial}</span>
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center mr-6 shadow-lg">
+              <span className="text-white font-bold text-xl">{currentTestimonial.initial}</span>
             </div>
             <div>
-              <p className="font-semibold text-gray-800 text-lg">{currentTestimonial.author}</p>
-              <p className="text-gray-500">{currentTestimonial.role}</p>
+              <p className="font-bold text-gray-900 text-lg">{currentTestimonial.author}</p>
+              <p className="text-blue-600 font-medium">{currentTestimonial.role}</p>
             </div>
           </div>
         </div>
@@ -72,32 +72,32 @@ export default function TestimonialsGallery() {
       {/* Navigation Arrows */}
       <button
         onClick={prevTestimonial}
-        className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors duration-200 z-10"
+        className="absolute left-4 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/95 backdrop-blur-sm rounded-full shadow-xl flex items-center justify-center hover:bg-white transition-all duration-200 z-10 border border-white/20"
         aria-label="Previous testimonial"
       >
-        <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
       </button>
 
       <button
         onClick={nextTestimonial}
-        className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors duration-200 z-10"
+        className="absolute right-4 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/95 backdrop-blur-sm rounded-full shadow-xl flex items-center justify-center hover:bg-white transition-all duration-200 z-10 border border-white/20"
         aria-label="Next testimonial"
       >
-        <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </button>
 
       {/* Dots Indicator */}
-      <div className="flex justify-center mt-8 space-x-2">
+      <div className="flex justify-center mt-8 space-x-3">
         {testimonials.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentIndex(index)}
-            className={`w-3 h-3 rounded-full transition-colors duration-200 ${
-              index === currentIndex ? 'bg-primary' : 'bg-gray-300'
+            className={`w-4 h-4 rounded-full transition-all duration-200 ${
+              index === currentIndex ? 'bg-blue-600 shadow-lg' : 'bg-white/60 hover:bg-white/80'
             }`}
             aria-label={`Go to testimonial ${index + 1}`}
           />

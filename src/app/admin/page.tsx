@@ -1,95 +1,55 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Property } from '@/lib/mred/types';
-import { PropertyCacheService } from '@/lib/property-cache';
-import { AdminAuthService } from '@/lib/admin-auth';
-import { AdminUser, AuthUser } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
+import { AdminAuthService } from '@/lib/admin-auth';
+import { PropertyCacheService } from '@/lib/property-cache';
+import { AuthUser } from '@/lib/supabase';
+import { Property } from '@/lib/mred/types';
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
-  const [newAdminEmail, setNewAdminEmail] = useState('');
-  const [newAdminPassword, setNewAdminPassword] = useState('');
-  const [newAdminRole, setNewAdminRole] = useState<'admin' | 'editor'>('editor');
-  const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [authLoading, setAuthLoading] = useState(true);
-  const [loginError, setLoginError] = useState('');
   
   // Login form state
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [loginError, setLoginError] = useState('');
   
-  // Password change state
-  const [showPasswordChange, setShowPasswordChange] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmNewPassword, setConfirmNewPassword] = useState('');
-  const [isChangingPassword, setIsChangingPassword] = useState(false);
-  const [passwordChangeError, setPasswordChangeError] = useState('');
-  const [passwordChangeSuccess, setPasswordChangeSuccess] = useState('');
-
-  const [cacheStatus, setCacheStatus] = useState<{
-    cache: {
-      totalProperties: number;
-      activeProperties: number;
-      propertiesWithImages: number;
-      lastUpdated: string | null;
-      cacheAgeHours: number | null;
-      isStale: boolean;
-    };
-    cronJob: {
-      schedule: string;
-      endpoint: string;
-      status: string;
-    };
-  } | null>(null);
+  // Admin dashboard state
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [underContractProperties, setUnderContractProperties] = useState<Property[]>([]);
 
   useEffect(() => {
-    checkAuthentication();
-    
-    // Fallback: if still loading after 15 seconds, show login form
-    const fallbackTimer = setTimeout(() => {
-      if (authLoading) {
-        setAuthLoading(false);
-        setIsAuthenticated(false);
-      }
-    }, 15000);
-    
-    return () => clearTimeout(fallbackTimer);
-  }, [authLoading]);
-
-  const checkAuthentication = async () => {
-    try {
-      setAuthLoading(true);
-      
-      // Add timeout to prevent infinite loading
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Authentication timeout')), 10000)
-      );
-      
-      const userPromise = AdminAuthService.getCurrentUser();
-      const user = await Promise.race([userPromise, timeoutPromise]) as AuthUser | null;
-      
-      if (user) {
+    // Check if user is already logged in (from localStorage)
+    const savedUser = localStorage.getItem('adminUser');
+    if (savedUser) {
+      try {
+        const user = JSON.parse(savedUser);
         setCurrentUser(user);
         setIsAuthenticated(true);
-        await loadData();
-        await loadCacheStatus();
-      } else {
-        setIsAuthenticated(false);
+        loadPropertyData();
+      } catch (error) {
+        localStorage.removeItem('adminUser');
       }
+    }
+    setLoading(false);
+  }, []);
+
+  const loadPropertyData = async () => {
+    try {
+      const allProperties = await PropertyCacheService.getAllProperties();
+      setProperties(allProperties);
+      
+      // Get under contract properties using the dedicated method
+      const underContract = await PropertyCacheService.getUnderContractProperties();
+      setUnderContractProperties(underContract);
     } catch (error) {
-      console.error('Authentication error:', error);
-      setIsAuthenticated(false);
-    } finally {
-      setAuthLoading(false);
+      console.error('Error loading property data:', error);
     }
   };
 
@@ -111,8 +71,12 @@ export default function AdminDashboard() {
         setIsAuthenticated(true);
         setLoginEmail('');
         setLoginPassword('');
-        await loadData();
-        await loadCacheStatus();
+        
+        // Save user to localStorage for persistence
+        localStorage.setItem('adminUser', JSON.stringify(result.user));
+        
+        // Load property data after login
+        await loadPropertyData();
       } else {
         setLoginError(result.error || 'Login failed');
       }
@@ -124,149 +88,37 @@ export default function AdminDashboard() {
     }
   };
 
-
-
   const handleLogout = async () => {
     try {
       await AdminAuthService.signOut();
       setCurrentUser(null);
       setIsAuthenticated(false);
-      setProperties([]);
-      setAdminUsers([]);
-      setCacheStatus(null);
+      localStorage.removeItem('adminUser');
     } catch (error) {
       console.error('Logout error:', error);
     }
   };
 
-  const loadCacheStatus = async () => {
-    try {
-      const response = await fetch('/api/admin/cache-status', {
-        headers: {
-          'Authorization': 'Bearer admin',
-          'x-admin-email': currentUser?.email || ''
-        }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setCacheStatus(data);
-      }
-    } catch (error) {
-      console.error('Error loading cache status:', error);
-    }
-  };
-
-  const loadData = async () => {
-    try {
-      setLoading(true);
-      
-      // Load properties
-      const propertiesData = await PropertyCacheService.getAllProperties();
-      setProperties(propertiesData);
-      
-      // Load admin users
-      const usersData = await AdminAuthService.getAllAdminUsers();
-      setAdminUsers(usersData);
-      
-    } catch (error) {
-      console.error('Error loading admin data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const refreshProperties = async () => {
+  const refreshCache = async () => {
     try {
       setRefreshing(true);
       await PropertyCacheService.clearCache();
-      const propertiesData = await PropertyCacheService.getAllProperties();
-      setProperties(propertiesData);
-      await loadCacheStatus(); // Reload cache status after refresh
+      await loadPropertyData();
     } catch (error) {
-      console.error('Error refreshing properties:', error);
+      console.error('Error refreshing cache:', error);
     } finally {
       setRefreshing(false);
     }
   };
 
-  const addAdminUser = async () => {
-    if (!newAdminEmail.trim() || !newAdminPassword.trim()) return;
-    
-    try {
-      const result = await AdminAuthService.createAdminUser(newAdminEmail, newAdminPassword, newAdminRole);
-      if (result.success) {
-        setNewAdminEmail('');
-        setNewAdminPassword('');
-        setNewAdminRole('editor');
-        await loadData();
-      } else {
-        console.error('Error creating admin user:', result.error);
-      }
-    } catch (error) {
-      console.error('Error adding admin user:', error);
-    }
-  };
 
-  const removeAdminUser = async (email: string) => {
-    try {
-      const success = await AdminAuthService.removeAdminUser(email);
-      if (success) {
-        await loadData();
-      }
-    } catch (error) {
-      console.error('Error removing admin user:', error);
-    }
-  };
 
-  const handlePasswordChange = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!currentPassword || !newPassword || !confirmNewPassword) {
-      setPasswordChangeError('Please fill in all fields');
-      return;
-    }
-
-    if (newPassword !== confirmNewPassword) {
-      setPasswordChangeError('New passwords do not match');
-      return;
-    }
-
-    if (newPassword.length < 6) {
-      setPasswordChangeError('New password must be at least 6 characters');
-      return;
-    }
-
-    try {
-      setIsChangingPassword(true);
-      setPasswordChangeError('');
-      
-      const result = await AdminAuthService.changePassword(currentPassword, newPassword);
-      
-      if (result.success) {
-        setPasswordChangeSuccess('Password changed successfully!');
-        setCurrentPassword('');
-        setNewPassword('');
-        setConfirmNewPassword('');
-        setShowPasswordChange(false);
-        setTimeout(() => setPasswordChangeSuccess(''), 5000);
-      } else {
-        setPasswordChangeError(result.error || 'Failed to change password');
-      }
-    } catch (error) {
-      console.error('Password change error:', error);
-      setPasswordChangeError('Failed to change password. Please try again.');
-    } finally {
-      setIsChangingPassword(false);
-    }
-  };
-
-  // Show loading while checking authentication
-  if (authLoading) {
+  if (loading) {
     return (
       <div className="container-padding py-12">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Verifying authentication...</p>
-          <p className="mt-2 text-sm text-gray-500">This may take a few seconds</p>
+          <p className="mt-4 text-gray-600">Loading...</p>
         </div>
       </div>
     );
@@ -328,12 +180,20 @@ export default function AdminDashboard() {
               <p className="text-sm text-gray-600 mb-4">
                 Need admin access? Contact an existing administrator.
               </p>
-              <button
-                onClick={() => router.push('/')}
-                className="text-gray-500 hover:text-gray-700 text-sm"
-              >
-                ← Back to Home
-              </button>
+              <div className="space-y-2">
+                <button
+                  onClick={() => router.push('/')}
+                  className="text-gray-500 hover:text-gray-700 text-sm block w-full"
+                >
+                  ← Back to Home
+                </button>
+                <button
+                  onClick={() => router.push('/')}
+                  className="text-gray-500 hover:text-gray-700 text-sm"
+                >
+                  ← Back to Home
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -341,17 +201,7 @@ export default function AdminDashboard() {
     );
   }
 
-  if (loading) {
-    return (
-      <div className="container-padding py-12">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading admin dashboard...</p>
-        </div>
-      </div>
-    );
-  }
-
+  // Show admin dashboard
   return (
     <div className="container-padding py-12">
       <div className="max-w-7xl mx-auto">
@@ -369,12 +219,6 @@ export default function AdminDashboard() {
                 <p className="font-medium text-gray-900">{currentUser?.email}</p>
               </div>
               <button
-                onClick={() => setShowPasswordChange(true)}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm"
-              >
-                Change Password
-              </button>
-              <button
                 onClick={handleLogout}
                 className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 text-sm"
               >
@@ -384,172 +228,20 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Password Change Modal */}
-        {showPasswordChange && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Change Password</h2>
-                <button
-                  onClick={() => setShowPasswordChange(false)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  ✕
-                </button>
-              </div>
-
-              {passwordChangeSuccess && (
-                <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded mb-4">
-                  {passwordChangeSuccess}
-                </div>
-              )}
-
-              {passwordChangeError && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
-                  {passwordChangeError}
-                </div>
-              )}
-
-              <form onSubmit={handlePasswordChange} className="space-y-4">
-                <div>
-                  <label htmlFor="current-password" className="block text-sm font-medium text-gray-700 mb-1">
-                    Current Password
-                  </label>
-                  <input
-                    type="password"
-                    id="current-password"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="new-password" className="block text-sm font-medium text-gray-700 mb-1">
-                    New Password
-                  </label>
-                  <input
-                    type="password"
-                    id="new-password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="confirm-new-password" className="block text-sm font-medium text-gray-700 mb-1">
-                    Confirm New Password
-                  </label>
-                  <input
-                    type="password"
-                    id="confirm-new-password"
-                    value={confirmNewPassword}
-                    onChange={(e) => setConfirmNewPassword(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                </div>
-
-                <div className="flex space-x-3">
-                  <button
-                    type="submit"
-                    disabled={isChangingPassword}
-                    className="flex-1 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 font-medium disabled:opacity-50"
-                  >
-                    {isChangingPassword ? 'Changing...' : 'Change Password'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShowPasswordChange(false)}
-                    className="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 font-medium"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {/* Cache Status Section */}
-        {cacheStatus && (
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-semibold">Cache Status</h2>
-              <div className="flex items-center space-x-2">
-                <div className={`w-3 h-3 rounded-full ${cacheStatus.cache.isStale ? 'bg-red-500' : 'bg-green-500'}`}></div>
-                <span className="text-sm text-gray-600">
-                  {cacheStatus.cache.isStale ? 'Stale' : 'Fresh'}
-                </span>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h3 className="font-semibold text-blue-800">Total Properties</h3>
-                <p className="text-2xl font-bold text-blue-600">{cacheStatus.cache.totalProperties}</p>
-              </div>
-              
-              <div className="bg-green-50 p-4 rounded-lg">
-                <h3 className="font-semibold text-green-800">Active Properties</h3>
-                <p className="text-2xl font-bold text-green-600">{cacheStatus.cache.activeProperties}</p>
-              </div>
-              
-              <div className="bg-purple-50 p-4 rounded-lg">
-                <h3 className="font-semibold text-purple-800">With Images</h3>
-                <p className="text-2xl font-bold text-purple-600">{cacheStatus.cache.propertiesWithImages}</p>
-              </div>
-              
-              <div className="bg-orange-50 p-4 rounded-lg">
-                <h3 className="font-semibold text-orange-800">Cache Age</h3>
-                <p className="text-2xl font-bold text-orange-600">
-                  {cacheStatus.cache.cacheAgeHours !== null ? `${cacheStatus.cache.cacheAgeHours}h` : 'N/A'}
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-semibold text-gray-800 mb-2">Cron Job Status</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                <div>
-                  <span className="text-gray-600">Schedule:</span>
-                  <p className="font-medium">{cacheStatus.cronJob.schedule}</p>
-                </div>
-                <div>
-                  <span className="text-gray-600">Endpoint:</span>
-                  <p className="font-medium">{cacheStatus.cronJob.endpoint}</p>
-                </div>
-                <div>
-                  <span className="text-gray-600">Status:</span>
-                  <p className="font-medium text-green-600">{cacheStatus.cronJob.status}</p>
-                </div>
-              </div>
-              {cacheStatus.cache.lastUpdated && (
-                <div className="mt-2 text-sm text-gray-500">
-                  Last updated: {new Date(cacheStatus.cache.lastUpdated).toLocaleString()}
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Properties Section */}
+        {/* Cache Management */}
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-semibold">Properties</h2>
+            <h2 className="text-2xl font-semibold">Cache Management</h2>
             <button
-              onClick={refreshProperties}
+              onClick={refreshCache}
               disabled={refreshing}
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
+              className="bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 disabled:opacity-50 font-medium"
             >
-              {refreshing ? 'Refreshing...' : 'Refresh Properties'}
+              {refreshing ? 'Refreshing...' : 'Refresh Property Cache'}
             </button>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-blue-50 p-4 rounded-lg">
               <h3 className="font-semibold text-blue-800">Total Properties</h3>
               <p className="text-2xl font-bold text-blue-600">{properties.length}</p>
@@ -562,17 +254,64 @@ export default function AdminDashboard() {
               </p>
             </div>
             
-            <div className="bg-purple-50 p-4 rounded-lg">
-              <h3 className="font-semibold text-purple-800">With Images</h3>
-              <p className="text-2xl font-bold text-purple-600">
-                {properties.filter(p => p.Media && p.Media.length > 0).length}
-              </p>
+            <div className="bg-orange-50 p-4 rounded-lg">
+              <h3 className="font-semibold text-orange-800">Under Contract</h3>
+              <p className="text-2xl font-bold text-orange-600">{underContractProperties.length}</p>
             </div>
           </div>
+        </div>
 
-          {/* Properties List */}
-          <div className="mt-6">
-            <h3 className="text-lg font-semibold mb-4">Recent Properties</h3>
+        {/* Property Status Breakdown */}
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+          <h2 className="text-2xl font-semibold mb-6">Property Status Breakdown</h2>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Count
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Percentage
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {Object.entries(
+                  properties.reduce((acc, property) => {
+                    const status = property.StandardStatus || 'Unknown';
+                    acc[status] = (acc[status] || 0) + 1;
+                    return acc;
+                  }, {} as Record<string, number>)
+                )
+                .sort(([,a], [,b]) => (b as number) - (a as number))
+                .map(([status, count]) => (
+                  <tr key={status}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-sm font-medium text-gray-900">{status}</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-sm text-gray-900">{count}</span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="text-sm text-gray-900">
+                        {((count / properties.length) * 100).toFixed(1)}%
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Under Contract Properties */}
+        {underContractProperties.length > 0 && (
+          <div className="bg-white rounded-lg shadow-lg p-6">
+            <h2 className="text-2xl font-semibold mb-6">Under Contract Properties</h2>
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
@@ -586,13 +325,10 @@ export default function AdminDashboard() {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Actions
-                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {properties.slice(0, 10).map((property) => (
+                  {underContractProperties.slice(0, 10).map((property) => (
                     <tr key={property.ListingId}>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">
@@ -608,23 +344,9 @@ export default function AdminDashboard() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                          property.StandardStatus === 'Active' 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-yellow-100 text-yellow-800'
-                        }`}>
+                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800">
                           {property.StandardStatus}
                         </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <a
-                          href={`/property/${property.ListingId}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-900"
-                        >
-                          View
-                        </a>
                       </td>
                     </tr>
                   ))}
@@ -632,100 +354,7 @@ export default function AdminDashboard() {
               </table>
             </div>
           </div>
-        </div>
-
-        {/* Admin Users Section */}
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h2 className="text-2xl font-semibold mb-6">Admin Users</h2>
-          
-          {/* Add New Admin */}
-          <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-            <h3 className="text-lg font-semibold mb-4">Add New Admin User</h3>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <input
-                type="email"
-                placeholder="Email address"
-                value={newAdminEmail}
-                onChange={(e) => setNewAdminEmail(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <input
-                type="password"
-                placeholder="Password"
-                value={newAdminPassword}
-                onChange={(e) => setNewAdminPassword(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <select
-                value={newAdminRole}
-                onChange={(e) => setNewAdminRole(e.target.value as 'admin' | 'editor')}
-                className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="editor">Editor</option>
-                <option value="admin">Admin</option>
-              </select>
-              <button
-                onClick={addAdminUser}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-              >
-                Add User
-              </button>
-            </div>
-          </div>
-
-          {/* Admin Users List */}
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Role
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Created
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {adminUsers.map((user) => (
-                  <tr key={user.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">
-                        {user.email}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        user.role === 'admin' 
-                          ? 'bg-red-100 text-red-800' 
-                          : 'bg-blue-100 text-blue-800'
-                      }`}>
-                        {user.role}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(user.created_at).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        onClick={() => removeAdminUser(user.email)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        Remove
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

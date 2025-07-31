@@ -58,7 +58,7 @@ export class PropertyCacheService {
     }
   }
 
-  // Get all properties from cache or fetch from API
+  // Get all active properties from cache or fetch from API
   static async getAllProperties(): Promise<Property[]> {
     try {
       // Use service role client to bypass RLS during build process
@@ -79,7 +79,15 @@ export class PropertyCacheService {
         // Check if cache is still fresh
         if (now - oldestCache < this.CACHE_DURATION) {
           console.log(`[Cache] Serving ${cachedProperties.length} cached properties`);
-          return cachedProperties.map(p => p.property_data);
+          const allCachedProperties = cachedProperties.map(p => p.property_data);
+          
+          // Filter for only active properties (exclude under contract)
+          const activeProperties = allCachedProperties.filter(property => 
+            property.StandardStatus === 'Active'
+          );
+          
+          console.log(`[Cache] Filtered to ${activeProperties.length} active properties`);
+          return activeProperties;
         }
       }
 
@@ -92,7 +100,13 @@ export class PropertyCacheService {
         await this.cacheAllProperties(properties);
       }
 
-      return properties;
+      // Filter for only active properties (exclude under contract)
+      const activeProperties = properties.filter(property => 
+        property.StandardStatus === 'Active'
+      );
+      
+      console.log(`[Cache] Filtered to ${activeProperties.length} active properties`);
+      return activeProperties;
     } catch (error) {
       console.error('Error in getAllProperties:', error);
       return [];
@@ -102,10 +116,27 @@ export class PropertyCacheService {
   // Get under contract properties
   static async getUnderContractProperties(): Promise<Property[]> {
     try {
-      const allProperties = await this.getAllProperties();
+      // Get all cached properties (including under contract)
+      const { data: cachedProperties, error } = await this.supabaseAdmin
+        .from('property_cache')
+        .select('*')
+        .eq('is_active', true)
+        .order('last_updated', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching from cache:', error);
+        return [];
+      }
+
+      if (!cachedProperties || cachedProperties.length === 0) {
+        console.log('[Cache] No cached properties found');
+        return [];
+      }
+
+      const allCachedProperties = cachedProperties.map(p => p.property_data);
       
       // Filter for properties under contract using StandardStatus
-      const underContractProperties = allProperties.filter(property => 
+      const underContractProperties = allCachedProperties.filter(property => 
         property.StandardStatus === 'ActiveUnderContract' || 
         property.StandardStatus === 'UnderContract' ||
         property.StandardStatus === 'Pending' ||
@@ -216,16 +247,14 @@ export class PropertyCacheService {
         nextLink = nextData['@odata.nextLink'];
       }
 
-      // Filter for active properties
-      const activeProperties = allProperties.filter((property: Property) => 
-        property.StandardStatus === 'Active' && 
-        !property.StandardStatus.includes('Contract') &&
-        !property.StandardStatus.includes('Pending') &&
+      // Filter for active and under contract properties (exclude sold)
+      const availableProperties = allProperties.filter((property: Property) => 
+        (property.StandardStatus === 'Active' || property.StandardStatus === 'Active Under Contract') &&
         !property.StandardStatus.includes('Sold')
       );
 
-      console.log(`[API] Fetched ${activeProperties.length} active properties`);
-      return activeProperties;
+      console.log(`[API] Fetched ${availableProperties.length} available properties`);
+      return availableProperties;
     } catch (error) {
       console.error('Error fetching all properties from API:', error);
       return [];
