@@ -33,6 +33,7 @@ export default function AdminDashboard() {
         setIsAuthenticated(true);
         loadPropertyData();
       } catch (error) {
+        console.error('Error parsing saved user:', error);
         localStorage.removeItem('adminUser');
       }
     }
@@ -63,7 +64,9 @@ export default function AdminDashboard() {
       setIsLoggingIn(true);
       setLoginError('');
       
+      console.log('Attempting login with:', { email: loginEmail });
       const result = await AdminAuthService.signIn(loginEmail, loginPassword);
+      console.log('Login result:', result);
       
       if (result.success && result.user) {
         setCurrentUser(result.user);

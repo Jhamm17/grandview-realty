@@ -10,7 +10,7 @@ export class AdminAuthService {
         .from('admin_users')
         .select('*')
         .eq('email', email)
-        .eq('password_hash', password); // Note: This should be hashed password in production
+        .eq('password', password); // Note: This should be hashed password in production
 
       if (error || !adminUsers || adminUsers.length === 0) {
         return { success: false, error: 'Invalid email or password' };

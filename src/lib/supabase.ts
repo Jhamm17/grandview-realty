@@ -28,6 +28,7 @@ export interface PropertyCache {
 export interface AdminUser {
   id: string;
   email: string;
+  password: string;
   role: 'admin' | 'editor';
   created_at: string;
   last_login?: string;
