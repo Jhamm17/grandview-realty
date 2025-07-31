@@ -54,6 +54,7 @@ export default function Home() {
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 h-80 md:h-[400px] lg:h-[480px] w-full">
+          <div className="pl-[10%]">
             {/* Buy Section */}
             <div className="group relative overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-[1.02] h-full">
               <Link href="/properties" className="block h-full">
@@ -82,7 +83,9 @@ export default function Home() {
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
               </Link>
             </div>
+          </div>
 
+          <div className="pr-[10%]">
             {/* Sell Section */}
             <div className="group relative overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-[1.02] h-full">
               <Link href="/contact" className="block h-full">
@@ -112,66 +115,100 @@ export default function Home() {
               </Link>
             </div>
           </div>
+        </div>
       </section>
 
 
 
-      {/* Featured Properties */}
-      <section className="py-16 md:py-24">
-        <div className="container-padding">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Featured Properties</h2>
-          <p className="text-gray-600 mb-12 max-w-2xl">
-            Explore our handpicked selection of premium properties across Chicago&apos;s most desirable neighborhoods.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Property Cards */}
-            {[
-              {
-                title: "Luxury Family Home",
-                location: "St. Charles",
-                price: "$899,000",
-                beds: 5,
-                baths: 4.5,
-                sqft: "4,200"
-              },
-              {
-                title: "Modern Townhouse",
-                location: "Naperville",
-                price: "$525,000",
-                beds: 3,
-                baths: 2.5,
-                sqft: "2,100"
-              },
-              {
-                title: "Historic Estate",
-                location: "Geneva",
-                price: "$1,275,000",
-                beds: 6,
-                baths: 5.5,
-                sqft: "5,800"
-              }
-            ].map((property, i) => (
-              <div key={i} className="bg-white rounded-lg overflow-hidden shadow-md transition-transform hover:scale-[1.02]">
-                <div className="relative h-64">
-                  <Image
-                    src={`/property-${i + 1}.jpg`}
-                    alt={property.title}
-                    fill
-                    style={{ objectFit: "cover" }}
-                  />
+      {/* Mission Statement */}
+      <section className="py-20 md:py-32 bg-gradient-to-br from-gray-50 to-white">
+        <div className="container-padding max-w-6xl mx-auto">
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-[#081d36]/10 rounded-full mb-6">
+              <svg className="w-8 h-8 text-[#081d36]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Our Mission</h2>
+            <div className="w-24 h-1 bg-[#081d36] mx-auto"></div>
+          </div>
+          
+          {/* Main Mission Statement */}
+          <div className="bg-white rounded-2xl shadow-2xl p-12 md:p-16 mb-16 border border-gray-100">
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-12">
+                <p className="text-2xl md:text-3xl lg:text-4xl text-[#081d36] font-light leading-tight mb-6">
+                  &ldquo;At Grandview Realty, LLC, our mission is to help individuals and families confidently find their perfect place to call home.&rdquo;
+                </p>
+                <div className="w-16 h-0.5 bg-[#081d36]/30 mx-auto"></div>
+              </div>
+              
+              <div className="grid md:grid-cols-2 gap-8 text-gray-700 leading-relaxed">
+                <div className="space-y-6">
+                  <p className="text-lg">
+                    Rooted in the communities we serve across Illinois, we strive to build lasting relationships, support local causes, and make every client feel confident and cared for throughout their real estate journey.
+                  </p>
+                  <p className="text-lg">
+                    We strive to maximize the value of every transaction while maintaining the highest standards of service. We are proud to be accessible, responsive, and fully invested in the success of our clients.
+                  </p>
                 </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-2">{property.title}</h3>
-                  <p className="text-gray-600 mb-4">{property.location}</p>
-                  <p className="text-primary font-bold text-xl mb-4">{property.price}</p>
-                  <div className="flex justify-between text-gray-500 text-sm">
-                    <span>{property.beds} Beds</span>
-                    <span>{property.baths} Baths</span>
-                    <span>{property.sqft} Sq Ft</span>
-                  </div>
+                <div className="space-y-6">
+                  <p className="text-lg">
+                    As a locally focused company, we are passionate about giving back and strengthening the neighborhoods we serve across Illinois. Through community partnerships and charitable initiatives, we aim to make a positive impact that extends beyond the closing table.
+                  </p>
+                  <p className="text-lg">
+                    Whether you&apos;re buying your first home, selling your last, or planning your next move, Grandview Realty is here to support your journey every step of the way.
+                  </p>
                 </div>
               </div>
-            ))}
+            </div>
+          </div>
+
+          {/* Core Values */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            <div className="bg-white rounded-xl shadow-lg p-8 text-center border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+              <div className="w-20 h-20 bg-gradient-to-br from-[#081d36]/10 to-[#081d36]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-10 h-10 text-[#081d36]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold mb-4 text-[#081d36]">Integrity</h3>
+              <p className="text-gray-600 leading-relaxed">We conduct business with honesty, transparency, and unwavering ethical standards in every transaction.</p>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-lg p-8 text-center border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+              <div className="w-20 h-20 bg-gradient-to-br from-[#081d36]/10 to-[#081d36]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-10 h-10 text-[#081d36]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold mb-4 text-[#081d36]">Community</h3>
+              <p className="text-gray-600 leading-relaxed">We&apos;re dedicated to strengthening and supporting the communities we serve across Illinois.</p>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-lg p-8 text-center border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+              <div className="w-20 h-20 bg-gradient-to-br from-[#081d36]/10 to-[#081d36]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-10 h-10 text-[#081d36]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
+              <h3 className="text-2xl font-bold mb-4 text-[#081d36]">Expertise</h3>
+              <p className="text-gray-600 leading-relaxed">We bring deep local knowledge and professional excellence to every real estate transaction.</p>
+            </div>
+          </div>
+
+          {/* Call to Action */}
+          <div className="text-center">
+            <Link 
+              href="/contact"
+              className="inline-flex items-center bg-[#081d36] text-white px-10 py-4 rounded-xl hover:bg-[#081d36]/90 transition-all duration-300 text-lg font-semibold shadow-lg hover:shadow-xl"
+            >
+              Start Your Journey
+              <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </Link>
           </div>
         </div>
       </section>

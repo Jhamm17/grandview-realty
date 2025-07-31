@@ -61,15 +61,6 @@ export default function TestimonialsGallery() {
       <div className={`text-center transition-all duration-500 ease-in-out ${
         isTransitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
       }`}>
-        {/* Quote Icon */}
-        <div className="flex justify-center mb-8">
-          <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg border border-white/30">
-            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
-            </svg>
-          </div>
-        </div>
-        
         {/* Quote Text */}
         <div className="mb-12">
           <p className="text-white leading-relaxed italic text-lg md:text-xl lg:text-2xl font-medium max-w-3xl mx-auto">
@@ -78,35 +69,30 @@ export default function TestimonialsGallery() {
         </div>
         
         {/* Author Info */}
-        <div className="flex flex-col items-center">
-          <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-4 shadow-lg border border-white/30">
-            <span className="text-white font-bold text-2xl">{currentTestimonial.initial}</span>
-          </div>
-          <div className="text-center">
-            <p className="font-bold text-white text-xl mb-1">{currentTestimonial.author}</p>
-            <p className="text-white/80 font-medium">{currentTestimonial.role}</p>
-          </div>
+        <div className="text-center">
+          <p className="font-bold text-white text-xl mb-1">{currentTestimonial.author}</p>
+          <p className="text-white/80 font-medium">{currentTestimonial.role}</p>
         </div>
       </div>
 
       {/* Navigation Arrows */}
       <button
         onClick={prevTestimonial}
-        className="absolute left-4 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/95 backdrop-blur-sm rounded-full shadow-xl flex items-center justify-center hover:bg-white transition-all duration-200 z-10 border border-white/20"
+        className="absolute left-8 top-1/3 -translate-y-1/2 w-12 h-12 flex items-center justify-center hover:opacity-80 transition-all duration-200 z-10"
         aria-label="Previous testimonial"
       >
-        <svg className="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" />
         </svg>
       </button>
 
       <button
         onClick={nextTestimonial}
-        className="absolute right-4 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/95 backdrop-blur-sm rounded-full shadow-xl flex items-center justify-center hover:bg-white transition-all duration-200 z-10 border border-white/20"
+        className="absolute right-8 top-1/3 -translate-y-1/2 w-12 h-12 flex items-center justify-center hover:opacity-80 transition-all duration-200 z-10"
         aria-label="Next testimonial"
       >
-        <svg className="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
         </svg>
       </button>
 

@@ -89,7 +89,6 @@ export function Header() {
       { name: "Office Staff", href: "/team/office-staff" },
     ],
     about: [
-      { name: "Mission Statement", href: "/about/mission" },
       { name: "Affiliations & Accreditation", href: "/about/affiliations" },
       { name: "Legal & Compliance", href: "/about/legal" },
     ],
