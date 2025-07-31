@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Header, Footer } from "./components/Navigation";
+import { Header } from "./components/Navigation";
+import ConditionalFooter from "./components/ConditionalFooter";
 
 export const metadata: Metadata = {
   title: "Grandview Realty - Chicagoland's Premier Real Estate Agency",
@@ -98,7 +99,7 @@ export default function RootLayout({
         <main className="flex-grow">
           {children}
         </main>
-        <Footer />
+        <ConditionalFooter />
       </body>
     </html>
   );
