@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Property } from '@/lib/mred/types';
 import Image from 'next/image';
 import Link from 'next/link';
+import { cleanStatusText } from '@/lib/utils';
 
 interface FilterProps {
   initialProperties: Property[];
@@ -67,20 +68,16 @@ function getStatusBadgeStyle(status: string): string {
 
 // Helper function to get status badge text
 function getStatusBadgeText(status: string): string {
-  if (status === 'Active') {
+  const cleanedStatus = cleanStatusText(status);
+  
+  if (cleanedStatus === 'Active') {
     return 'LISTED';
-  } else if (status === 'ActiveUnderContract') {
+  } else if (cleanedStatus === 'Under Contract') {
     return 'UNDER CONTRACT';
-  } else if (status === 'Under Contract') {
-    return 'UNDER CONTRACT';
-  } else if (status === 'Pending') {
-    return 'PENDING';
-  } else if (status === 'Contingent') {
-    return 'CONTINGENT';
-  } else if (status === 'Sold') {
+  } else if (cleanedStatus === 'Sold') {
     return 'SOLD';
   } else {
-    return status.toUpperCase();
+    return cleanedStatus.toUpperCase();
   }
 }
 

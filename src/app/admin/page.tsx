@@ -6,6 +6,7 @@ import { AdminAuthService } from '@/lib/admin-auth';
 import { PropertyCacheService } from '@/lib/property-cache';
 import { AuthUser } from '@/lib/supabase';
 import { Property } from '@/lib/mred/types';
+import { cleanStatusText } from '@/lib/utils';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -339,7 +340,7 @@ export default function AdminDashboard() {
                 .map(([status, count]) => (
                   <tr key={status}>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm font-medium text-gray-900">{status}</span>
+                      <span className="text-sm font-medium text-gray-900">{cleanStatusText(status)}</span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="text-sm text-gray-900">{count}</span>
@@ -393,7 +394,7 @@ export default function AdminDashboard() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800">
-                          {property.StandardStatus}
+                          {cleanStatusText(property.StandardStatus)}
                         </span>
                       </td>
                     </tr>

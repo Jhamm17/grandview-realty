@@ -2,6 +2,7 @@ import { PropertyCacheService } from '@/lib/property-cache';
 import PropertyGallery from '@/components/PropertyGallery';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { cleanStatusText } from '@/lib/utils';
 
 interface PropertyPageProps {
   params: { id: string };
@@ -100,7 +101,7 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
                   ? 'bg-green-100 text-green-800' 
                   : 'bg-yellow-100 text-yellow-800'
               }`}>
-                {property.StandardStatus}
+                {cleanStatusText(property.StandardStatus)}
               </span>
             </div>
 
@@ -116,7 +117,7 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
                 </a>
                 <a 
                   href="mailto:info@grandviewrealty.com" 
-                  className="block w-full bg-white text-blue-600 border border-blue-600 py-3 px-4 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
+                  className="block w-full bg-white text-blue-600 border border-blue-600 py-3 px-4 rounded-lg font-semibold hover:bg-blue-50 transition-colors text-center"
                 >
                   Email Us
                 </a>
@@ -135,11 +136,11 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-gray-600">MLS #:</span>
-                    <span className="font-semibold">{property.ListingId}</span>
+                    <span className="font-semibold">{property.ListingId?.replace(/^MRD/, '') || 'N/A'}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Status:</span>
-                    <span className="font-semibold">{property.StandardStatus}</span>
+                    <span className="font-semibold">{cleanStatusText(property.StandardStatus)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Property Type:</span>

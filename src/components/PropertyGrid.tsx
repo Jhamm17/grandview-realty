@@ -5,6 +5,7 @@ import { Property } from '@/lib/mred/types';
 import { mlsGridService } from '@/lib/mred/api';
 import Image from 'next/image';
 import Link from 'next/link';
+import { cleanStatusText } from '@/lib/utils';
 
 interface PropertyGridProps {
     city?: string;
@@ -110,7 +111,7 @@ export function PropertyGrid({ city, minPrice, maxPrice, beds, baths, propertyTy
                         
                         {/* Status Badge */}
                         <div className="absolute top-3 right-3 bg-green-600 text-white px-2 py-1 rounded text-sm">
-                            {property.StandardStatus}
+                            {cleanStatusText(property.StandardStatus)}
                         </div>
                     </div>
                     
