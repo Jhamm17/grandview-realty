@@ -17,7 +17,7 @@ export default function CharityPage() {
   return (
     <>
       <ScrollController />
-      <div className="relative min-h-screen charity-page">
+      <div className="relative h-screen overflow-hidden charity-page">
         {/* Background Image - Fixed and spans full width */}
         <div className="fixed inset-0 z-0">
           <Image
@@ -47,7 +47,7 @@ export default function CharityPage() {
         </section>
 
         {/* Main Content Section - Full width white background */}
-        <section className="bg-white w-full">
+        <section className="bg-white w-full charity-content">
           <div className="px-4 md:px-8 lg:px-12 pt-8 md:pt-12 lg:pt-16">
             <div className="text-center mb-12">
               <h1 className="text-5xl md:text-7xl font-bold text-primary mb-4">
