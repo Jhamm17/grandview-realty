@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function CharityPage() {
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className="relative min-h-screen">
       {/* Background Image - Fixed and spans full width */}
       <div className="fixed inset-0 z-0">
         <Image
@@ -26,7 +26,9 @@ export default function CharityPage() {
       </div>
 
       {/* Main Content - Floating over background */}
-      <div className="relative z-10 h-screen overflow-y-auto">
+      <div className="relative z-10">
+        {/* Content wrapper */}
+        <div className="relative">
         {/* Hero Section - PawtyTime logo that disappears behind nav */}
         <section className="h-[50vh] flex items-center justify-center text-center text-white">
           <div className="max-w-4xl">
@@ -419,6 +421,7 @@ export default function CharityPage() {
         
         {/* Footer - Floating above background */}
         <Footer />
+        </div>
       </div>
     </div>
   );
