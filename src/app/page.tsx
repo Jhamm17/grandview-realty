@@ -47,12 +47,13 @@ export default function Home() {
 
       {/* Buy/Sell Section */}
       <section id="buy-sell-section" className="relative py-16 md:py-24 bg-white">
-        <div className="container-padding">
-          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-gray-800">
+        <div className="container-padding mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800">
             WHAT ARE YOU LOOKING FOR?
           </h2>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 h-80 md:h-[400px] lg:h-[480px] max-w-[120rem] mx-auto">
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 h-80 md:h-[400px] lg:h-[480px] w-full">
             {/* Buy Section */}
             <div className="group relative overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-[1.02] h-full">
               <Link href="/properties" className="block h-full">
@@ -63,7 +64,7 @@ export default function Home() {
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-blue-600/50 group-hover:bg-blue-600/40 transition-colors duration-300" />
+                  <div className="absolute inset-0 bg-blue-900/50 group-hover:bg-blue-900/40 transition-colors duration-300" />
                 </div>
                 
                 <div className="relative z-10 flex items-center justify-center h-full">
@@ -92,7 +93,7 @@ export default function Home() {
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-blue-700/50 group-hover:bg-blue-700/40 transition-colors duration-300" />
+                  <div className="absolute inset-0 bg-blue-300/50 group-hover:bg-blue-300/40 transition-colors duration-300" />
                 </div>
                 
                 <div className="relative z-10 flex items-center justify-center h-full">
@@ -111,7 +112,6 @@ export default function Home() {
               </Link>
             </div>
           </div>
-        </div>
       </section>
 
 

@@ -28,43 +28,63 @@ const testimonials = [
 
 export default function TestimonialsGallery() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   const nextTestimonial = () => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
     setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
+    setTimeout(() => setIsTransitioning(false), 500);
   };
 
   const prevTestimonial = () => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
     setCurrentIndex((prevIndex) => 
       prevIndex === 0 ? testimonials.length - 1 : prevIndex - 1
     );
+    setTimeout(() => setIsTransitioning(false), 500);
+  };
+
+  const goToTestimonial = (index: number) => {
+    if (isTransitioning || index === currentIndex) return;
+    setIsTransitioning(true);
+    setCurrentIndex(index);
+    setTimeout(() => setIsTransitioning(false), 500);
   };
 
   const currentTestimonial = testimonials[currentIndex];
 
   return (
     <div className="relative max-w-4xl mx-auto">
-      {/* Main Testimonial Card */}
-      <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 md:p-12 shadow-2xl transition-all duration-300 relative border border-white/20">
-        <div className="absolute -top-6 left-8">
-          <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center shadow-lg">
-            <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+      {/* Main Testimonial Content */}
+      <div className={`text-center transition-all duration-500 ease-in-out ${
+        isTransitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
+      }`}>
+        {/* Quote Icon */}
+        <div className="flex justify-center mb-8">
+          <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg border border-white/30">
+            <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
               <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
             </svg>
           </div>
         </div>
         
-        <div className="mt-6">
-          <p className="text-gray-800 mb-8 leading-relaxed italic text-lg md:text-xl font-medium">
+        {/* Quote Text */}
+        <div className="mb-12">
+          <p className="text-white leading-relaxed italic text-lg md:text-xl lg:text-2xl font-medium max-w-3xl mx-auto">
             &ldquo;{currentTestimonial.quote}&rdquo;
           </p>
-          <div className="flex items-center">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center mr-6 shadow-lg">
-              <span className="text-white font-bold text-xl">{currentTestimonial.initial}</span>
-            </div>
-            <div>
-              <p className="font-bold text-gray-900 text-lg">{currentTestimonial.author}</p>
-              <p className="text-blue-600 font-medium">{currentTestimonial.role}</p>
-            </div>
+        </div>
+        
+        {/* Author Info */}
+        <div className="flex flex-col items-center">
+          <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mb-4 shadow-lg border border-white/30">
+            <span className="text-white font-bold text-2xl">{currentTestimonial.initial}</span>
+          </div>
+          <div className="text-center">
+            <p className="font-bold text-white text-xl mb-1">{currentTestimonial.author}</p>
+            <p className="text-white/80 font-medium">{currentTestimonial.role}</p>
           </div>
         </div>
       </div>
@@ -95,9 +115,9 @@ export default function TestimonialsGallery() {
         {testimonials.map((_, index) => (
           <button
             key={index}
-            onClick={() => setCurrentIndex(index)}
+            onClick={() => goToTestimonial(index)}
             className={`w-4 h-4 rounded-full transition-all duration-200 ${
-              index === currentIndex ? 'bg-blue-600 shadow-lg' : 'bg-white/60 hover:bg-white/80'
+              index === currentIndex ? 'bg-white shadow-lg' : 'bg-white/60 hover:bg-white/80'
             }`}
             aria-label={`Go to testimonial ${index + 1}`}
           />
