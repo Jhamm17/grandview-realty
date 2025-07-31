@@ -119,36 +119,36 @@ export default function Home() {
       </section>
 
       {/* Enhanced Mission Statement Section */}
-      <section className="py-20 md:py-32 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      <section className="py-20 md:py-32 bg-gray-50">
         <div className="container-padding max-w-6xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-16">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-[#081d36] to-blue-600 rounded-2xl mb-6 shadow-lg">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-[#081d36] rounded-2xl mb-6 shadow-lg">
               <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h2 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-[#081d36] via-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">Our Mission</h2>
-            <div className="w-32 h-2 bg-gradient-to-r from-[#081d36] via-blue-500 to-purple-500 mx-auto rounded-full"></div>
+            <h2 className="text-5xl md:text-6xl font-bold text-[#081d36] mb-4">Our Mission</h2>
+            <div className="w-32 h-2 bg-[#081d36] mx-auto rounded-full"></div>
           </div>
           
           {/* Main Mission Statement with Dynamic Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
             <div className="space-y-8">
-              <div className="inline-block bg-gradient-to-r from-[#081d36] to-blue-600 text-white px-6 py-3 rounded-full text-sm font-bold shadow-lg transform hover:scale-105 transition-transform duration-300">
-                ✨ Building Dreams Since 2017
+              <div className="inline-block bg-[#081d36] text-white px-6 py-3 rounded-full text-sm font-bold shadow-lg">
+                Building Dreams Since 2017
               </div>
               <h3 className="text-4xl md:text-5xl font-bold text-[#081d36] leading-tight">
                 Your Perfect Home
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Awaits</span>
+                <span className="block text-[#081d36]/80">Awaits</span>
               </h3>
-              <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-white/50">
+              <div className="bg-white rounded-2xl p-8 shadow-xl border border-gray-100">
                 <p className="text-xl text-gray-700 leading-relaxed">
                   At Grandview Realty, LLC, our mission is to help individuals and families confidently find their perfect place to call home. We are committed to delivering exceptional real estate experiences through integrity, local expertise, and personalized service. Rooted in the communities we serve across Illinois, we strive to build lasting relationships, support local causes, and make every client feel confident and cared for throughout their real estate journey.
                 </p>
               </div>
               <div className="flex items-center space-x-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-[#081d36] to-blue-600 rounded-full flex items-center justify-center shadow-lg">
+                <div className="w-14 h-14 bg-[#081d36] rounded-full flex items-center justify-center shadow-lg">
                   <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
@@ -162,53 +162,58 @@ export default function Home() {
                 <Image
                   src="/mission.jpg"
                   alt="Grandview Realty Team"
-                  width={600}
-                  height={400}
+                  width={700}
+                  height={500}
                   className="w-full h-auto"
                   quality={90}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#081d36]/80 via-transparent to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6">
-                  <div className="bg-white/90 backdrop-blur-sm rounded-xl p-6 shadow-lg">
-                    <h4 className="text-2xl font-bold text-[#081d36] mb-2">🏠 Community First</h4>
-                    <p className="text-gray-700 font-medium">Serving Illinois with passion, integrity, and local expertise</p>
+                <div className="absolute inset-0 bg-[#081d36]/60" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-center text-white px-8">
+                    <h4 className="text-3xl font-bold mb-4">Community First</h4>
+                    <p className="text-lg font-medium">Serving Illinois with passion, integrity, and local expertise</p>
                   </div>
                 </div>
               </div>
-              <div className="absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
-                <div className="w-4 h-4 bg-white rounded-full animate-pulse"></div>
-              </div>
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Dynamic Statistics Section */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
-            <div className="bg-gradient-to-br from-[#081d36] to-blue-600 rounded-2xl p-8 text-white text-center shadow-xl transform hover:scale-105 transition-transform duration-300">
+      {/* Statistics Section with Solid Background */}
+      <section className="py-20 bg-[#081d36]">
+        <div className="container-padding max-w-6xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-white text-center border border-white/20">
               <div className="text-4xl font-bold mb-2">500+</div>
               <div className="text-sm opacity-90 font-medium">Happy Families</div>
               <div className="w-12 h-1 bg-white/30 mx-auto mt-3 rounded-full"></div>
             </div>
-            <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-8 text-white text-center shadow-xl transform hover:scale-105 transition-transform duration-300">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-white text-center border border-white/20">
               <div className="text-4xl font-bold mb-2">7+</div>
               <div className="text-sm opacity-90 font-medium">Years Experience</div>
               <div className="w-12 h-1 bg-white/30 mx-auto mt-3 rounded-full"></div>
             </div>
-            <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl p-8 text-white text-center shadow-xl transform hover:scale-105 transition-transform duration-300">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-white text-center border border-white/20">
               <div className="text-4xl font-bold mb-2">100%</div>
               <div className="text-sm opacity-90 font-medium">Client Satisfaction</div>
               <div className="w-12 h-1 bg-white/30 mx-auto mt-3 rounded-full"></div>
             </div>
-            <div className="bg-gradient-to-br from-[#081d36] to-indigo-600 rounded-2xl p-8 text-white text-center shadow-xl transform hover:scale-105 transition-transform duration-300">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-white text-center border border-white/20">
               <div className="text-4xl font-bold mb-2">24/7</div>
               <div className="text-sm opacity-90 font-medium">Support Available</div>
               <div className="w-12 h-1 bg-white/30 mx-auto mt-3 rounded-full"></div>
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Enhanced Core Values */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            <div className="bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-xl p-8 text-center border border-blue-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-              <div className="w-24 h-24 bg-gradient-to-br from-[#081d36] to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+      {/* Core Values Section with Solid Background */}
+      <section className="py-20 bg-white">
+        <div className="container-padding max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-gray-50 rounded-2xl shadow-lg p-8 text-center border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+              <div className="w-24 h-24 bg-[#081d36] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                 <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
@@ -217,8 +222,8 @@ export default function Home() {
               <p className="text-gray-600 leading-relaxed">We conduct business with honesty, transparency, and unwavering ethical standards in every transaction.</p>
             </div>
 
-            <div className="bg-gradient-to-br from-white to-purple-50 rounded-2xl shadow-xl p-8 text-center border border-purple-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-              <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <div className="bg-gray-50 rounded-2xl shadow-lg p-8 text-center border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+              <div className="w-24 h-24 bg-[#081d36] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                 <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
@@ -227,8 +232,8 @@ export default function Home() {
               <p className="text-gray-600 leading-relaxed">We&apos;re dedicated to strengthening and supporting the communities we serve across Illinois.</p>
             </div>
 
-            <div className="bg-gradient-to-br from-white to-indigo-50 rounded-2xl shadow-xl p-8 text-center border border-indigo-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-              <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+            <div className="bg-gray-50 rounded-2xl shadow-lg p-8 text-center border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+              <div className="w-24 h-24 bg-[#081d36] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                 <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
@@ -237,25 +242,25 @@ export default function Home() {
               <p className="text-gray-600 leading-relaxed">We bring deep local knowledge and professional excellence to every real estate transaction.</p>
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Enhanced Call to Action */}
-          <div className="text-center">
-            <div className="bg-gradient-to-r from-[#081d36] via-blue-600 to-purple-600 rounded-3xl p-12 shadow-2xl">
-              <h3 className="text-3xl md:text-4xl font-bold text-white mb-6">Ready to Find Your Perfect Home?</h3>
-              <p className="text-white/90 text-xl mb-8 max-w-2xl mx-auto">
-                Let&apos;s make your real estate dreams a reality with Grandview Realty
-              </p>
-              <Link 
-                href="/contact"
-                className="inline-flex items-center bg-white text-[#081d36] px-10 py-4 rounded-xl hover:bg-gray-100 transition-all duration-300 text-lg font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
-              >
-                Start Your Journey
-                <svg className="w-6 h-6 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </Link>
-            </div>
-          </div>
+      {/* Call to Action Section with Solid Background */}
+      <section className="py-20 bg-[#081d36]">
+        <div className="container-padding max-w-4xl mx-auto text-center">
+          <h3 className="text-3xl md:text-4xl font-bold text-white mb-6">Ready to Find Your Perfect Home?</h3>
+          <p className="text-white/90 text-xl mb-8 max-w-2xl mx-auto">
+            Let&apos;s make your real estate dreams a reality with Grandview Realty
+          </p>
+          <Link 
+            href="/contact"
+            className="inline-flex items-center bg-white text-[#081d36] px-10 py-4 rounded-xl hover:bg-gray-100 transition-all duration-300 text-lg font-bold shadow-lg hover:shadow-xl"
+          >
+            Start Your Journey
+            <svg className="w-6 h-6 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </Link>
         </div>
       </section>
 
