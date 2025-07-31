@@ -34,7 +34,7 @@ export default function CharityPage() {
           {/* Content wrapper */}
           <div className="relative">
         {/* Hero Section - PawtyTime logo that disappears behind nav */}
-        <section className="h-[50vh] flex items-center justify-center text-center text-white">
+        <section className="h-[50vh] flex items-end justify-center text-center text-white pb-16">
           <div className="max-w-4xl">
             <Image
               src="/community/PawtyTime.png"
