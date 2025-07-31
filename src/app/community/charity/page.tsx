@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Image from "next/image";
+import { Footer } from "../../components/Navigation";
 
 export const metadata: Metadata = {
   title: 'Charity & Community Involvement - Grandview Realty',
@@ -41,7 +42,7 @@ export default function CharityPage() {
 
         {/* Main Content Section - Full width white background */}
         <section className="bg-white w-full">
-          <div className="px-4 md:px-8 lg:px-12 py-8 md:py-12 lg:py-16">
+          <div className="px-4 md:px-8 lg:px-12 py-8 md:py-12 lg:py-16 pb-0">
             <div className="text-center mb-12">
               <h1 className="text-5xl md:text-7xl font-bold text-primary mb-4">
                 Miracle on State Street
@@ -415,6 +416,9 @@ export default function CharityPage() {
             </div>
           </div>
         </section>
+        
+        {/* Footer - Floating above background */}
+        <Footer />
       </div>
     </div>
   );
