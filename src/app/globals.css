@@ -45,7 +45,6 @@ body {
   /* Charity page scroll control */
   .charity-page {
     overflow-x: hidden;
-    overflow-y: auto;
   }
   
   .charity-page body {

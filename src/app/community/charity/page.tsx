@@ -17,7 +17,7 @@ export default function CharityPage() {
   return (
     <>
       <ScrollController />
-      <div className="relative h-screen overflow-hidden charity-page">
+      <div className="relative min-h-screen charity-page">
         {/* Background Image - Fixed and spans full width */}
         <div className="fixed inset-0 z-0">
           <Image
