@@ -38,14 +38,14 @@ export default async function Careers() {
               priority
               quality={90}
             />
-            <div className="absolute inset-0 bg-blue-500/30" />
+            <div className="absolute inset-0 bg-blue-500/60" />
           </div>
         </div>
-        <div className="container-padding relative z-10">
+        <div className="container-padding relative z-10 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
             Join Our Team
           </h1>
-          <p className="text-xl text-white/90 max-w-2xl">
+          <p className="text-xl text-white/90 max-w-2xl mx-auto">
             Build your career with Chicagoland&apos;s premier real estate agency
           </p>
         </div>

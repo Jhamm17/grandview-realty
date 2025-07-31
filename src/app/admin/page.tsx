@@ -20,6 +20,7 @@ export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [properties, setProperties] = useState<Property[]>([]);
   const [underContractProperties, setUnderContractProperties] = useState<Property[]>([]);
 
@@ -98,6 +99,21 @@ export default function AdminDashboard() {
       localStorage.removeItem('adminUser');
     } catch (error) {
       console.error('Logout error:', error);
+    }
+  };
+
+  const refreshCache = async () => {
+    try {
+      setRefreshing(true);
+      console.log('Refreshing cache...');
+      await PropertyCacheService.clearCache();
+      console.log('Cache cleared, reloading data...');
+      await loadPropertyData();
+      console.log('Cache refresh completed');
+    } catch (error) {
+      console.error('Error refreshing cache:', error);
+    } finally {
+      setRefreshing(false);
     }
   };
 
@@ -222,8 +238,15 @@ export default function AdminDashboard() {
 
         {/* Cache Management */}
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-          <div className="mb-6">
+          <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-semibold">Cache Management</h2>
+            <button
+              onClick={refreshCache}
+              disabled={refreshing}
+              className="bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 disabled:opacity-50 font-medium"
+            >
+              {refreshing ? 'Refreshing...' : 'Refresh Property Cache'}
+            </button>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
