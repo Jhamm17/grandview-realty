@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function CharityPage() {
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen overflow-hidden">
       {/* Background Image - Fixed and spans full width */}
       <div className="fixed inset-0 z-0">
         <Image
@@ -26,7 +26,7 @@ export default function CharityPage() {
       </div>
 
       {/* Main Content - Floating over background */}
-      <div className="relative z-10">
+      <div className="relative z-10 h-screen overflow-y-auto">
         {/* Hero Section - PawtyTime logo that disappears behind nav */}
         <section className="h-[50vh] flex items-center justify-center text-center text-white">
           <div className="max-w-4xl">
@@ -42,7 +42,7 @@ export default function CharityPage() {
 
         {/* Main Content Section - Full width white background */}
         <section className="bg-white w-full">
-          <div className="px-4 md:px-8 lg:px-12 py-8 md:py-12 lg:py-16 pb-0">
+          <div className="px-4 md:px-8 lg:px-12 pt-8 md:pt-12 lg:pt-16">
             <div className="text-center mb-12">
               <h1 className="text-5xl md:text-7xl font-bold text-primary mb-4">
                 Miracle on State Street
