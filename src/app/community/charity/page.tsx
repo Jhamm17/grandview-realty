@@ -17,9 +17,9 @@ export default function CharityPage() {
   return (
     <>
       <ScrollController />
-      <div className="relative min-h-screen charity-page">
-        {/* Background Image - Fixed and spans full width */}
-        <div className="fixed inset-0 z-0">
+      <div className="relative charity-page">
+        {/* Background Image - Relative to content container */}
+        <div className="absolute inset-0 z-0">
           <Image
             src="/community/communitybackground.jpg"
             alt="Community Background"
@@ -30,7 +30,7 @@ export default function CharityPage() {
         </div>
 
         {/* Main Content - Floating over background */}
-        <div className="relative z-10">
+        <div className="relative z-10 min-h-screen">
           {/* Content wrapper */}
           <div className="relative">
         {/* Hero Section - PawtyTime logo that disappears behind nav */}
