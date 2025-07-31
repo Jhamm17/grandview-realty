@@ -157,22 +157,16 @@ export default function Home() {
             </div>
             
             <div className="relative">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+              <div className="relative overflow-hidden shadow-2xl">
                 <Image
                   src="/mission.jpg"
                   alt="Grandview Realty Team"
                   width={600}
-                  height={800}
+                  height={900}
                   className="w-full h-auto object-cover"
                   quality={90}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#081d36]/20 to-transparent" />
-              </div>
-              <div className="absolute -bottom-6 -left-6 bg-white rounded-xl shadow-lg p-6 max-w-xs">
-                <div className="flex items-center space-x-3">
-                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-sm font-medium text-gray-700">Serving Illinois Communities</span>
-                </div>
               </div>
             </div>
           </div>
