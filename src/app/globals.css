@@ -48,6 +48,18 @@ body {
     position: relative;
   }
   
+  /* Prevent bounce-back on charity page */
+  .charity-page {
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: auto;
+  }
+  
+  .charity-page body,
+  .charity-page html {
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: auto;
+  }
+  
   .charity-page body {
     position: relative;
     overflow-x: hidden;
