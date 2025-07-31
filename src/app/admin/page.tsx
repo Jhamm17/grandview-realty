@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { AdminAuthService } from '@/lib/admin-auth';
-import { PropertyCacheService } from '@/lib/property-cache';
+import { ClientPropertyService } from '@/lib/client-property-service';
 import { AuthUser } from '@/lib/supabase';
 import { Property } from '@/lib/mred/types';
 import { cleanStatusText } from '@/lib/utils';
@@ -61,12 +61,12 @@ export default function AdminDashboard() {
   const loadPropertyData = async () => {
     try {
       console.log('AdminDashboard: Loading property data...');
-      const allProperties = await PropertyCacheService.getAllProperties();
+      const allProperties = await ClientPropertyService.getAllProperties();
       console.log('AdminDashboard: Loaded properties:', allProperties.length);
       setProperties(allProperties);
       
       // Get under contract properties using the dedicated method
-      const underContract = await PropertyCacheService.getUnderContractProperties();
+      const underContract = await ClientPropertyService.getUnderContractProperties();
       console.log('AdminDashboard: Loaded under contract properties:', underContract.length);
       setUnderContractProperties(underContract);
     } catch (error) {
@@ -127,8 +127,7 @@ export default function AdminDashboard() {
     try {
       setRefreshing(true);
       console.log('Refreshing cache...');
-      await PropertyCacheService.clearCache();
-      console.log('Cache cleared, reloading data...');
+      // For client-side, we'll just reload the data since we can't clear server cache
       await loadPropertyData();
       console.log('Cache refresh completed');
     } catch (error) {

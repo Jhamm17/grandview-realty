@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Property } from '@/lib/mred/types';
-import { mlsGridService } from '@/lib/mred/api';
+import { ClientPropertyService } from '@/lib/client-property-service';
 import Image from 'next/image';
 import Link from 'next/link';
 import { cleanStatusText } from '@/lib/utils';
@@ -31,17 +31,43 @@ export function PropertyGrid({ city, minPrice, maxPrice, beds, baths, propertyTy
                     city, minPrice, maxPrice, beds, baths, propertyType
                 });
 
-                const results = await mlsGridService.searchProperties({
-                    city,
-                    minPrice,
-                    maxPrice,
-                    beds,
-                    baths,
-                    propertyType,
-                    top: 12,
-                    orderby: 'ListPrice desc',
-                    status: 'Active'
-                });
+                const allProperties = await ClientPropertyService.getAllProperties();
+                
+                // Filter properties based on criteria
+                let results = allProperties;
+                
+                if (city) {
+                    results = results.filter(p => 
+                        p.City?.toLowerCase().includes(city.toLowerCase())
+                    );
+                }
+                
+                if (minPrice) {
+                    results = results.filter(p => p.ListPrice && p.ListPrice >= minPrice);
+                }
+                
+                if (maxPrice) {
+                    results = results.filter(p => p.ListPrice && p.ListPrice <= maxPrice);
+                }
+                
+                if (beds) {
+                    results = results.filter(p => p.BedroomsTotal && p.BedroomsTotal >= beds);
+                }
+                
+                if (baths) {
+                    results = results.filter(p => p.BathroomsTotalInteger && p.BathroomsTotalInteger >= baths);
+                }
+                
+                if (propertyType) {
+                    results = results.filter(p => 
+                        p.PropertyType?.toLowerCase().includes(propertyType.toLowerCase())
+                    );
+                }
+                
+                // Limit to 12 results and sort by price
+                results = results
+                    .sort((a, b) => (b.ListPrice || 0) - (a.ListPrice || 0))
+                    .slice(0, 12);
 
                 console.log('Fetched properties:', results);
                 setProperties(results);
