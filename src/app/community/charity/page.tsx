@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Image from "next/image";
 import { Footer } from "../../components/Navigation";
+import { useEffect } from "react";
 
 export const metadata: Metadata = {
   title: 'Charity & Community Involvement - Grandview Realty',
@@ -12,23 +13,47 @@ export const metadata: Metadata = {
 };
 
 export default function CharityPage() {
-  return (
-    <div className="relative min-h-screen">
-      {/* Background Image - Fixed and spans full width */}
-      <div className="fixed inset-0 z-0">
-        <Image
-          src="/community/communitybackground.jpg"
-          alt="Community Background"
-          fill
-          className="object-cover"
-          priority
-        />
-      </div>
+  useEffect(() => {
+    // Prevent scrolling past the content
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      
+      if (scrollTop >= maxScroll) {
+        window.scrollTo(0, maxScroll);
+      }
+    };
 
-      {/* Main Content - Floating over background */}
-      <div className="relative z-10">
-        {/* Content wrapper */}
-        <div className="relative">
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <>
+      <style jsx global>{`
+        html, body {
+          overflow-x: hidden;
+        }
+        body {
+          position: relative;
+        }
+      `}</style>
+      <div className="relative min-h-screen">
+        {/* Background Image - Fixed and spans full width */}
+        <div className="fixed inset-0 z-0">
+          <Image
+            src="/community/communitybackground.jpg"
+            alt="Community Background"
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
+
+        {/* Main Content - Floating over background */}
+        <div className="relative z-10">
+          {/* Content wrapper */}
+          <div className="relative">
         {/* Hero Section - PawtyTime logo that disappears behind nav */}
         <section className="h-[50vh] flex items-center justify-center text-center text-white">
           <div className="max-w-4xl">
@@ -424,5 +449,6 @@ export default function CharityPage() {
         </div>
       </div>
     </div>
+    </>
   );
 } 
