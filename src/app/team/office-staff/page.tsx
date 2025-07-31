@@ -1,6 +1,36 @@
 export default function OfficeStaffPage() {
   const staff = [
     {
+      name: "Christopher Lobrillo",
+      title: "Owner and Managing Broker",
+      image: null,
+      phone: "630-802-4411",
+      email: "chris@grandviewsells.com",
+      responsibilities: ["Key Responsibilities"],
+      experience: "20+ years",
+      description: "Christopher Lobrillo is the Owner and Managing Broker of Grandview Realty, bringing over 20 years of experience to the organization. His leadership and vision drive the company's success and growth in the Chicagoland real estate market."
+    },
+    {
+      name: "Lynda Werner",
+      title: "Operations Manager",
+      image: null,
+      phone: "630-402-6382",
+      email: "lynda@grandviewsells.com",
+      responsibilities: ["Key Responsibilities"],
+      experience: "20+ years",
+      description: "Lynda Werner serves as our Operations Manager, with over 20 years of experience in real estate operations. Her expertise ensures smooth day-to-day operations and exceptional service delivery across all aspects of our business."
+    },
+    {
+      name: "Christopher Clark",
+      title: "Managing Broker",
+      image: "/agents/chris-clark.png",
+      phone: "630-973-7825",
+      email: "chris@clarkhometeam.com",
+      responsibilities: ["Agent Leadership & Support", "Compliance & Contract Oversight", "Training & Mentorship", "Business Development", "Recruiting & Retention", "Strategic Sales Growth"],
+      experience: "20+ years",
+      description: "Chris Clark is one of our Managing Brokers and a driving force behind Grandview Realty's growth and success. Since launching his real estate career in 2003, Chris has been passionate about helping people achieve their goals—whether they're clients buying or selling, or agents growing their business. He joined Grandview in April 2021 to lead the brokerage's expansion through agent development, strategic planning, and increased production under his Clark Home Team brand. Chris combines deep market knowledge with technology, data, and high-level service to inspire excellence across the board. His leadership, vision, and commitment make him an essential pillar of our organization."
+    },
+    {
       name: "Michael Jostes",
       title: "Transaction Coordinator",
       image: "/michaeljostes.png",
@@ -36,9 +66,9 @@ export default function OfficeStaffPage() {
     <div className="container-padding py-16">
       {/* Header */}
       <div className="text-center mb-16">
-        <h1 className="text-4xl font-bold mb-4">Office Staff</h1>
+        <h1 className="text-4xl font-bold mb-4">Office Personnel</h1>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-          Our dedicated office staff works behind the scenes to ensure every aspect of your real estate experience is seamless and professional.
+          Our dedicated office personnel works behind the scenes to ensure every aspect of your real estate experience is seamless and professional.
         </p>
       </div>
 
@@ -47,12 +77,12 @@ export default function OfficeStaffPage() {
         {staff.map((member, index) => (
           <div key={index} className="bg-white shadow-lg overflow-hidden">
             {/* Staff Image */}
-            <div className="relative h-[500px] bg-gray-200">
+            <div className="relative h-[400px] bg-gray-200 pt-8">
               {member.image ? (
                 <img 
                   src={member.image} 
                   alt={member.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover object-top"
                 />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -119,7 +149,7 @@ export default function OfficeStaffPage() {
         <div className="bg-green-50 rounded-lg p-8">
           <h2 className="text-2xl font-bold mb-4">Need Support?</h2>
           <p className="text-gray-600 mb-6">
-            Our office staff is here to help with any questions or support you may need during your real estate journey.
+            Our office personnel is here to help with any questions or support you may need during your real estate journey.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="/contact" className="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors">

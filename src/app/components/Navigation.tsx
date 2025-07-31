@@ -86,7 +86,7 @@ export function Header() {
     ],
     team: [
       { name: "Agents", href: "/team/agents" },
-      { name: "Office Staff", href: "/team/office-staff" },
+              { name: "Office Personnel", href: "/team/office-staff" },
     ],
     about: [
       { name: "Affiliations & Accreditation", href: "/about/affiliations" },
@@ -292,7 +292,7 @@ export function Footer() {
               <Link href="/properties" className="text-white/80 hover:text-[#60a5fa] transition-colors">Active Listings</Link>
               <Link href="/properties/under-contract" className="text-white/80 hover:text-[#60a5fa] transition-colors">Under Contract</Link>
               <Link href="/team/agents" className="text-white/80 hover:text-[#60a5fa] transition-colors">Agents</Link>
-              <Link href="/team/office-staff" className="text-white/80 hover:text-[#60a5fa] transition-colors">Office Staff</Link>
+              <Link href="/team/office-staff" className="text-white/80 hover:text-[#60a5fa] transition-colors">Office Personnel</Link>
               <Link href="/contact" className="text-white/80 hover:text-[#60a5fa] transition-colors">Contact</Link>
             </div>
           </div>
