@@ -17,9 +17,9 @@ export default function CharityPage() {
   return (
     <>
       <ScrollController />
-      <div className="relative charity-page">
-        {/* Background Image - Relative to content container */}
-        <div className="absolute inset-0 z-0">
+      <div className="relative charity-page min-h-screen">
+        {/* Background Image - Fixed and spans full width */}
+        <div className="fixed inset-0 z-0">
           <Image
             src="/community/communitybackground.jpg"
             alt="Community Background"
