@@ -5,6 +5,8 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 // Add defensive programming for missing environment variables
+let supabaseClient;
+
 if (!supabaseUrl || !supabaseAnonKey) {
   console.error('Missing Supabase environment variables:', {
     url: supabaseUrl ? 'present' : 'missing',
@@ -12,7 +14,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
   });
   
   // Create a dummy client to prevent crashes
-  export const supabase = createClient('https://dummy.supabase.co', 'dummy-key', {
+  supabaseClient = createClient('https://dummy.supabase.co', 'dummy-key', {
     auth: {
       autoRefreshToken: false,
       persistSession: false,
@@ -21,7 +23,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
   });
 } else {
   console.log('Supabase environment variables found, creating client...');
-  export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
       autoRefreshToken: true,
       persistSession: true,
@@ -29,6 +31,8 @@ if (!supabaseUrl || !supabaseAnonKey) {
     }
   });
 }
+
+export const supabase = supabaseClient;
 
 // Database types
 export interface PropertyCache {
