@@ -17,15 +17,7 @@ export default function CharityPage() {
   return (
     <>
       <ScrollController />
-      <style jsx global>{`
-        html, body {
-          overflow-x: hidden;
-        }
-        body {
-          position: relative;
-        }
-      `}</style>
-      <div className="relative min-h-screen">
+      <div className="relative min-h-screen charity-page">
         {/* Background Image - Fixed and spans full width */}
         <div className="fixed inset-0 z-0">
           <Image

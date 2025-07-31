@@ -41,4 +41,13 @@ body {
   .scrollbar-hide::-webkit-scrollbar {
     display: none;  /* Safari and Chrome */
   }
+  
+  /* Charity page scroll control */
+  .charity-page {
+    overflow-x: hidden;
+  }
+  
+  .charity-page body {
+    position: relative;
+  }
 }
