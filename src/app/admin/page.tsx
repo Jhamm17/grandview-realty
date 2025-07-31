@@ -10,6 +10,9 @@ import { Property } from '@/lib/mred/types';
 export default function AdminDashboard() {
   const router = useRouter();
   
+  // Add error state
+  const [error, setError] = useState<string | null>(null);
+  
   // Login form state
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
@@ -25,32 +28,46 @@ export default function AdminDashboard() {
   const [underContractProperties, setUnderContractProperties] = useState<Property[]>([]);
 
   useEffect(() => {
-    // Check if user is already logged in (from localStorage)
-    const savedUser = localStorage.getItem('adminUser');
-    if (savedUser) {
-      try {
-        const user = JSON.parse(savedUser);
-        setCurrentUser(user);
-        setIsAuthenticated(true);
-        loadPropertyData();
-      } catch (error) {
-        console.error('Error parsing saved user:', error);
-        localStorage.removeItem('adminUser');
+    try {
+      console.log('AdminDashboard: Initializing...');
+      // Check if user is already logged in (from localStorage)
+      const savedUser = localStorage.getItem('adminUser');
+      if (savedUser) {
+        try {
+          const user = JSON.parse(savedUser);
+          console.log('AdminDashboard: Found saved user:', user);
+          setCurrentUser(user);
+          setIsAuthenticated(true);
+          loadPropertyData();
+        } catch (error) {
+          console.error('Error parsing saved user:', error);
+          localStorage.removeItem('adminUser');
+        }
+      } else {
+        console.log('AdminDashboard: No saved user found');
       }
+      setLoading(false);
+    } catch (error) {
+      console.error('AdminDashboard: Error in useEffect:', error);
+      setError('Failed to initialize admin dashboard');
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   const loadPropertyData = async () => {
     try {
+      console.log('AdminDashboard: Loading property data...');
       const allProperties = await PropertyCacheService.getAllProperties();
+      console.log('AdminDashboard: Loaded properties:', allProperties.length);
       setProperties(allProperties);
       
       // Get under contract properties using the dedicated method
       const underContract = await PropertyCacheService.getUnderContractProperties();
+      console.log('AdminDashboard: Loaded under contract properties:', underContract.length);
       setUnderContractProperties(underContract);
     } catch (error) {
       console.error('Error loading property data:', error);
+      setError('Failed to load property data: ' + (error as Error).message);
     }
   };
 
@@ -120,6 +137,25 @@ export default function AdminDashboard() {
 
 
 
+
+  if (error) {
+    return (
+      <div className="container-padding py-12">
+        <div className="max-w-md mx-auto">
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+            <h2 className="text-lg font-semibold mb-2">Error</h2>
+            <p>{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+            >
+              Reload Page
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -210,9 +246,10 @@ export default function AdminDashboard() {
   }
 
   // Show admin dashboard
-  return (
-    <div className="container-padding py-12">
-      <div className="max-w-7xl mx-auto">
+  try {
+    return (
+      <div className="container-padding py-12">
+        <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex justify-between items-start">
@@ -366,4 +403,23 @@ export default function AdminDashboard() {
       </div>
     </div>
   );
+  } catch (error) {
+    console.error('AdminDashboard: Error rendering dashboard:', error);
+    return (
+      <div className="container-padding py-12">
+        <div className="max-w-md mx-auto">
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+            <h2 className="text-lg font-semibold mb-2">Render Error</h2>
+            <p>Failed to render admin dashboard: {(error as Error).message}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+            >
+              Reload Page
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 } 

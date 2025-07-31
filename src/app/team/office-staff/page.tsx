@@ -47,7 +47,7 @@ export default function OfficeStaffPage() {
         {staff.map((member, index) => (
           <div key={index} className="bg-white shadow-lg overflow-hidden">
             {/* Staff Image */}
-            <div className="relative h-96 bg-gray-200">
+            <div className="relative h-[500px] bg-gray-200">
               {member.image ? (
                 <img 
                   src={member.image} 

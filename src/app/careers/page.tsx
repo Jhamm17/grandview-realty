@@ -38,7 +38,7 @@ export default async function Careers() {
               priority
               quality={90}
             />
-            <div className="absolute inset-0 bg-blue-500/60" />
+            <div className="absolute inset-0 bg-[#2C5282]/60" />
           </div>
         </div>
         <div className="container-padding relative z-10 text-center">
