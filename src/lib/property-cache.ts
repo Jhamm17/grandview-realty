@@ -7,14 +7,14 @@ export class PropertyCacheService {
   
   // Use service role for admin operations (cache management)
   private static supabaseAdmin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://dummy.supabase.co',
+    process.env.SUPABASE_SERVICE_ROLE_KEY || 'dummy-service-key'
   );
   
   // Use regular client for public read operations
   private static supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://dummy.supabase.co',
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'dummy-anon-key'
   );
 
   // Get a single property from cache or fetch from API
@@ -61,6 +61,12 @@ export class PropertyCacheService {
   // Get all active properties from cache or fetch from API
   static async getAllProperties(): Promise<Property[]> {
     try {
+      // Check if we have valid Supabase configuration
+      if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+        console.warn('PropertyCacheService: Missing Supabase configuration, returning empty array');
+        return [];
+      }
+
       // Use service role client to bypass RLS during build process
       const { data: cachedProperties, error } = await this.supabaseAdmin
         .from('property_cache')
@@ -116,6 +122,12 @@ export class PropertyCacheService {
   // Get under contract properties
   static async getUnderContractProperties(): Promise<Property[]> {
     try {
+      // Check if we have valid Supabase configuration
+      if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+        console.warn('PropertyCacheService: Missing Supabase configuration, returning empty array');
+        return [];
+      }
+
       // Get all cached properties (including under contract)
       const { data: cachedProperties, error } = await this.supabaseAdmin
         .from('property_cache')

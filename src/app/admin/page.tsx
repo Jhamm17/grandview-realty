@@ -30,6 +30,9 @@ export default function AdminDashboard() {
   useEffect(() => {
     try {
       console.log('AdminDashboard: Initializing...');
+      console.log('AdminDashboard: Environment check - SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'present' : 'missing');
+      console.log('AdminDashboard: Environment check - SUPABASE_ANON_KEY:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'present' : 'missing');
+      
       // Check if user is already logged in (from localStorage)
       const savedUser = localStorage.getItem('adminUser');
       if (savedUser) {
