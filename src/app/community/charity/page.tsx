@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import Image from "next/image";
 import { Footer } from "../../components/Navigation";
-import { useEffect } from "react";
+import ScrollController from "./ScrollController";
 
 export const metadata: Metadata = {
   title: 'Charity & Community Involvement - Grandview Realty',
@@ -13,23 +13,10 @@ export const metadata: Metadata = {
 };
 
 export default function CharityPage() {
-  useEffect(() => {
-    // Prevent scrolling past the content
-    const handleScroll = () => {
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      
-      if (scrollTop >= maxScroll) {
-        window.scrollTo(0, maxScroll);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   return (
     <>
+      <ScrollController />
       <style jsx global>{`
         html, body {
           overflow-x: hidden;
