@@ -180,34 +180,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Statistics Section with Solid Background */}
-      <section className="py-20 bg-[#081d36]">
-        <div className="container-padding max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-white text-center border border-white/20">
-              <div className="text-4xl font-bold mb-2">500+</div>
-              <div className="text-sm opacity-90 font-medium">Happy Families</div>
-              <div className="w-12 h-1 bg-white/30 mx-auto mt-3 rounded-full"></div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-white text-center border border-white/20">
-              <div className="text-4xl font-bold mb-2">7+</div>
-              <div className="text-sm opacity-90 font-medium">Years Experience</div>
-              <div className="w-12 h-1 bg-white/30 mx-auto mt-3 rounded-full"></div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-white text-center border border-white/20">
-              <div className="text-4xl font-bold mb-2">100%</div>
-              <div className="text-sm opacity-90 font-medium">Client Satisfaction</div>
-              <div className="w-12 h-1 bg-white/30 mx-auto mt-3 rounded-full"></div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-white text-center border border-white/20">
-              <div className="text-4xl font-bold mb-2">24/7</div>
-              <div className="text-sm opacity-90 font-medium">Support Available</div>
-              <div className="w-12 h-1 bg-white/30 mx-auto mt-3 rounded-full"></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Core Values Section with Solid Background */}
       <section className="py-20 bg-white">
         <div className="container-padding max-w-6xl mx-auto">
