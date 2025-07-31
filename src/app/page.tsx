@@ -119,7 +119,7 @@ export default function Home() {
       </section>
 
       {/* Enhanced Mission Statement Section */}
-      <section className="py-20 md:py-32 bg-gray-50">
+      <section className="py-20 bg-gradient-to-br from-gray-50 to-white">
         <div className="container-padding max-w-6xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-16">
@@ -133,14 +133,13 @@ export default function Home() {
           </div>
           
           {/* Main Mission Statement with Dynamic Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-16">
             <div className="space-y-8">
-              <div className="inline-block bg-[#081d36] text-white px-6 py-3 rounded-full text-sm font-bold shadow-lg">
-                Building Dreams Since 2017
+              <div className="inline-block bg-[#081d36]/10 text-[#081d36] px-4 py-2 rounded-full text-sm font-medium">
+                Our Promise
               </div>
               <h3 className="text-4xl md:text-5xl font-bold text-[#081d36] leading-tight">
-                Your Perfect Home
-                <span className="block text-[#081d36]/80">Awaits</span>
+                Exceptional Real Estate Experiences
               </h3>
               <div className="bg-white rounded-2xl p-8 shadow-xl border border-gray-100">
                 <p className="text-xl text-gray-700 leading-relaxed">
@@ -148,31 +147,31 @@ export default function Home() {
                 </p>
               </div>
               <div className="flex items-center space-x-4">
-                <div className="w-14 h-14 bg-[#081d36] rounded-full flex items-center justify-center shadow-lg">
-                  <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-12 h-12 bg-[#081d36] rounded-full flex items-center justify-center">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <span className="text-xl font-bold text-[#081d36]">Trusted by Illinois families since 2017</span>
+                <span className="text-lg font-medium text-[#081d36]">Trusted by Illinois families since 2017</span>
               </div>
             </div>
             
             <div className="relative">
-              <div className="relative overflow-hidden shadow-2xl">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                 <Image
                   src="/mission.jpg"
                   alt="Grandview Realty Team"
-                  width={700}
-                  height={500}
-                  className="w-full h-auto"
+                  width={600}
+                  height={800}
+                  className="w-full h-auto object-cover"
                   quality={90}
                 />
-                <div className="absolute inset-0 bg-[#081d36]/60" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center text-white px-8">
-                    <h4 className="text-3xl font-bold mb-4">Community First</h4>
-                    <p className="text-lg font-medium">Serving Illinois with passion, integrity, and local expertise</p>
-                  </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#081d36]/20 to-transparent" />
+              </div>
+              <div className="absolute -bottom-6 -left-6 bg-white rounded-xl shadow-lg p-6 max-w-xs">
+                <div className="flex items-center space-x-3">
+                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-sm font-medium text-gray-700">Serving Illinois Communities</span>
                 </div>
               </div>
             </div>
@@ -181,58 +180,74 @@ export default function Home() {
       </section>
 
       {/* Core Values Section with Solid Background */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-gradient-to-br from-[#081d36] to-[#0a2a4a]">
         <div className="container-padding max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Our Core Values
+            </h2>
+            <div className="w-24 h-1 bg-white/80 mx-auto" />
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-gray-50 rounded-2xl shadow-lg p-8 text-center border border-gray-100 hover:shadow-xl transition-shadow duration-300">
-              <div className="w-24 h-24 bg-[#081d36] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
-                <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-center border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold mb-4 text-[#081d36]">Integrity</h3>
-              <p className="text-gray-600 leading-relaxed">We conduct business with honesty, transparency, and unwavering ethical standards in every transaction.</p>
+              <h3 className="text-2xl font-bold text-white mb-4">Integrity</h3>
+              <p className="text-white/90 leading-relaxed">We conduct business with honesty, transparency, and unwavering ethical standards in every transaction.</p>
             </div>
 
-            <div className="bg-gray-50 rounded-2xl shadow-lg p-8 text-center border border-gray-100 hover:shadow-xl transition-shadow duration-300">
-              <div className="w-24 h-24 bg-[#081d36] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
-                <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-center border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold mb-4 text-[#081d36]">Community</h3>
-              <p className="text-gray-600 leading-relaxed">We&apos;re dedicated to strengthening and supporting the communities we serve across Illinois.</p>
+              <h3 className="text-2xl font-bold text-white mb-4">Community</h3>
+              <p className="text-white/90 leading-relaxed">We&apos;re dedicated to strengthening and supporting the communities we serve across Illinois.</p>
             </div>
 
-            <div className="bg-gray-50 rounded-2xl shadow-lg p-8 text-center border border-gray-100 hover:shadow-xl transition-shadow duration-300">
-              <div className="w-24 h-24 bg-[#081d36] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
-                <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-center border border-white/20 hover:bg-white/20 transition-all duration-300">
+              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
               </div>
-              <h3 className="text-2xl font-bold mb-4 text-[#081d36]">Expertise</h3>
-              <p className="text-gray-600 leading-relaxed">We bring deep local knowledge and professional excellence to every real estate transaction.</p>
+              <h3 className="text-2xl font-bold text-white mb-4">Expertise</h3>
+              <p className="text-white/90 leading-relaxed">We bring deep local knowledge and professional excellence to every real estate transaction.</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Call to Action Section with Solid Background */}
-      <section className="py-20 bg-[#081d36]">
+      <section className="py-20 bg-gradient-to-r from-gray-50 to-white">
         <div className="container-padding max-w-4xl mx-auto text-center">
-          <h3 className="text-3xl md:text-4xl font-bold text-white mb-6">Ready to Find Your Perfect Home?</h3>
-          <p className="text-white/90 text-xl mb-8 max-w-2xl mx-auto">
-            Let&apos;s make your real estate dreams a reality with Grandview Realty
-          </p>
-          <Link 
-            href="/contact"
-            className="inline-flex items-center bg-white text-[#081d36] px-10 py-4 rounded-xl hover:bg-gray-100 transition-all duration-300 text-lg font-bold shadow-lg hover:shadow-xl"
-          >
-            Start Your Journey
-            <svg className="w-6 h-6 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </Link>
+          <div className="bg-white rounded-3xl shadow-2xl p-12 md:p-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-[#081d36] mb-6">
+              Ready to Find Your Perfect Home?
+            </h2>
+            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+              Whether you&apos;re buying your first home, selling your last, or planning your next move, Grandview Realty is here to support your journey every step of the way.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link 
+                href="/contact"
+                className="inline-block bg-[#081d36] text-white px-8 py-4 rounded-xl hover:bg-[#081d36]/90 transition-all duration-300 text-lg font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+              >
+                Connect With Us
+              </Link>
+              <Link 
+                href="/properties"
+                className="inline-block bg-white text-[#081d36] border-2 border-[#081d36] px-8 py-4 rounded-xl hover:bg-[#081d36] hover:text-white transition-all duration-300 text-lg font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+              >
+                View Properties
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
