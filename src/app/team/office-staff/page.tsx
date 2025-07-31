@@ -1,44 +1,34 @@
 export default function OfficeStaffPage() {
   const staff = [
     {
-      name: "Jennifer Martinez",
-      title: "Office Manager",
-      image: "/staff/jennifer-martinez.jpg",
-      phone: "(555) 111-2222",
-      email: "jennifer.martinez@grandviewrealty.com",
-      responsibilities: ["Office Operations", "Staff Coordination", "Client Relations"],
-      experience: "10+ years",
-      description: "Jennifer oversees all office operations and ensures smooth day-to-day functioning. Her attention to detail and excellent organizational skills keep our team running efficiently."
-    },
-    {
-      name: "Robert Wilson",
-      title: "Marketing Coordinator",
-      image: "/staff/robert-wilson.jpg",
-      phone: "(555) 222-3333",
-      email: "robert.wilson@grandviewrealty.com",
-      responsibilities: ["Digital Marketing", "Social Media", "Property Promotion"],
-      experience: "7+ years",
-      description: "Robert manages our digital presence and marketing campaigns. His creative approach to property promotion helps our listings reach the right audience."
-    },
-    {
-      name: "Lisa Anderson",
+      name: "Michael Jostes",
       title: "Transaction Coordinator",
-      image: "/staff/lisa-anderson.jpg",
-      phone: "(555) 333-4444",
-      email: "lisa.anderson@grandviewrealty.com",
-      responsibilities: ["Transaction Management", "Documentation", "Closing Support"],
-      experience: "12+ years",
-      description: "Lisa ensures all transactions proceed smoothly from contract to closing. Her expertise in real estate documentation and processes is invaluable to our team."
+      image: "/michaeljostes.png",
+      phone: "630-402-6462",
+      email: "michael@grandviewsells.com",
+      responsibilities: ["Transaction Management", "Documentation", "Closing Support", "MLS & CRM Updates", "File Organization & Audit Prep"],
+      experience: "1+ years",
+      description: "Michael ensures all transactions progress seamlessly from contract to close. As our dedicated Transaction Coordinator, he manages timelines, coordinates with all parties involved, and ensures every document is accurate and submitted on time. His deep knowledge of real estate processes and attention to detail are invaluable to keeping our deals on track and our clients well-supported throughout every step."
     },
     {
-      name: "Thomas Garcia",
-      title: "IT Support Specialist",
-      image: "/staff/thomas-garcia.jpg",
-      phone: "(555) 444-5555",
-      email: "thomas.garcia@grandviewrealty.com",
-      responsibilities: ["Technology Support", "System Maintenance", "Data Management"],
-      experience: "8+ years",
-      description: "Thomas keeps our technology systems running smoothly and provides technical support to our team. His expertise ensures we stay current with the latest real estate technology."
+      name: "Cailida Werner",
+      title: "Senior Transaction Coordinator",
+      image: "/cailidawerner.jpeg",
+      phone: "630-480-4347",
+      email: "cailida@grandviewsells.com",
+      responsibilities: ["Transaction Management", "Documentation", "Closing Support", "MLS & CRM Updates", "File Organization & Audit Prep"],
+      experience: "6+ years",
+      description: "Cailida is our Senior Transaction Coordinator and has been an integral part of our team for over six years. With a sharp eye for detail and a deep understanding of the real estate process, she oversees each transaction from start to finish—ensuring nothing falls through the cracks. Her experience allows her to anticipate potential issues before they arise, keeping everything on track and our clients informed every step of the way. Her dedication and expertise make her a true backbone of our operations."
+    },
+    {
+      name: "Anastasiya Voznyuk",
+      title: "Listing Coordinator & Social Media Manager",
+      image: null,
+      phone: "630-402-6285",
+      email: "anastasiya@grandviewsells.com",
+      responsibilities: ["MLS Data Entry & Verification", "Detailed Audits & Compliance", "Reporting: Feedback, Scrubs, Pricing, MLS Data Reports", "Designing and Producing Marketing Material"],
+      experience: "4+ years",
+      description: "Anastasiya brings four years of experience in real estate, combining her background in transaction coordination with her expertise in managing the listing process. She ensures exceptional accuracy and compliance across all platforms, overseeing listing preparation and audits with great attention to detail. Additionally, Anastasiya leads creative digital marketing initiatives, producing engaging content that boosts brand visibility and drives meaningful lead engagement."
     }
   ];
 
@@ -58,16 +48,24 @@ export default function OfficeStaffPage() {
           <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden">
             {/* Staff Image */}
             <div className="relative h-80 bg-gray-200">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-gray-400 text-center">
-                  <div className="w-24 h-24 bg-gray-300 rounded-full mx-auto mb-4 flex items-center justify-center">
-                    <span className="text-2xl font-bold text-gray-500">
-                      {member.name.split(' ').map(n => n[0]).join('')}
-                    </span>
+              {member.image ? (
+                <img 
+                  src={member.image} 
+                  alt={member.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-gray-400 text-center">
+                    <div className="w-24 h-24 bg-gray-300 rounded-full mx-auto mb-4 flex items-center justify-center">
+                      <span className="text-2xl font-bold text-gray-500">
+                        {member.name.split(' ').map(n => n[0]).join('')}
+                      </span>
+                    </div>
+                    <p className="text-sm">Photo Coming Soon</p>
                   </div>
-                  <p className="text-sm">Photo Coming Soon</p>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Staff Info */}
