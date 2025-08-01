@@ -25,7 +25,7 @@ export default function Home() {
         {/* Content */}
         <div className="container-padding relative z-10 flex items-center justify-center min-h-full">
           <div className="max-w-2xl text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 text-white drop-shadow-lg">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 text-white drop-shadow-lg" style={{ lineHeight: '1.1' }}>
               Your Gateway to Chicagoland Living
             </h1>
             <p className="text-lg md:text-xl lg:text-2xl mb-8 text-white/90 drop-shadow-md">
@@ -60,7 +60,7 @@ export default function Home() {
               <Link href="/properties" className="block h-full">
                 <div className="absolute inset-0">
                   <Image
-                    src="/buyimage.png"
+                    src="/buy.png"
                     alt="Buy a home"
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -91,7 +91,7 @@ export default function Home() {
               <Link href="/contact" className="block h-full">
                 <div className="absolute inset-0">
                   <Image
-                    src="/sellimage.png"
+                    src="/sell.jpg"
                     alt="Sell your home"
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -123,17 +123,12 @@ export default function Home() {
         <div className="container-padding max-w-6xl mx-auto">
           {/* Section Header */}
           <div className="text-center mb-16">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-[#081d36] rounded-2xl mb-6 shadow-lg">
-              <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
             <h2 className="text-5xl md:text-6xl font-bold text-[#081d36] mb-4">Our Mission</h2>
             <div className="w-32 h-2 bg-[#081d36] mx-auto rounded-full"></div>
           </div>
           
           {/* Main Mission Statement with Dynamic Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-end mb-16">
             <div className="space-y-8">
               <div className="inline-block bg-[#081d36]/10 text-[#081d36] px-4 py-2 rounded-full text-sm font-medium">
                 Our Promise
