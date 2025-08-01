@@ -1,8 +1,35 @@
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function AgentsPage() {
   const agents = [
+    {
+      id: "christopher-lobrillo",
+      name: "Christopher Lobrillo",
+      title: "Managing Broker & Managing Partner",
+      image: "/agents/christopher-lobrillo.png",
+      logo: "/agents/chris-lobrillo-logo.png",
+      phone: "630-802-4411",
+      email: "chris@grandviewsells.com",
+      specialties: ["Buyers", "Sellers", "Investors", "REO", "Corporate"],
+      experience: "20+ years",
+      serviceArea: "Chicago and Surrounding Suburbs",
+      description: "Christopher Lobrillo brings over 20 years of experience in the real estate industry and serves as Owner and Managing Broker of Grandview Realty. He is actively involved in guiding the firm's growth, operations, and agent mentorship programs. Before co-founding Grandview Realty, Christopher was a partner on the top-performing real estate team in Kane County, Illinois, under the RE/MAX brand. Over the course of his career, he has successfully closed more than 3,700 transactions, covering residential, REO, and corporate properties. Known for his strategic insight and hands-on leadership, Christopher is passionate about business development and supporting agents as they build thriving careers."
+    },
+    {
+      id: "lynda-werner",
+      name: "Lynda Werner",
+      title: "Operations Manager | Licensed Real Estate Agent",
+      image: "/agents/lynda-werner.png",
+      logo: "/agents/lynda-werner-logo.png",
+      phone: "630-402-6382",
+      email: "lynda@grandviewsells.com",
+      specialties: ["Buyers", "Sellers", "Operations", "REO"],
+      experience: "20+ years",
+      serviceArea: "Chicago and Surrounding Suburbs",
+      description: "With over 20 years of experience in the real estate industry, Lynda Werner brings a wealth of knowledge and operational expertise to her role as Operations Manager at Grandview Realty. Her diverse background spans real estate collections, foreclosure, bankruptcy, REO management, and mortgage auditing—providing her with a comprehensive understanding of the industry from every angle. At Grandview Realty, Lynda oversees the administrative and support staff, ensuring smooth day-to-day operations and seamless service for agents and clients alike. She is deeply committed to fostering professional growth and encourages continuous development among team members."
+    },
     {
       id: "chris-clark",
       name: "Chris Clark",
@@ -42,7 +69,6 @@ export default function AgentsPage() {
       serviceArea: "Chicago and West Suburbs",
       description: "Yolanda has been working in real estate for over 10 years. She is diligent and hardworking and willing to do what's necessary to get the job done. She can work with first-time buyers and sellers, investors, renters, landlords, etc. Whether it's residential, investment or commercial – she is the one for the job!"
     },
-
     {
       id: "laura-cook",
       name: "Laura Cook-Horlbeck",
@@ -132,7 +158,7 @@ export default function AgentsPage() {
       specialties: ["Buyers", "Renters"],
       experience: undefined,
       serviceArea: "Chicago and West Suburbs",
-      description: "My enthusiasm for real estate, my professional approach and my drive to always exceed expectations is something you will appreciate as we work together. I take pride in my attention to detail, communication, and negotiation skills, ensuring my clients a smooth process throughout the entire transaction, from listing to closing!"
+      description: "Specializing in helping buyers and renters find their perfect home, Shaun brings a fresh perspective and dedicated approach to real estate. With a focus on exceptional customer service and attention to detail, he ensures every client receives personalized guidance throughout their home search journey. Shaun's commitment to understanding his clients' unique needs and preferences makes him an invaluable partner in finding the right property."
     },
     {
       id: "katherine-alderfer",
@@ -152,7 +178,7 @@ export default function AgentsPage() {
       name: "Adam Turner",
       title: "Agent",
       image: "/agents/adam-turner.jpeg",
-      logo: "/agents/adam-turner.jpeg",
+      logo: "/agents/adam-turner-logo.png",
       phone: "224-325-5871",
       email: "eaglefreedomrealestate@outlook.com",
       specialties: ["Buyers", "Sellers", "Investors"],
@@ -165,118 +191,131 @@ export default function AgentsPage() {
       name: "Sam Tousi",
       title: "Agent",
       image: "/agents/sam-tousi.png",
-      logo: "/agents/sam-tousi.png",
+      logo: "/agents/sam-tousi-logo.png",
       phone: "847-962-8400",
       email: "samtousi@hotmail.com",
       specialties: ["Buyers", "Sellers", "Investors"],
       experience: "25+ years",
       serviceArea: "North and Northwest Suburbs",
       description: "With over 25 years of experience as a licensed real estate broker and more than 40 years of familiarity with the North and Northwest suburbs, Sam Tousi brings unmatched local expertise and industry knowledge. He specializes in residential, commercial, investment, and new construction properties, providing clients with reliable guidance and proven results."
-    },
-    {
-      id: "christopher-lobrillo",
-      name: "Christopher Lobrillo",
-      title: "Managing Broker",
-      image: "/agents/christopher-lobrillo.png",
-      logo: "/agents/christopher-lobrillo-logo.png",
-      phone: "630-423-7989",
-      email: "chris@grandviewsells.com",
-      specialties: ["Buyers", "Sellers", "Investors"],
-      experience: undefined,
-      serviceArea: "Chicago and Surrounding Suburbs",
-      description: "Christopher Lobrillo serves as the Managing Broker at Grandview Realty, overseeing operations and ensuring the highest standards of service for our clients. With extensive experience in real estate management and a commitment to excellence, Christopher leads our team with dedication and expertise."
     }
   ];
 
   return (
-    <div className="container-padding py-16">
-      {/* Header */}
-      <div className="text-center mb-16">
-        <h1 className="text-4xl font-bold mb-4">Our Agents</h1>
-        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-          Meet our dedicated team of real estate professionals who are committed to providing exceptional service and helping you achieve your real estate goals.
-        </p>
-      </div>
+    <div>
+      {/* Hero Section */}
+      <section className="relative h-[40vh] min-h-[300px] flex items-center">
+        <div className="absolute inset-0 z-0">
+          <div className="relative w-full h-full">
+            <Image
+              src="/careersbg.jpg"
+              alt="Grandview Realty Agents"
+              fill
+              style={{ objectFit: "cover" }}
+              priority
+              quality={90}
+            />
+            <div className="absolute inset-0 bg-slate-800/70" />
+          </div>
+        </div>
+        <div className="container-padding relative z-10">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            Our Agents
+          </h1>
+          <p className="text-xl text-white/90 max-w-2xl">
+            Meet our dedicated team of real estate professionals who are committed to providing exceptional service and helping you achieve your real estate goals.
+          </p>
+        </div>
+      </section>
 
-      {/* Agents Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {agents.map((agent, index) => (
-          <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
-            {/* Agent Image */}
-            <div className="relative w-full aspect-square bg-gray-200">
-              {agent.logo ? (
-                <img
-                  src={agent.logo}
-                  alt={agent.name + " logo"}
-                  className="object-contain w-full h-full"
-                />
-              ) : agent.image ? (
-                <img
-                  src={agent.image}
-                  alt={agent.name}
-                  className="object-contain w-full h-full"
-                />
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-gray-400 text-center">
-                    <div className="w-20 h-20 bg-gray-300 mx-auto mb-3 flex items-center justify-center">
-                      <span className="text-xl font-bold text-gray-500">
-                        {agent.name.split(' ').map(n => n[0]).join('')}
-                      </span>
-                    </div>
-                    <p className="text-sm">Photo Coming Soon</p>
+      <div className="container-padding py-16">
+        {/* Agents Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {agents.map((agent, index) => (
+            <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+              {/* Agent Image with Name/Title Overlay */}
+              <div className="relative w-full aspect-square bg-gray-200">
+                {agent.logo ? (
+                  <div className="w-full h-full flex items-center justify-center p-8">
+                    <img
+                      src={agent.logo}
+                      alt={agent.name + " logo"}
+                      className="object-contain w-full h-full max-w-[200px] max-h-[200px]"
+                    />
                   </div>
-                </div>
-              )}
-            </div>
-
-            {/* Agent Info */}
-            <div className="p-6 text-center">
-              <h3 className="text-xl font-bold mb-1">{agent.name}</h3>
-              <p className="text-[#60a5fa] font-semibold mb-4">{agent.title}</p>
-              
-              {/* Contact Info */}
-              <div className="mb-6 space-y-2">
-                <div className="flex items-center text-gray-600 text-sm">
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                  </svg>
-                  <span>{agent.phone}</span>
-                </div>
-                <div className="flex items-center text-gray-600 text-sm">
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                  <span>{agent.email}</span>
+                ) : agent.image ? (
+                  <div className="w-full h-full flex items-center justify-center p-8">
+                    <img
+                      src={agent.image}
+                      alt={agent.name}
+                      className="object-contain w-full h-full max-w-[200px] max-h-[200px]"
+                    />
+                  </div>
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-gray-400 text-center">
+                      <div className="w-20 h-20 bg-gray-300 mx-auto mb-3 flex items-center justify-center">
+                        <span className="text-xl font-bold text-gray-500">
+                          {agent.name.split(' ').map(n => n[0]).join('')}
+                        </span>
+                      </div>
+                      <p className="text-sm">Photo Coming Soon</p>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Name and Title Overlay */}
+                <div className="absolute top-0 left-0 right-0 bg-white/95 backdrop-blur-sm p-4 text-center">
+                  <h3 className="text-lg font-bold mb-1 text-gray-800">{agent.name}</h3>
+                  <p className="text-[#60a5fa] font-semibold text-sm">{agent.title}</p>
                 </div>
               </div>
 
-              {/* View More Button */}
-              <Link 
-                href={`/team/agents/${agent.id}`}
-                className="block w-full bg-[#1a365d] text-white text-center py-3 px-4 rounded-lg font-semibold hover:bg-[#2d5a87] transition-colors"
-              >
-                Agent Info
-              </Link>
-            </div>
-          </div>
-        ))}
-      </div>
+              {/* Agent Info */}
+              <div className="p-6 text-center">
+                {/* Contact Info */}
+                <div className="mb-6 space-y-2">
+                  <div className="flex items-center justify-center text-gray-600 text-sm">
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    </svg>
+                    <span>{agent.phone}</span>
+                  </div>
+                  <div className="flex items-center justify-center text-gray-600 text-sm">
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    <span>{agent.email}</span>
+                  </div>
+                </div>
 
-      {/* Call to Action */}
-      <div className="mt-16 text-center">
-        <div className="bg-blue-50 rounded-lg p-8">
-          <h2 className="text-2xl font-bold mb-4">Ready to Work With Our Team?</h2>
-          <p className="text-gray-600 mb-6">
-            Our agents are here to help you navigate the real estate market with confidence and expertise.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/contact" className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
-              Contact Us
-            </a>
-            <a href="/properties" className="bg-white text-blue-600 border border-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
-              View Properties
-            </a>
+                {/* View More Button */}
+                <Link 
+                  href={`/team/agents/${agent.id}`}
+                  className="block w-full bg-[#1a365d] text-white text-center py-3 px-4 rounded-lg font-semibold hover:bg-[#2d5a87] transition-colors"
+                >
+                  Agent Info
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Call to Action */}
+        <div className="mt-16 text-center">
+          <div className="bg-blue-50 rounded-lg p-8">
+            <h2 className="text-2xl font-bold mb-4">Ready to Work With Our Team?</h2>
+            <p className="text-gray-600 mb-6">
+              Our agents are here to help you navigate the real estate market with confidence and expertise.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a href="/contact" className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                Contact Us
+              </a>
+              <a href="/properties" className="bg-white text-blue-600 border border-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
+                View Properties
+              </a>
+            </div>
           </div>
         </div>
       </div>
