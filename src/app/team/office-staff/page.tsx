@@ -130,7 +130,7 @@ export default function OfficeStaffPage() {
                 <h4 className="font-semibold text-gray-800 mb-3">Key Responsibilities</h4>
                 <div className="flex flex-wrap gap-2">
                   {member.responsibilities.map((responsibility, idx) => (
-                    <span key={idx} className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">
+                    <span key={idx} className="bg-slate-100 text-slate-800 px-3 py-1 rounded-full text-sm">
                       {responsibility}
                     </span>
                   ))}
