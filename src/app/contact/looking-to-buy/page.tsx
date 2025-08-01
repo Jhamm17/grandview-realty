@@ -13,7 +13,7 @@ export default async function LookingToBuy() {
               src="/contactbg.png"
               alt="Contact Grandview Realty"
               fill
-              style={{ objectFit: "cover" }}
+              style={{ objectFit: "cover", objectPosition: "center 40%" }}
               priority
               quality={90}
             />

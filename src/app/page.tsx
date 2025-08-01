@@ -89,7 +89,7 @@ export default function Home() {
           <div className="pr-[10%]">
             {/* Sell Section */}
             <div className="group relative overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-[1.02] h-full">
-              <Link href="/contact" className="block h-full">
+              <Link href="/contact/looking-to-sell" className="block h-full">
                 <div className="absolute inset-0">
                   <Image
                     src="/sell.jpg"

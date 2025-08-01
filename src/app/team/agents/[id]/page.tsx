@@ -370,8 +370,7 @@ export default function AgentPage({ params }: { params: { id: string } }) {
       <div className="mb-16">
         <h2 className="text-3xl font-bold mb-6">About {agent.name.split(' ')[0]}</h2>
         <div className="bg-white rounded-lg shadow-lg p-8">
-          <p className="text-gray-700 leading-relaxed text-lg mb-6">{agent.bio}</p>
-          <p className="text-gray-700 leading-relaxed text-lg">{agent.description}</p>
+          <p className="text-gray-700 leading-relaxed text-lg">{agent.bio}</p>
         </div>
       </div>
 
