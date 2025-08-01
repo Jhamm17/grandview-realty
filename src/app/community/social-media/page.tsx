@@ -100,19 +100,19 @@ export default function SocialMediaPage() {
                 <ul className="space-y-2 text-sm text-gray-600">
                   <li className="flex items-center">
                     <div className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mr-3"></div>
-                    Stunning property photography
+                    New Listings
                   </li>
                   <li className="flex items-center">
                     <div className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mr-3"></div>
-                    Virtual tours and walkthroughs
+                    Open Houses
                   </li>
                   <li className="flex items-center">
                     <div className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mr-3"></div>
-                    Before and after transformations
+                    Polls & Engagement
                   </li>
                   <li className="flex items-center">
                     <div className="w-2 h-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mr-3"></div>
-                    Local community highlights
+                    Neighborhood Guides
                   </li>
                 </ul>
               </div>
