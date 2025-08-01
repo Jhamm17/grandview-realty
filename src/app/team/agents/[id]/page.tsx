@@ -3,9 +3,56 @@ import Link from 'next/link';
 export default function AgentPage({ params }: { params: { id: string } }) {
   const agents = [
     {
+      id: "christopher-lobrillo",
+      name: "Christopher Lobrillo",
+      title: "Managing Broker & Managing Partner",
+      image: "/agents/christopher-lobrillo.png",
+      logo: "/agents/chris-lobrillo-logo.png",
+      phone: "630-802-4411",
+      email: "chris@grandviewsells.com",
+      specialties: ["Buyers", "Sellers", "Investors", "REO", "Corporate"],
+      experience: "20+ years",
+      serviceArea: "Chicago and Surrounding Suburbs",
+      description: "Christopher Lobrillo brings over 20 years of experience in the real estate industry and serves as Owner and Managing Broker of Grandview Realty. He is actively involved in guiding the firm's growth, operations, and agent mentorship programs. Before co-founding Grandview Realty, Christopher was a partner on the top-performing real estate team in Kane County, Illinois, under the RE/MAX brand. Over the course of his career, he has successfully closed more than 3,700 transactions, covering residential, REO, and corporate properties. Known for his strategic insight and hands-on leadership, Christopher is passionate about business development and supporting agents as they build thriving careers.",
+      bio: "Christopher Lobrillo brings over 20 years of experience in the real estate industry and serves as Owner and Managing Broker of Grandview Realty. He is actively involved in guiding the firm's growth, operations, and agent mentorship programs. Before co-founding Grandview Realty, Christopher was a partner on the top-performing real estate team in Kane County, Illinois, under the RE/MAX brand. Over the course of his career, he has successfully closed more than 3,700 transactions, covering residential, REO, and corporate properties. Known for his strategic insight and hands-on leadership, Christopher is passionate about business development and supporting agents as they build thriving careers.",
+      achievements: [
+        "Managing Broker & Managing Partner",
+        "3,700+ Transactions Closed",
+        "REO & Corporate Specialist",
+        "Business Development Expert",
+        "Agent Mentorship Leader"
+      ],
+      areas: ["Chicago", "Surrounding Suburbs"],
+      languages: ["English"]
+    },
+    {
+      id: "lynda-werner",
+      name: "Lynda Werner",
+      title: "Operations Manager | Licensed Real Estate Agent",
+      image: "/agents/lynda-werner.png",
+      logo: "/agents/lynda-werner-logo.png",
+      phone: "630-402-6382",
+      email: "lynda@grandviewsells.com",
+      specialties: ["Buyers", "Sellers", "Operations", "REO"],
+      experience: "20+ years",
+      serviceArea: "Chicago and Surrounding Suburbs",
+      description: "With over 20 years of experience in the real estate industry, Lynda Werner brings a wealth of knowledge and operational expertise to her role as Operations Manager at Grandview Realty. Her diverse background spans real estate collections, foreclosure, bankruptcy, REO management, and mortgage auditing—providing her with a comprehensive understanding of the industry from every angle. At Grandview Realty, Lynda oversees the administrative and support staff, ensuring smooth day-to-day operations and seamless service for agents and clients alike. She is deeply committed to fostering professional growth and encourages continuous development among team members.",
+      bio: "With over 20 years of experience in the real estate industry, Lynda Werner brings a wealth of knowledge and operational expertise to her role as Operations Manager at Grandview Realty. Her diverse background spans real estate collections, foreclosure, bankruptcy, REO management, and mortgage auditing—providing her with a comprehensive understanding of the industry from every angle. At Grandview Realty, Lynda oversees the administrative and support staff, ensuring smooth day-to-day operations and seamless service for agents and clients alike. She is deeply committed to fostering professional growth and encourages continuous development among team members.",
+      achievements: [
+        "Operations Manager",
+        "Licensed Real Estate Agent",
+        "20+ Years Industry Experience",
+        "REO Management Specialist",
+        "Mortgage Auditing Expert",
+        "Team Development Leader"
+      ],
+      areas: ["Chicago", "Surrounding Suburbs"],
+      languages: ["English"]
+    },
+    {
       id: "chris-clark",
       name: "Chris Clark",
-      title: "Sales Manager",
+      title: "Managing Broker",
       image: "/agents/chris-clark.png",
       logo: "/agents/chris-clark-logo.png",
       phone: "630-973-7825",

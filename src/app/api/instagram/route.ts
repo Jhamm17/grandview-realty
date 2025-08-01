@@ -27,15 +27,27 @@ interface InstagramResponse {
   };
 }
 
+// Cache for Instagram posts (5 minutes)
+let cachedPosts: any = null;
+let cacheTimestamp: number = 0;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
 export async function GET() {
   try {
     // Check if we have the required environment variables
     if (!INSTAGRAM_ACCESS_TOKEN) {
       console.warn('Instagram access token not configured');
       return NextResponse.json({ 
-        posts: [],
-        error: 'Instagram not configured' 
+        posts: getMockPosts(),
+        count: 4,
+        error: 'Instagram not configured - using mock data' 
       });
+    }
+
+    // Check cache first
+    const now = Date.now();
+    if (cachedPosts && (now - cacheTimestamp) < CACHE_DURATION) {
+      return NextResponse.json(cachedPosts);
     }
 
     // Fetch Instagram posts
@@ -46,7 +58,8 @@ export async function GET() {
           fields: 'id,media_type,media_url,thumbnail_url,permalink,caption,timestamp',
           access_token: INSTAGRAM_ACCESS_TOKEN,
           limit: 12 // Get latest 12 posts
-        }
+        },
+        timeout: 10000 // 10 second timeout
       }
     );
 
@@ -60,52 +73,82 @@ export async function GET() {
       mediaType: post.media_type
     }));
 
-    return NextResponse.json({ 
+    const result = { 
       posts,
-      count: posts.length
-    });
+      count: posts.length,
+      cached: true,
+      timestamp: now
+    };
 
-  } catch (error) {
+    // Update cache
+    cachedPosts = result;
+    cacheTimestamp = now;
+
+    return NextResponse.json(result);
+
+  } catch (error: any) {
     console.error('Error fetching Instagram posts:', error);
     
-    // Return mock data for development/testing
+    // Check if it's an authentication error
+    if (error.response?.status === 401) {
+      return NextResponse.json({
+        posts: getMockPosts(),
+        count: 4,
+        error: 'Instagram access token expired or invalid - using mock data'
+      });
+    }
+
+    // Check if it's a rate limit error
+    if (error.response?.status === 429) {
+      return NextResponse.json({
+        posts: getMockPosts(),
+        count: 4,
+        error: 'Instagram API rate limit exceeded - using mock data'
+      });
+    }
+    
+    // Return mock data for other errors
     return NextResponse.json({
-      posts: [
-        {
-          id: '1',
-          mediaUrl: '/property-1.jpg',
-          permalink: 'https://www.instagram.com/grandviewrealtygeneva/',
-          caption: 'Beautiful property in Geneva, IL - Just listed!',
-          timestamp: new Date().toISOString(),
-          mediaType: 'IMAGE'
-        },
-        {
-          id: '2',
-          mediaUrl: '/property-2.jpg',
-          permalink: 'https://www.instagram.com/grandviewrealtygeneva/',
-          caption: 'Stunning home with amazing views',
-          timestamp: new Date().toISOString(),
-          mediaType: 'IMAGE'
-        },
-        {
-          id: '3',
-          mediaUrl: '/property-3.jpg',
-          permalink: 'https://www.instagram.com/grandviewrealtygeneva/',
-          caption: 'Modern living in the heart of Chicagoland',
-          timestamp: new Date().toISOString(),
-          mediaType: 'IMAGE'
-        },
-        {
-          id: '4',
-          mediaUrl: '/hero-image.jpg',
-          permalink: 'https://www.instagram.com/grandviewrealtygeneva/',
-          caption: 'Your trusted real estate partner',
-          timestamp: new Date().toISOString(),
-          mediaType: 'IMAGE'
-        }
-      ],
+      posts: getMockPosts(),
       count: 4,
-      error: 'Using mock data - configure Instagram API for live feed'
+      error: 'Error fetching Instagram posts - using mock data'
     });
   }
+}
+
+function getMockPosts() {
+  return [
+    {
+      id: '1',
+      mediaUrl: '/property-1.jpg',
+      permalink: 'https://www.instagram.com/grandviewrealtygeneva/',
+      caption: 'Beautiful property in Geneva, IL - Just listed!',
+      timestamp: new Date().toISOString(),
+      mediaType: 'IMAGE'
+    },
+    {
+      id: '2',
+      mediaUrl: '/property-2.jpg',
+      permalink: 'https://www.instagram.com/grandviewrealtygeneva/',
+      caption: 'Stunning home with amazing views',
+      timestamp: new Date().toISOString(),
+      mediaType: 'IMAGE'
+    },
+    {
+      id: '3',
+      mediaUrl: '/property-3.jpg',
+      permalink: 'https://www.instagram.com/grandviewrealtygeneva/',
+      caption: 'Modern living in the heart of Chicagoland',
+      timestamp: new Date().toISOString(),
+      mediaType: 'IMAGE'
+    },
+    {
+      id: '4',
+      mediaUrl: '/hero-image.jpg',
+      permalink: 'https://www.instagram.com/grandviewrealtygeneva/',
+      caption: 'Your trusted real estate partner',
+      timestamp: new Date().toISOString(),
+      mediaType: 'IMAGE'
+    }
+  ];
 } 

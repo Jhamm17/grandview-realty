@@ -8,7 +8,7 @@ export default function OfficeStaffPage() {
       email: "chris@grandviewsells.com",
       responsibilities: ["Business Growth & Development", "Agent Mentorship & Development", "Brokerage Oversight & Compliance", "REO Specialist", "Corporate Closings"],
       experience: "20+ years",
-      description: "Christopher Lobrillo brings over 20 years of experience in the real estate industry and serves as Owner and Managing Broker of Grandview Realty. He is actively involved in guiding the firm's growth, operations, and agent mentorship programs. Before co-founding Grandview Realty, Christopher was a partner on the top-performing real estate team in Kane County, Illinois, under the RE/MAX brand. Over the course of his career, he has successfully closed more than 3,700 transactions, covering residential, REO, and corporate properties. Known for his strategic insight and hands-on leadership, Christopher is passionate about business development and supporting agents as they build thriving careers. His proven track record, deep market knowledge, and commitment to excellence have earned him a trusted reputation in the industry."
+      description: "Christopher Lobrillo is Co-Founder and Owner of Grandview Realty, bringing over 20 years of experience and more than 3,700 closed transactions across residential, REO, and corporate real estate. A former partner on Kane County's top RE/MAX team, he now leads Grandview's growth, operations, and agent development. Known for his strategic vision and hands-on leadership, Christopher is committed to building a high-performing, agent-focused brokerage."
     },
     {
       name: "Lynda Werner",
@@ -18,7 +18,7 @@ export default function OfficeStaffPage() {
       email: "lynda@grandviewsells.com",
       responsibilities: ["Real Estate Operations", "Administrative Oversight", "Real Estate Compliance", "REO Management", "Agent Support and Development", "Office Management"],
       experience: "20+ years",
-      description: "With over 20 years of experience in the real estate industry, Lynda Werner brings a wealth of knowledge and operational expertise to her role as Operations Manager at Grandview Realty. Her diverse background spans real estate collections, foreclosure, bankruptcy, REO management, and mortgage auditing—providing her with a comprehensive understanding of the industry from every angle. At Grandview Realty, Lynda oversees the administrative and support staff, ensuring smooth day-to-day operations and seamless service for agents and clients alike. She is deeply committed to fostering professional growth and encourages continuous development among team members. In addition to her operational leadership, Lynda is a licensed real estate agent, offering her a unique perspective and the ability to bridge the gap between back-office systems and front-line agent support."
+      description: "With over 20 years in real estate, Lynda Werner serves as Operations Manager at Grandview Realty, where she brings deep expertise in collections, foreclosure, REO, and mortgage auditing. She leads the administrative team, ensuring smooth operations and top-tier support for agents and clients. A licensed real estate agent herself, Lynda bridges operations with front-line insight, all while fostering growth and development across the team."
     },
     {
       name: "Christopher Clark",
@@ -28,7 +28,7 @@ export default function OfficeStaffPage() {
       email: "chris@clarkhometeam.com",
       responsibilities: ["Agent Leadership & Support", "Compliance & Contract Oversight", "Training & Mentorship", "Business Development", "Recruiting & Retention"],
       experience: "20+ years",
-      description: "Chris Clark is one of our Managing Brokers and a driving force behind Grandview Realty's growth and success. Since launching his real estate career in 2003, Chris has been passionate about helping people achieve their goals—whether they're clients buying or selling, or agents growing their business. He joined Grandview in April 2021 to lead the brokerage's expansion through agent development, strategic planning, and increased production under his Clark Home Team brand. Chris combines deep market knowledge with technology, data, and high-level service to inspire excellence across the board. His leadership, vision, and commitment make him an essential pillar of our organization."
+      description: "Chris Clark, Managing Broker at Grandview Realty, has been a driving force in the firm's growth since joining in 2021. With a real estate career dating back to 2003, Chris leads expansion efforts through agent development, strategic planning, and production under his Clark Home Team brand. Known for blending market expertise with tech and high-touch service, his leadership and vision continue to elevate the entire organization."
     },
     {
       name: "Michael Jostes",

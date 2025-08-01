@@ -33,7 +33,7 @@ export default function AgentsPage() {
     {
       id: "chris-clark",
       name: "Chris Clark",
-      title: "Sales Manager",
+      title: "Managing Broker",
       image: "/agents/chris-clark.png",
       logo: "/agents/chris-clark-logo.png",
       phone: "630-973-7825",
@@ -203,31 +203,6 @@ export default function AgentsPage() {
 
   return (
     <div>
-      {/* Hero Section */}
-      <section className="relative h-[40vh] min-h-[300px] flex items-center">
-        <div className="absolute inset-0 z-0">
-          <div className="relative w-full h-full">
-            <Image
-              src="/careersbg.jpg"
-              alt="Grandview Realty Agents"
-              fill
-              style={{ objectFit: "cover" }}
-              priority
-              quality={90}
-            />
-            <div className="absolute inset-0 bg-slate-800/70" />
-          </div>
-        </div>
-        <div className="container-padding relative z-10">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Our Agents
-          </h1>
-          <p className="text-xl text-white/90 max-w-2xl">
-            Meet our dedicated team of real estate professionals who are committed to providing exceptional service and helping you achieve your real estate goals.
-          </p>
-        </div>
-      </section>
-
       <div className="container-padding py-16">
         {/* Agents Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
