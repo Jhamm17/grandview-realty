@@ -234,9 +234,9 @@ export default function AgentsPage() {
           {agents.map((agent, index) => (
             <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
               {/* Agent Image with Name/Title Overlay */}
-              <div className="relative w-full aspect-square bg-gray-200">
+              <div className="relative w-full aspect-square bg-white">
                 {agent.logo ? (
-                  <div className="w-full h-full flex items-center justify-center p-4">
+                  <div className="w-full h-full flex items-end justify-center p-4 pb-8">
                     <img
                       src={agent.logo}
                       alt={agent.name + " logo"}
@@ -244,7 +244,7 @@ export default function AgentsPage() {
                     />
                   </div>
                 ) : agent.image ? (
-                  <div className="w-full h-full flex items-center justify-center p-4">
+                  <div className="w-full h-full flex items-end justify-center p-4 pb-8">
                     <img
                       src={agent.image}
                       alt={agent.name}
