@@ -236,7 +236,7 @@ export default function AgentsPage() {
               {/* Agent Image with Name/Title Overlay */}
               <div className="relative w-full aspect-square bg-white">
                 {agent.logo ? (
-                  <div className="w-full h-full flex items-end justify-center p-4 pb-12">
+                  <div className="w-full h-full flex items-end justify-center p-4 pt-16 pb-6">
                     <img
                       src={agent.logo}
                       alt={agent.name + " logo"}
@@ -244,7 +244,7 @@ export default function AgentsPage() {
                     />
                   </div>
                 ) : agent.image ? (
-                  <div className="w-full h-full flex items-end justify-center p-4 pb-12">
+                  <div className="w-full h-full flex items-end justify-center p-4 pt-16 pb-6">
                     <img
                       src={agent.image}
                       alt={agent.name}
