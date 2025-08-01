@@ -63,9 +63,10 @@ export default function Home() {
                     src="/buy.png"
                     alt="Buy a home"
                     fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                    style={{ objectPosition: 'center 10%' }}
                   />
-                  <div className="absolute inset-0 bg-blue-900/50 group-hover:bg-blue-900/40 transition-colors duration-300" />
+                  <div className="absolute inset-0 bg-blue-900/70 group-hover:bg-blue-900/60 transition-colors duration-300" />
                 </div>
                 
                 <div className="relative z-10 flex items-center justify-center h-full">
@@ -94,7 +95,8 @@ export default function Home() {
                     src="/sell.jpg"
                     alt="Sell your home"
                     fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="object-cover object-bottom transition-transform duration-500 group-hover:scale-105"
+                    style={{ objectPosition: 'center 80%' }}
                   />
                   <div className="absolute inset-0 bg-blue-300/50 group-hover:bg-blue-300/40 transition-colors duration-300" />
                 </div>
@@ -128,7 +130,7 @@ export default function Home() {
           </div>
           
           {/* Main Mission Statement with Dynamic Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-end mb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-end mb-8">
             <div className="space-y-8">
               <div className="inline-block bg-[#081d36]/10 text-[#081d36] px-4 py-2 rounded-full text-sm font-medium">
                 Our Promise
@@ -138,16 +140,8 @@ export default function Home() {
               </h3>
               <div className="bg-white rounded-2xl p-8 shadow-xl border border-gray-100">
                 <p className="text-xl text-gray-700 leading-relaxed">
-                  At Grandview Realty, LLC, our mission is to help individuals and families confidently find their perfect place to call home. We are committed to delivering exceptional real estate experiences through integrity, local expertise, and personalized service. Rooted in the communities we serve across Illinois, we strive to build lasting relationships, support local causes, and make every client feel confident and cared for throughout their real estate journey.
+                  At Grandview Realty, LLC, our mission is to guide individuals and families through every step of their real estate journey—whether they are buying or selling—with confidence, care, and clarity. We are committed to delivering exceptional experiences through integrity, local expertise, and personalized service. Rooted in the communities we serve across Illinois, we strive to build lasting relationships, support local causes, and ensure each client feels informed, empowered, and valued throughout the process.
                 </p>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-[#081d36] rounded-full flex items-center justify-center">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <span className="text-lg font-medium text-[#081d36]">Trusted by Illinois families since 2017</span>
               </div>
             </div>
             
@@ -163,6 +157,16 @@ export default function Home() {
                 />
               </div>
             </div>
+          </div>
+          
+          {/* Trusted by Illinois families section */}
+          <div className="flex items-center space-x-4 justify-center lg:justify-start">
+            <div className="w-12 h-12 bg-[#081d36] rounded-full flex items-center justify-center">
+              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <span className="text-lg font-medium text-[#081d36]">Trusted by Illinois families since 2017</span>
           </div>
         </div>
       </section>
