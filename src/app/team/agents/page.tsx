@@ -204,6 +204,14 @@ export default function AgentsPage() {
   return (
     <div>
       <div className="container-padding py-16">
+        {/* Page Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Our Agents</h1>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Meet our dedicated team of real estate professionals who are committed to providing exceptional service and expertise to help you achieve your real estate goals.
+          </p>
+        </div>
+
         {/* Agents Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {agents.map((agent, index) => (
