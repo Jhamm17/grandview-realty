@@ -2,23 +2,23 @@ export default function OfficeStaffPage() {
   const staff = [
     {
       name: "Christopher Lobrillo",
-      title: "Owner and Managing Broker",
+      title: "Managing Broker & Managing Partner",
       image: null,
       phone: "630-802-4411",
       email: "chris@grandviewsells.com",
-      responsibilities: ["Key Responsibilities"],
+      responsibilities: ["Business Growth & Development", "Agent Mentorship & Development", "Brokerage Oversight & Compliance", "REO Specialist", "Corporate Closings"],
       experience: "20+ years",
-      description: "Christopher Lobrillo is the Owner and Managing Broker of Grandview Realty, bringing over 20 years of experience to the organization. His leadership and vision drive the company's success and growth in the Chicagoland real estate market."
+      description: "Christopher Lobrillo brings over 20 years of experience in the real estate industry and serves as Owner and Managing Broker of Grandview Realty. He is actively involved in guiding the firm's growth, operations, and agent mentorship programs. Before co-founding Grandview Realty, Christopher was a partner on the top-performing real estate team in Kane County, Illinois, under the RE/MAX brand. Over the course of his career, he has successfully closed more than 3,700 transactions, covering residential, REO, and corporate properties. Known for his strategic insight and hands-on leadership, Christopher is passionate about business development and supporting agents as they build thriving careers. His proven track record, deep market knowledge, and commitment to excellence have earned him a trusted reputation in the industry."
     },
     {
       name: "Lynda Werner",
-      title: "Operations Manager",
+      title: "Operations Manager | Licensed Real Estate Agent",
       image: null,
       phone: "630-402-6382",
       email: "lynda@grandviewsells.com",
-      responsibilities: ["Key Responsibilities"],
+      responsibilities: ["Real Estate Operations", "Administrative Oversight", "Real Estate Compliance", "REO Management", "Agent Support and Development", "Office Management"],
       experience: "20+ years",
-      description: "Lynda Werner serves as our Operations Manager, with over 20 years of experience in real estate operations. Her expertise ensures smooth day-to-day operations and exceptional service delivery across all aspects of our business."
+      description: "With over 20 years of experience in the real estate industry, Lynda Werner brings a wealth of knowledge and operational expertise to her role as Operations Manager at Grandview Realty. Her diverse background spans real estate collections, foreclosure, bankruptcy, REO management, and mortgage auditing—providing her with a comprehensive understanding of the industry from every angle. At Grandview Realty, Lynda oversees the administrative and support staff, ensuring smooth day-to-day operations and seamless service for agents and clients alike. She is deeply committed to fostering professional growth and encourages continuous development among team members. In addition to her operational leadership, Lynda is a licensed real estate agent, offering her a unique perspective and the ability to bridge the gap between back-office systems and front-line agent support."
     },
     {
       name: "Christopher Clark",
@@ -73,11 +73,11 @@ export default function OfficeStaffPage() {
       </div>
 
       {/* Staff Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {staff.map((member, index) => (
           <div key={index} className="bg-white shadow-lg overflow-hidden">
             {/* Staff Image */}
-            <div className="relative h-[400px] bg-gray-200 pt-8">
+            <div className="relative h-[500px] bg-gray-200">
               {member.image ? (
                 <img 
                   src={member.image} 
