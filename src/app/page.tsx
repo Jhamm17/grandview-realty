@@ -66,7 +66,7 @@ export default function Home() {
                     className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                     style={{ objectPosition: 'center 10%' }}
                   />
-                  <div className="absolute inset-0 bg-blue-900/70 group-hover:bg-blue-900/60 transition-colors duration-300" />
+                  <div className="absolute inset-0 bg-slate-900/70 group-hover:bg-slate-900/60 transition-colors duration-300" />
                 </div>
                 
                 <div className="relative z-10 flex items-center justify-center h-full">

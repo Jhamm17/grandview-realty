@@ -96,6 +96,12 @@ export function Header() {
       { name: "Charity & Community Involvement", href: "/community/charity" },
       { name: "Social Media", href: "/community/social-media" },
     ],
+    contact: [
+      { name: "General Inquiry", href: "/contact/general-inquiry" },
+      { name: "Looking to Buy", href: "/contact/looking-to-buy" },
+      { name: "Looking to Sell", href: "/contact/looking-to-sell" },
+      { name: "Home Evaluation", href: "/contact/home-evaluation" },
+    ],
   };
 
   useEffect(() => {
@@ -153,14 +159,7 @@ export function Header() {
             >
               Careers
             </Link>
-            <Link 
-              href="/contact" 
-              className={`text-white hover:text-white/80 transition-colors text-base font-medium py-4 px-2 ${
-                pathname === '/contact' ? 'text-[#60a5fa]' : ''
-              }`}
-            >
-              Contact
-            </Link>
+            <NavDropdown title="Contact" items={navItems.contact} />
           </div>
 
           {/* Mobile Menu Button */}
@@ -241,15 +240,6 @@ export function Header() {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Careers
-              </Link>
-              <Link 
-                href="/contact" 
-                className={`text-white hover:text-white/80 transition-colors text-base py-2 px-3 rounded ${
-                  pathname === '/contact' ? 'text-[#60a5fa]' : ''
-                }`}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Contact
               </Link>
             </div>
           </div>
