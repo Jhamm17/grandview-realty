@@ -26,7 +26,7 @@ export default function OfficeStaffPage() {
       image: "/agents/chris-clark.png",
       phone: "630-973-7825",
       email: "chris@clarkhometeam.com",
-      responsibilities: ["Agent Leadership & Support", "Compliance & Contract Oversight", "Training & Mentorship", "Business Development", "Recruiting & Retention", "Strategic Sales Growth"],
+      responsibilities: ["Agent Leadership & Support", "Compliance & Contract Oversight", "Training & Mentorship", "Business Development", "Recruiting & Retention"],
       experience: "20+ years",
       description: "Chris Clark is one of our Managing Brokers and a driving force behind Grandview Realty's growth and success. Since launching his real estate career in 2003, Chris has been passionate about helping people achieve their goals—whether they're clients buying or selling, or agents growing their business. He joined Grandview in April 2021 to lead the brokerage's expansion through agent development, strategic planning, and increased production under his Clark Home Team brand. Chris combines deep market knowledge with technology, data, and high-level service to inspire excellence across the board. His leadership, vision, and commitment make him an essential pillar of our organization."
     },
