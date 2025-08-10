@@ -2,27 +2,40 @@ import Image from 'next/image';
 
 export const runtime = 'edge';
 
-export default async function Careers() {
-  const openPositions = [
-    {
-      title: "Real Estate Agent",
-      type: "Full-time",
-      location: "Chicago Metropolitan Area",
-      description: "Join our team of dedicated real estate professionals. We&apos;re looking for motivated agents who are passionate about helping clients find their perfect home."
-    },
-    {
-      title: "Marketing Coordinator",
-      type: "Full-time",
-      location: "Geneva, IL",
-      description: "Support our marketing initiatives across digital and traditional channels. Help showcase our properties and build our brand presence."
-    },
-    {
-      title: "Transaction Coordinator",
-      type: "Full-time",
-      location: "Geneva, IL",
-      description: "Manage real estate transactions from contract to closing. Ensure smooth processes and excellent client communication."
+interface Career {
+  id: string;
+  title: string;
+  type: string;
+  location: string;
+  description: string;
+  requirements: string[];
+  benefits: string[];
+  salary_range?: string;
+  is_active: boolean;
+  sort_order: number;
+}
+
+async function getCareers(): Promise<Career[]> {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'https://grandview-realty.vercel.app'}/api/careers`, {
+      next: { revalidate: 10 } // Revalidate every 10 seconds
+    });
+    
+    if (!response.ok) {
+      console.error('Failed to fetch careers');
+      return [];
     }
-  ];
+    
+    const data = await response.json();
+    return data.careers || [];
+  } catch (error) {
+    console.error('Error fetching careers:', error);
+    return [];
+  }
+}
+
+export default async function Careers() {
+  const openPositions = await getCareers();
 
   return (
     <div>
@@ -59,10 +72,10 @@ export default async function Careers() {
           <h2 className="text-3xl font-bold mb-12 text-center">Open Positions</h2>
           
           <div className="grid gap-6">
-            {openPositions.map((position, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-                <div className="flex flex-col md:flex-row md:items-center justify-between">
-                  <div>
+            {openPositions.map((position) => (
+              <div key={position.id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                <div className="flex flex-col md:flex-row md:items-start justify-between">
+                  <div className="flex-1">
                     <h3 className="text-xl font-semibold mb-2">{position.title}</h3>
                     <div className="flex flex-wrap gap-2 mb-4">
                       <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
@@ -71,15 +84,56 @@ export default async function Careers() {
                       <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
                         {position.location}
                       </span>
+                      {position.salary_range && (
+                        <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
+                          {position.salary_range}
+                        </span>
+                      )}
                     </div>
-                    <p className="text-gray-600 mb-4 md:mb-0">{position.description}</p>
+                    <p className="text-gray-600 mb-4">{position.description}</p>
+                    
+                    {/* Requirements */}
+                    {position.requirements && position.requirements.length > 0 && (
+                      <div className="mb-4">
+                        <h4 className="font-semibold text-gray-800 mb-2">Requirements:</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {position.requirements.map((req, idx) => (
+                            <span key={idx} className="px-2 py-1 bg-blue-50 text-blue-700 rounded text-sm">
+                              {req}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Benefits */}
+                    {position.benefits && position.benefits.length > 0 && (
+                      <div className="mb-4">
+                        <h4 className="font-semibold text-gray-800 mb-2">Benefits:</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {position.benefits.map((benefit, idx) => (
+                            <span key={idx} className="px-2 py-1 bg-green-50 text-green-700 rounded text-sm">
+                              {benefit}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <button className="btn-primary whitespace-nowrap">
-                    Apply Now
-                  </button>
+                  <div className="md:ml-6 mt-4 md:mt-0">
+                    <button className="btn-primary whitespace-nowrap">
+                      Apply Now
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
+            {openPositions.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-gray-500 text-lg">No open positions at the moment.</p>
+                <p className="text-gray-400 mt-2">Please check back later or contact us for opportunities.</p>
+              </div>
+            )}
           </div>
         </div>
       </section>

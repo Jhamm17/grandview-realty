@@ -9,6 +9,7 @@ import { Property } from '@/lib/mred/types';
 import { cleanStatusText } from '@/lib/utils';
 import AdminAgentManager from '@/components/AdminAgentManager';
 import AdminOfficeStaffManager from '@/components/AdminOfficeStaffManager';
+import AdminCareersManager from '@/components/AdminCareersManager';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -31,6 +32,7 @@ export default function AdminDashboard() {
   const [underContractProperties, setUnderContractProperties] = useState<Property[]>([]);
   const [showAgentManager, setShowAgentManager] = useState(false);
   const [showOfficeStaffManager, setShowOfficeStaffManager] = useState(false);
+  const [showCareersManager, setShowCareersManager] = useState(false);
 
   useEffect(() => {
     try {
@@ -297,6 +299,12 @@ export default function AdminDashboard() {
               >
                 Manage Office Staff
               </button>
+              <button
+                onClick={() => setShowCareersManager(true)}
+                className="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700 font-medium"
+              >
+                Manage Careers
+              </button>
             </div>
           </div>
           <p className="text-gray-600">Add, edit, or remove agents and office staff members from the website.</p>
@@ -437,6 +445,10 @@ export default function AdminDashboard() {
 
         {showOfficeStaffManager && (
           <AdminOfficeStaffManager onClose={() => setShowOfficeStaffManager(false)} />
+        )}
+
+        {showCareersManager && (
+          <AdminCareersManager onClose={() => setShowCareersManager(false)} />
         )}
       </div>
     </div>

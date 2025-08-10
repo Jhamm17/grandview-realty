@@ -164,6 +164,42 @@ $$ language 'plpgsql';
 CREATE TRIGGER update_agents_updated_at BEFORE UPDATE ON agents FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_office_staff_updated_at BEFORE UPDATE ON office_staff FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
+-- Create careers table
+CREATE TABLE IF NOT EXISTS careers (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  title TEXT NOT NULL,
+  type TEXT NOT NULL,
+  location TEXT NOT NULL,
+  description TEXT NOT NULL,
+  requirements TEXT[],
+  benefits TEXT[],
+  salary_range TEXT,
+  is_active BOOLEAN DEFAULT true,
+  sort_order INTEGER DEFAULT 0,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create indexes for careers
+CREATE INDEX IF NOT EXISTS idx_careers_active ON careers(is_active);
+CREATE INDEX IF NOT EXISTS idx_careers_sort ON careers(sort_order);
+
+-- Enable Row Level Security for careers
+ALTER TABLE careers ENABLE ROW LEVEL SECURITY;
+
+-- Create policies for careers table
+CREATE POLICY "Allow public read access to active careers" ON careers
+  FOR SELECT USING (is_active = true);
+
+CREATE POLICY "Allow service role to manage careers" ON careers
+  FOR ALL USING (auth.role() = 'service_role');
+
+-- Create trigger for careers updated_at
+CREATE TRIGGER update_careers_updated_at 
+  BEFORE UPDATE ON careers 
+  FOR EACH ROW 
+  EXECUTE FUNCTION update_updated_at_column();
+
 -- Insert sample data for agents
 INSERT INTO agents (slug, name, title, image_url, logo_url, phone, email, specialties, experience, service_area, description, sort_order) VALUES
 ('christopher-lobrillo', 'Christopher Lobrillo', 'Managing Broker & Managing Partner', '/agents/christopher-lobrillo.png', '/agents/chris-lobrillo-logo.png', '630-802-4411', 'chris@grandviewsells.com', ARRAY['Buyers', 'Sellers', 'Investors', 'REO', 'Corporate'], '20+ years', 'Chicago and Surrounding Suburbs', 'Christopher Lobrillo brings over 20 years of experience in the real estate industry and serves as Owner and Managing Broker of Grandview Realty. He is actively involved in guiding the firm''s growth, operations, and agent mentorship programs. Before co-founding Grandview Realty, Christopher was a partner on the top-performing real estate team in Kane County, Illinois, under the RE/MAX brand. Over the course of his career, he has successfully closed more than 3,700 transactions, covering residential, REO, and corporate properties. Known for his strategic insight and hands-on leadership, Christopher is passionate about business development and supporting agents as they build thriving careers.', 1),
