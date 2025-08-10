@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { existsSync } from 'fs';
+import { createClient } from '@supabase/supabase-js';
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,24 +29,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if we're in production (Vercel)
-    const isProduction = process.env.NODE_ENV === 'production';
-    
-    if (isProduction) {
-      // In production, we need to use a cloud storage service
-      // For now, we'll provide guidance and suggest alternatives
-      return NextResponse.json({
-        success: false,
-        error: 'Image upload not available in production yet',
-        message: 'Please use an image URL instead. You can upload your image to a service like Imgur, Google Drive, or your own server and use the direct link.',
-        alternatives: [
-          'Upload to Imgur and use the direct link',
-          'Upload to Google Drive and use the sharing link',
-          'Use an existing image URL from your website',
-          'Contact your developer to set up cloud storage'
-        ]
-      }, { status: 400 });
+    // Initialize Supabase client
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+      console.error('Missing Supabase environment variables');
+      return NextResponse.json(
+        { error: 'Server configuration error' },
+        { status: 500 }
+      );
     }
+
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // Generate unique filename
     const timestamp = Date.now();
@@ -56,20 +49,33 @@ export async function POST(request: NextRequest) {
     const extension = file.name.split('.').pop() || 'jpg';
     const filename = `${timestamp}-${randomString}.${extension}`;
 
-    // Create uploads directory if it doesn't exist
-    const uploadsDir = join(process.cwd(), 'public', 'uploads');
-    if (!existsSync(uploadsDir)) {
-      await mkdir(uploadsDir, { recursive: true });
-    }
-
-    // Save file to public/uploads directory
-    const filePath = join(uploadsDir, filename);
+    // Convert file to buffer
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
-    await writeFile(filePath, buffer);
 
-    // Return the public URL
-    const imageUrl = `/uploads/${filename}`;
+    // Upload to Supabase Storage
+    const { data, error } = await supabase.storage
+      .from('images')
+      .upload(filename, buffer, {
+        contentType: file.type,
+        cacheControl: '3600',
+        upsert: false
+      });
+
+    if (error) {
+      console.error('Supabase upload error:', error);
+      return NextResponse.json(
+        { error: 'Failed to upload image to storage' },
+        { status: 500 }
+      );
+    }
+
+    // Get public URL
+    const { data: urlData } = supabase.storage
+      .from('images')
+      .getPublicUrl(filename);
+
+    const imageUrl = urlData.publicUrl;
 
     return NextResponse.json({ 
       success: true, 
