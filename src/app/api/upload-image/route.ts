@@ -35,18 +35,19 @@ export async function POST(request: NextRequest) {
     const isProduction = process.env.NODE_ENV === 'production';
     
     if (isProduction) {
-      // In production, we'll use a cloud storage service
-      // For now, we'll accept the image and return a placeholder URL
-      // In the future, this could be integrated with AWS S3, Cloudinary, etc.
-      const fileName = `upload_${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`;
-      const imageUrl = `https://via.placeholder.com/400x600/cccccc/666666?text=Image+Uploaded`;
-      
+      // In production, we need to use a cloud storage service
+      // For now, we'll provide guidance and suggest alternatives
       return NextResponse.json({
-        success: true,
-        imageUrl: imageUrl,
-        fileName: fileName,
-        message: 'Image uploaded successfully (placeholder URL generated)'
-      });
+        success: false,
+        error: 'Image upload not available in production yet',
+        message: 'Please use an image URL instead. You can upload your image to a service like Imgur, Google Drive, or your own server and use the direct link.',
+        alternatives: [
+          'Upload to Imgur and use the direct link',
+          'Upload to Google Drive and use the sharing link',
+          'Use an existing image URL from your website',
+          'Contact your developer to set up cloud storage'
+        ]
+      }, { status: 400 });
     }
 
     // Generate unique filename

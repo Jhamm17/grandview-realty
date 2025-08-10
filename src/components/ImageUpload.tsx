@@ -15,6 +15,7 @@ export default function ImageUpload({ label, currentImageUrl, onImageUpload, cla
   const [error, setError] = useState<string | null>(null);
   const [showUrlInput, setShowUrlInput] = useState(false);
   const [urlInput, setUrlInput] = useState('');
+  const [showGuidance, setShowGuidance] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,7 +57,13 @@ export default function ImageUpload({ label, currentImageUrl, onImageUpload, cla
       const data = await response.json();
       
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to upload image');
+        if (data.error === 'Image upload not available in production yet') {
+          setShowGuidance(true);
+          setError('Image upload not available in production. Please use an image URL instead.');
+        } else {
+          throw new Error(data.error || 'Failed to upload image');
+        }
+        return;
       }
 
       onImageUpload(data.imageUrl);
@@ -73,6 +80,7 @@ export default function ImageUpload({ label, currentImageUrl, onImageUpload, cla
     onImageUpload('');
     setShowUrlInput(false);
     setUrlInput('');
+    setShowGuidance(false);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -83,6 +91,7 @@ export default function ImageUpload({ label, currentImageUrl, onImageUpload, cla
       onImageUpload(urlInput.trim());
       setPreviewUrl(urlInput.trim());
       setShowUrlInput(false);
+      setShowGuidance(false);
       setError(null);
     }
   };
@@ -116,6 +125,17 @@ export default function ImageUpload({ label, currentImageUrl, onImageUpload, cla
           )}
         </div>
 
+        {/* Manual URL Input Button */}
+        <div className="flex items-center space-x-2">
+          <button
+            type="button"
+            onClick={() => setShowUrlInput(!showUrlInput)}
+            className="text-sm text-blue-600 hover:text-blue-800"
+          >
+            {showUrlInput ? 'Cancel URL Input' : 'Use Image URL Instead'}
+          </button>
+        </div>
+
         {/* Error Message */}
         {error && (
           <div className="text-sm text-red-600">
@@ -123,11 +143,34 @@ export default function ImageUpload({ label, currentImageUrl, onImageUpload, cla
           </div>
         )}
 
+        {/* Production Guidance */}
+        {showGuidance && (
+          <div className="mt-3 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <div className="flex">
+              <svg className="w-5 h-5 text-yellow-600 mt-0.5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              <div>
+                <h3 className="text-sm font-medium text-yellow-800">Image Upload Not Available</h3>
+                <p className="text-sm text-yellow-700 mt-1">
+                  Please use an image URL instead. You can:
+                </p>
+                <ul className="text-sm text-yellow-700 mt-2 list-disc list-inside space-y-1">
+                  <li>Upload to Imgur and use the direct link</li>
+                  <li>Upload to Google Drive and use the sharing link</li>
+                  <li>Use an existing image URL from your website</li>
+                  <li>Contact your developer to set up cloud storage</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* URL Input Fallback */}
         {showUrlInput && (
           <div className="mt-3 p-3 bg-blue-50 rounded-lg">
             <p className="text-sm text-blue-800 mb-2">
-              Since file upload is not available in production, please provide an image URL:
+              Enter the URL of your image:
             </p>
             <div className="flex space-x-2">
               <input
