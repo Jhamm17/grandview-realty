@@ -10,6 +10,7 @@ import { cleanStatusText } from '@/lib/utils';
 import AdminAgentManager from '@/components/AdminAgentManager';
 import AdminOfficeStaffManager from '@/components/AdminOfficeStaffManager';
 import AdminCareersManager from '@/components/AdminCareersManager';
+import AdminUserManager from '@/components/AdminUserManager';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -33,6 +34,7 @@ export default function AdminDashboard() {
   const [showAgentManager, setShowAgentManager] = useState(false);
   const [showOfficeStaffManager, setShowOfficeStaffManager] = useState(false);
   const [showCareersManager, setShowCareersManager] = useState(false);
+  const [showUserManager, setShowUserManager] = useState(false);
 
   useEffect(() => {
     try {
@@ -305,6 +307,14 @@ export default function AdminDashboard() {
               >
                 Manage Careers
               </button>
+              {currentUser?.role === 'admin' && (
+                <button
+                  onClick={() => setShowUserManager(true)}
+                  className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 font-medium"
+                >
+                  Manage Admin Users
+                </button>
+              )}
             </div>
           </div>
           <p className="text-gray-600">Add, edit, or remove agents and office staff members from the website.</p>
@@ -449,6 +459,27 @@ export default function AdminDashboard() {
 
         {showCareersManager && (
           <AdminCareersManager onClose={() => setShowCareersManager(false)} />
+        )}
+
+        {showUserManager && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+              <div className="p-4 border-b border-gray-200">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-xl font-semibold">Admin User Management</h2>
+                  <button
+                    onClick={() => setShowUserManager(false)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <AdminUserManager currentUser={currentUser} />
+            </div>
+          </div>
         )}
       </div>
     </div>
