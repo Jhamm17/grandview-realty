@@ -6,7 +6,7 @@ export default async function Contact() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative h-[40vh] min-h-[300px] flex items-center">
+      <section className="relative h-[50vh] min-h-[400px] flex items-center">
         <div className="absolute inset-0 z-0">
           <div className="relative w-full h-full">
             <Image
@@ -30,7 +30,7 @@ export default async function Contact() {
         </div>
       </section>
 
-      <section className="py-16">
+      <section className="py-20">
         <div className="container-padding">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
@@ -177,7 +177,7 @@ export default async function Contact() {
       </section>
 
       {/* Map Section */}
-      <section className="py-16 bg-[#081d36]">
+      <section className="py-20 bg-[#081d36]">
         <div className="container-padding">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-white mb-4">Find Us</h2>

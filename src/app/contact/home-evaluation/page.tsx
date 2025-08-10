@@ -6,7 +6,7 @@ export default async function HomeEvaluation() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative h-[40vh] min-h-[300px] flex items-center">
+      <section className="relative h-[50vh] min-h-[400px] flex items-center"
         <div className="absolute inset-0 z-0">
           <div className="relative w-full h-full">
             <Image
@@ -30,7 +30,7 @@ export default async function HomeEvaluation() {
         </div>
       </section>
 
-      <section className="py-16">
+      <section className="py-20">
         <div className="container-padding">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
