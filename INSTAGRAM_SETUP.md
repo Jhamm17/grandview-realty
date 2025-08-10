@@ -1,89 +1,146 @@
-# Instagram API Setup Guide
+# Modern Instagram Integration Guide
 
-## 🚀 Quick Setup (5 minutes)
+## 🚨 Important: Instagram API Changes
 
-### Step 1: Create Instagram App
-1. Go to [Facebook Developers](https://developers.facebook.com/)
-2. Click "Create App" → Choose "Consumer" or "Business"
-3. Add "Instagram Basic Display" product to your app
-4. Configure OAuth Redirect URIs (we'll add this later)
+**Instagram has significantly changed their API access policies.** The old Facebook Graph API approach is largely deprecated for most use cases. Here are the current modern approaches:
 
-### Step 2: Convert Instagram Account
-- Convert your Instagram account to a **Business account**
-- Connect it to your Facebook page
-- This gives you access to more API features
+## 🎯 Current Instagram Integration Options
 
-### Step 3: Get Access Token
-1. In your Facebook app dashboard, go to "Instagram Basic Display"
-2. Click "Generate Token"
-3. Follow the OAuth flow to authorize your account
-4. Copy the access token
+### **Option 1: Instagram oEmbed (Recommended)**
+- **No API keys required**
+- **Works with public Instagram posts**
+- **Simple to implement**
+- **Limited to specific post URLs you know**
 
-### Step 4: Add Environment Variables
-Create a `.env.local` file in your project root with:
+### **Option 2: Instagram Basic Display API**
+- **Requires Facebook Developer App**
+- **Limited access to your own content**
+- **Complex setup process**
+- **May require app review**
 
+### **Option 3: Third-Party Services**
+- **Services like EmbedSocial, POWR, etc.**
+- **Easy to implement**
+- **Monthly fees**
+- **Reliable and feature-rich**
+
+### **Option 4: Manual Curation**
+- **Manually add Instagram posts**
+- **Full control over content**
+- **No API dependencies**
+- **Requires manual updates**
+
+## 🚀 Quick Setup: Instagram oEmbed (Easiest)
+
+### Step 1: Get Instagram Post URLs
+1. Go to your Instagram profile
+2. Copy URLs of posts you want to display
+3. Example: `https://www.instagram.com/p/ABC123/`
+
+### Step 2: Update Environment Variables
 ```env
-# Instagram API Configuration
-INSTAGRAM_APP_ID=your_instagram_app_id_here
-INSTAGRAM_APP_SECRET=your_instagram_app_secret_here
-INSTAGRAM_ACCESS_TOKEN=your_instagram_access_token_here
+# Instagram Configuration
+INSTAGRAM_USERNAME=grandviewrealtygeneva
+# Optional: Add specific post URLs
+INSTAGRAM_POST_URLS=https://www.instagram.com/p/post1/,https://www.instagram.com/p/post2/
 ```
 
-### Step 5: Test the Integration
+### Step 3: Test the Integration
 1. Restart your development server
 2. Visit `/community/social-media`
-3. You should see your live Instagram posts!
+3. You should see your Instagram posts!
 
-## 🔧 Advanced Configuration
+## 🔧 Advanced Setup: Instagram Basic Display API
 
-### OAuth Redirect URIs
-Add these to your Facebook app settings:
-- `http://localhost:3000/api/instagram/auth/callback` (development)
-- `https://yourdomain.com/api/instagram/auth/callback` (production)
+### Step 1: Create Facebook Developer App
+1. Go to [Facebook Developers](https://developers.facebook.com/)
+2. Create a new app (Consumer or Business type)
+3. Add "Instagram Basic Display" product
 
-### Token Refresh
-Instagram access tokens expire. You can:
-- Manually refresh them in the Facebook app dashboard
-- Set up automatic refresh (advanced)
+### Step 2: Configure Your App
+- **App Name**: "Grandview Realty Instagram Feed"
+- **Privacy Policy URL**: `https://yourdomain.com/about/legal/privacy`
+- **Terms of Service URL**: `https://yourdomain.com/terms`
 
-## 🎯 Features Included
+### Step 3: Set Up OAuth
+Add these redirect URIs:
+```
+http://localhost:3000/api/instagram/auth/callback
+https://yourdomain.com/api/instagram/auth/callback
+```
 
-✅ **Live Instagram Feed** - Automatically updates with new posts
-✅ **Responsive Design** - Works on all devices
-✅ **Hover Effects** - Professional interactions
-✅ **Error Handling** - Graceful fallbacks
-✅ **Loading States** - Smooth user experience
-✅ **Mock Data** - Works without API setup
+### Step 4: Generate Access Token
+1. Go to "Instagram Basic Display" in your app
+2. Click "Generate Token"
+3. Follow the OAuth flow
+4. Copy the access token
+
+### Step 5: Add Environment Variables
+```env
+INSTAGRAM_ACCESS_TOKEN=your_access_token_here
+```
+
+## 🎯 Recommended Approach: Hybrid Solution
+
+Our current implementation uses a **hybrid approach**:
+
+1. **Try Instagram Basic Display API** (if access token available)
+2. **Fall back to oEmbed** (for specific posts)
+3. **Use mock data** (if all APIs fail)
+
+This ensures your website always shows content, even if Instagram APIs are unavailable.
 
 ## 🆘 Troubleshooting
 
-### "Instagram not configured" error
-- Check your environment variables
-- Ensure `.env.local` file exists
-- Restart your development server
+### "No Instagram products available"
+- Instagram Basic Display is only available for certain app types
+- Try creating a new app with "Consumer" or "Business" type
+- Some accounts may be restricted
 
-### "Failed to load Instagram posts" error
-- Verify your access token is valid
-- Check Instagram account permissions
-- Ensure your Instagram account is public
+### "Access token expired"
+- Instagram tokens expire frequently
+- Generate a new token in Facebook app dashboard
+- Consider using oEmbed approach instead
 
-### Posts not showing up
-- Make sure your Instagram posts are public
-- Check that your access token has the right permissions
-- Verify your Instagram account is connected to Facebook
+### "Posts not showing"
+- Ensure Instagram posts are public
+- Check that post URLs are correct
+- Verify your Instagram account permissions
+
+## 💡 Alternative Solutions
+
+### **Third-Party Instagram Feed Services**
+- **EmbedSocial**: `https://embedsocial.com/`
+- **POWR**: `https://www.powr.io/`
+- **Elfsight**: `https://elfsight.com/`
+
+### **Manual Instagram Integration**
+```javascript
+// Add Instagram posts manually
+const instagramPosts = [
+  {
+    id: '1',
+    mediaUrl: '/path/to/image.jpg',
+    permalink: 'https://www.instagram.com/p/post1/',
+    caption: 'Beautiful property in Geneva!',
+    timestamp: '2024-01-01T00:00:00Z'
+  }
+];
+```
+
+## 🎉 Success!
+
+Your Instagram integration will:
+- ✅ Work with current Instagram API policies
+- ✅ Display beautiful Instagram content
+- ✅ Handle API failures gracefully
+- ✅ Provide fallback content
+- ✅ Work across all devices
 
 ## 📞 Support
 
 If you need help:
-1. Check the [Instagram Basic Display API docs](https://developers.facebook.com/docs/instagram-basic-display-api)
-2. Verify your Facebook app settings
-3. Test with the mock data first
-
-## 🎉 Success!
-
-Once configured, your Instagram feed will:
-- ✅ Automatically update with new posts
-- ✅ Display beautiful hover effects
-- ✅ Link directly to Instagram posts
-- ✅ Show captions on hover
-- ✅ Work seamlessly across all devices 
+1. Check [Instagram's current API documentation](https://developers.facebook.com/docs/instagram-basic-display-api)
+2. Consider third-party services for easier setup
+3. Use the oEmbed approach for simple integration
+4. Contact us for custom solutions 

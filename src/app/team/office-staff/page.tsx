@@ -3,7 +3,7 @@ export default function OfficeStaffPage() {
     {
       name: "Christopher Lobrillo",
       title: "Managing Broker & Managing Partner",
-      image: null,
+      image: "/agents/chris-lobrillo-logo.png",
       phone: "630-802-4411",
       email: "chris@grandviewsells.com",
       responsibilities: ["Business Growth & Development", "Agent Mentorship & Development", "Brokerage Oversight & Compliance", "REO Specialist", "Corporate Closings"],
@@ -13,7 +13,7 @@ export default function OfficeStaffPage() {
     {
       name: "Lynda Werner",
       title: "Operations Manager | Licensed Real Estate Agent",
-      image: null,
+      image: "/agents/lynda-werner-logo.png",
       phone: "630-402-6382",
       email: "lynda@grandviewsells.com",
       responsibilities: ["Real Estate Operations", "Administrative Oversight", "Real Estate Compliance", "REO Management", "Agent Support and Development", "Office Management"],
@@ -53,7 +53,7 @@ export default function OfficeStaffPage() {
     {
       name: "Anastasiya Voznyuk",
       title: "Listing Coordinator & Social Media Manager",
-      image: null,
+      image: "/anastasiyavoznyuk.png",
       phone: "630-402-6285",
       email: "anastasiya@grandviewsells.com",
       responsibilities: ["MLS Data Entry & Verification", "Detailed Audits & Compliance", "Reporting: Feedback, Scrubs, Pricing, MLS Data Reports", "Designing and Producing Marketing Material"],

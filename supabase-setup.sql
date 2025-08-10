@@ -65,3 +65,44 @@ CREATE TRIGGER update_property_cache_last_updated
   BEFORE UPDATE ON property_cache
   FOR EACH ROW
   EXECUTE FUNCTION update_last_updated_column(); 
+
+-- Create Instagram posts table for storing latest posts from cron job
+CREATE TABLE IF NOT EXISTS instagram_posts (
+  id INTEGER PRIMARY KEY,
+  post_url TEXT NOT NULL,
+  caption TEXT,
+  media_url TEXT,
+  timestamp TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create index for faster queries
+CREATE INDEX IF NOT EXISTS idx_instagram_posts_active ON instagram_posts(is_active);
+
+-- Enable Row Level Security
+ALTER TABLE instagram_posts ENABLE ROW LEVEL SECURITY;
+
+-- Create policy to allow public read access to active posts
+CREATE POLICY "Allow public read access to active Instagram posts" ON instagram_posts
+  FOR SELECT USING (is_active = true);
+
+-- Create policy to allow service role to manage all posts
+CREATE POLICY "Allow service role to manage Instagram posts" ON instagram_posts
+  FOR ALL USING (auth.role() = 'service_role');
+
+-- Create function to update the updated_at timestamp
+CREATE OR REPLACE FUNCTION update_instagram_posts_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger to automatically update updated_at
+CREATE TRIGGER update_instagram_posts_updated_at
+  BEFORE UPDATE ON instagram_posts
+  FOR EACH ROW
+  EXECUTE FUNCTION update_instagram_posts_updated_at(); 
