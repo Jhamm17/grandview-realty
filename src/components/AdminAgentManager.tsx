@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import ImageUpload from './ImageUpload';
 
 interface Agent {
   id: string;
@@ -316,27 +317,16 @@ export default function AdminAgentManager({ onClose }: AdminAgentManagerProps) {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Image URL
-                </label>
-                <input
-                  type="text"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData({...formData, image_url: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <ImageUpload
+                  label="Profile Image"
+                  currentImageUrl={formData.image_url}
+                  onImageUpload={(imageUrl) => setFormData({...formData, image_url: imageUrl})}
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Logo URL
-                </label>
-                <input
-                  type="text"
-                  value={formData.logo_url}
-                  onChange={(e) => setFormData({...formData, logo_url: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                <ImageUpload
+                  label="Logo Image"
+                  currentImageUrl={formData.logo_url}
+                  onImageUpload={(imageUrl) => setFormData({...formData, logo_url: imageUrl})}
                 />
               </div>
 
