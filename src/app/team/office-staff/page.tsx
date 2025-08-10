@@ -16,10 +16,16 @@ interface OfficeStaff {
 
 async function getOfficeStaff(): Promise<OfficeStaff[]> {
   try {
-    // Add timestamp to force cache busting
+    // Force cache busting with multiple parameters
     const timestamp = Date.now();
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'https://grandview-realty.vercel.app'}/api/office-staff?t=${timestamp}`, {
-      next: { revalidate: 0 } // Force dynamic rendering
+    const random = Math.random();
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'https://grandview-realty.vercel.app'}/api/office-staff?t=${timestamp}&r=${random}&nocache=true`, {
+      cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
     });
     
     if (!response.ok) {
@@ -39,7 +45,13 @@ export default async function OfficeStaffPage() {
   const staff = await getOfficeStaff();
 
   return (
-    <div className="container-padding py-16">
+    <>
+      <head>
+        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta httpEquiv="Pragma" content="no-cache" />
+        <meta httpEquiv="Expires" content="0" />
+      </head>
+      <div className="container-padding py-16">
       {/* Header */}
       <div className="text-center mb-16">
         <h1 className="text-4xl font-bold mb-4">Office Personnel</h1>
@@ -148,5 +160,6 @@ export default async function OfficeStaffPage() {
         </div>
       </div>
     </div>
+    </>
   );
 } 
