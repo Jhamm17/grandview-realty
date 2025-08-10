@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 interface OfficeStaff {
   id: string;
   name: string;
@@ -14,8 +16,10 @@ interface OfficeStaff {
 
 async function getOfficeStaff(): Promise<OfficeStaff[]> {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'https://grandview-realty.vercel.app'}/api/office-staff`, {
-      next: { revalidate: 10 } // Revalidate every 10 seconds
+    // Add timestamp to force cache busting
+    const timestamp = Date.now();
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'https://grandview-realty.vercel.app'}/api/office-staff?t=${timestamp}`, {
+      next: { revalidate: 0 } // Force dynamic rendering
     });
     
     if (!response.ok) {
