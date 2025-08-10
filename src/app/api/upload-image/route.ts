@@ -31,6 +31,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Check if we're in production (Vercel)
+    const isProduction = process.env.NODE_ENV === 'production';
+    
+    if (isProduction) {
+      // In production, we can't write to the file system
+      // For now, return an error with instructions
+      return NextResponse.json(
+        { 
+          error: 'Image upload is not available in production yet. Please use image URLs instead.',
+          suggestion: 'You can upload your image to a service like Imgur, Cloudinary, or similar, then use the URL.'
+        },
+        { status: 400 }
+      );
+    }
+
     // Generate unique filename
     const timestamp = Date.now();
     const randomString = Math.random().toString(36).substring(2, 15);
@@ -61,7 +76,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Image upload error:', error);
     return NextResponse.json(
-      { error: 'Failed to upload image' },
+      { error: 'Failed to upload image. Please try again.' },
       { status: 500 }
     );
   }

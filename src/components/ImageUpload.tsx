@@ -13,6 +13,8 @@ export default function ImageUpload({ label, currentImageUrl, onImageUpload, cla
   const [isUploading, setIsUploading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(currentImageUrl || null);
   const [error, setError] = useState<string | null>(null);
+  const [showUrlInput, setShowUrlInput] = useState(false);
+  const [urlInput, setUrlInput] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,11 +53,17 @@ export default function ImageUpload({ label, currentImageUrl, onImageUpload, cla
         body: formData,
       });
 
+      const data = await response.json();
+      
       if (!response.ok) {
-        throw new Error('Failed to upload image');
+        if (data.error && data.error.includes('production')) {
+          setError(data.error);
+          setShowUrlInput(true);
+          return;
+        }
+        throw new Error(data.error || 'Failed to upload image');
       }
 
-      const data = await response.json();
       onImageUpload(data.imageUrl);
     } catch (error) {
       setError('Failed to upload image. Please try again.');
@@ -68,8 +76,19 @@ export default function ImageUpload({ label, currentImageUrl, onImageUpload, cla
   const handleRemoveImage = () => {
     setPreviewUrl(null);
     onImageUpload('');
+    setShowUrlInput(false);
+    setUrlInput('');
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
+    }
+  };
+
+  const handleUrlSubmit = () => {
+    if (urlInput.trim()) {
+      onImageUpload(urlInput.trim());
+      setPreviewUrl(urlInput.trim());
+      setShowUrlInput(false);
+      setError(null);
     }
   };
 
@@ -106,6 +125,31 @@ export default function ImageUpload({ label, currentImageUrl, onImageUpload, cla
         {error && (
           <div className="text-sm text-red-600">
             {error}
+          </div>
+        )}
+
+        {/* URL Input Fallback */}
+        {showUrlInput && (
+          <div className="mt-3 p-3 bg-blue-50 rounded-lg">
+            <p className="text-sm text-blue-800 mb-2">
+              Since file upload is not available in production, please provide an image URL:
+            </p>
+            <div className="flex space-x-2">
+              <input
+                type="url"
+                value={urlInput}
+                onChange={(e) => setUrlInput(e.target.value)}
+                placeholder="https://example.com/image.jpg"
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                type="button"
+                onClick={handleUrlSubmit}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              >
+                Use URL
+              </button>
+            </div>
           </div>
         )}
 
