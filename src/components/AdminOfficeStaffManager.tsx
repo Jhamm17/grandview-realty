@@ -26,6 +26,7 @@ interface AdminOfficeStaffManagerProps {
 export default function AdminOfficeStaffManager({ onClose }: AdminOfficeStaffManagerProps) {
   const [officeStaff, setOfficeStaff] = useState<OfficeStaff[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingStaff, setEditingStaff] = useState<OfficeStaff | null>(null);
@@ -58,8 +59,16 @@ export default function AdminOfficeStaffManager({ onClose }: AdminOfficeStaffMan
 
   const fetchOfficeStaff = async () => {
     try {
-      setLoading(true);
-      const response = await fetch('/api/admin/office-staff');
+      setRefreshing(true);
+      // Add cache busting parameter to ensure fresh data
+      const timestamp = Date.now();
+      const response = await fetch(`/api/admin/office-staff?t=${timestamp}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
+      });
       if (!response.ok) {
         throw new Error('Failed to fetch office staff');
       }
@@ -70,6 +79,7 @@ export default function AdminOfficeStaffManager({ onClose }: AdminOfficeStaffMan
       console.error('Error fetching office staff:', error);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
@@ -95,19 +105,24 @@ export default function AdminOfficeStaffManager({ onClose }: AdminOfficeStaffMan
         throw new Error(errorData.error || 'Failed to save office staff');
       }
 
-      // Refresh the office staff list
+      // Reset form first
+      resetForm();
+      
+      // Force immediate refresh with cache busting
       await fetchOfficeStaff();
       
       // Invalidate cache to update the public pages
-      await fetch('/api/admin/invalidate-cache', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ path: '/team/office-staff' }),
-      });
-      
-      resetForm();
+      try {
+        await fetch('/api/admin/invalidate-cache', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ path: '/team/office-staff' }),
+        });
+      } catch (cacheError) {
+        console.warn('Cache invalidation failed:', cacheError);
+      }
     } catch (error) {
       setError((error as Error).message);
     }
@@ -127,17 +142,21 @@ export default function AdminOfficeStaffManager({ onClose }: AdminOfficeStaffMan
         throw new Error('Failed to delete office staff');
       }
 
-      // Refresh the office staff list
+      // Force immediate refresh with cache busting
       await fetchOfficeStaff();
       
       // Invalidate cache to update the public pages
-      await fetch('/api/admin/invalidate-cache', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ path: '/team/office-staff' }),
-      });
+      try {
+        await fetch('/api/admin/invalidate-cache', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ path: '/team/office-staff' }),
+        });
+      } catch (cacheError) {
+        console.warn('Cache invalidation failed:', cacheError);
+      }
     } catch (error) {
       setError('Failed to delete office staff');
     }
@@ -212,9 +231,10 @@ export default function AdminOfficeStaffManager({ onClose }: AdminOfficeStaffMan
               </button>
               <button
                 onClick={fetchOfficeStaff}
-                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                disabled={refreshing}
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
               >
-                Refresh
+                {refreshing ? 'Refreshing...' : 'Refresh'}
               </button>
               <button
                 onClick={onClose}

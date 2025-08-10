@@ -29,6 +29,7 @@ interface AdminAgentManagerProps {
 export default function AdminAgentManager({ onClose }: AdminAgentManagerProps) {
   const [agents, setAgents] = useState<Agent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
@@ -58,8 +59,16 @@ export default function AdminAgentManager({ onClose }: AdminAgentManagerProps) {
 
   const fetchAgents = async () => {
     try {
-      setLoading(true);
-      const response = await fetch('/api/admin/agents');
+      setRefreshing(true);
+      // Add cache busting parameter to ensure fresh data
+      const timestamp = Date.now();
+      const response = await fetch(`/api/admin/agents?t=${timestamp}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
+      });
       if (!response.ok) {
         throw new Error('Failed to fetch agents');
       }
@@ -70,6 +79,7 @@ export default function AdminAgentManager({ onClose }: AdminAgentManagerProps) {
       console.error('Error fetching agents:', error);
     } finally {
       setLoading(false);
+      setRefreshing(false);
     }
   };
 
@@ -95,19 +105,24 @@ export default function AdminAgentManager({ onClose }: AdminAgentManagerProps) {
         throw new Error(errorData.error || 'Failed to save agent');
       }
 
-      // Refresh the agents list
+      // Reset form first
+      resetForm();
+      
+      // Force immediate refresh with cache busting
       await fetchAgents();
       
       // Invalidate cache to update the public pages
-      await fetch('/api/admin/invalidate-cache', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ path: '/team/agents' }),
-      });
-      
-      resetForm();
+      try {
+        await fetch('/api/admin/invalidate-cache', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ path: '/team/agents' }),
+        });
+      } catch (cacheError) {
+        console.warn('Cache invalidation failed:', cacheError);
+      }
     } catch (error) {
       setError((error as Error).message);
     }
@@ -127,17 +142,21 @@ export default function AdminAgentManager({ onClose }: AdminAgentManagerProps) {
         throw new Error('Failed to delete agent');
       }
 
-      // Refresh the agents list
+      // Force immediate refresh with cache busting
       await fetchAgents();
       
       // Invalidate cache to update the public pages
-      await fetch('/api/admin/invalidate-cache', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ path: '/team/agents' }),
-      });
+      try {
+        await fetch('/api/admin/invalidate-cache', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ path: '/team/agents' }),
+        });
+      } catch (cacheError) {
+        console.warn('Cache invalidation failed:', cacheError);
+      }
     } catch (error) {
       setError('Failed to delete agent');
     }
@@ -218,9 +237,10 @@ export default function AdminAgentManager({ onClose }: AdminAgentManagerProps) {
               </button>
               <button
                 onClick={fetchAgents}
-                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                disabled={refreshing}
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:opacity-50"
               >
-                Refresh
+                {refreshing ? 'Refreshing...' : 'Refresh'}
               </button>
               <button
                 onClick={onClose}
