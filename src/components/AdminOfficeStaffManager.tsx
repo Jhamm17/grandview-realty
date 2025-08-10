@@ -419,6 +419,9 @@ export default function AdminOfficeStaffManager({ onClose }: AdminOfficeStaffMan
                     Status
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Sort Order
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
@@ -445,6 +448,9 @@ export default function AdminOfficeStaffManager({ onClose }: AdminOfficeStaffMan
                       }`}>
                         {staff.is_active ? 'Active' : 'Inactive'}
                       </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {staff.sort_order}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button

@@ -280,8 +280,13 @@ export default function AdminAgentManager({ onClose }: AdminAgentManagerProps) {
                     value={formData.slug}
                     onChange={(e) => setFormData({...formData, slug: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="christopher-lobrillo"
                     required
                   />
+                  <p className="text-xs text-gray-500 mt-1">
+                    URL-friendly version of the name (lowercase, no spaces, use hyphens). 
+                    Example: "Christopher Lobrillo" becomes "christopher-lobrillo"
+                  </p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -350,6 +355,19 @@ export default function AdminAgentManager({ onClose }: AdminAgentManagerProps) {
                     onChange={(e) => setFormData({...formData, service_area: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Sort Order
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.sort_order}
+                    onChange={(e) => setFormData({...formData, sort_order: parseInt(e.target.value) || 0})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="0"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Lower numbers appear first</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -455,6 +473,9 @@ export default function AdminAgentManager({ onClose }: AdminAgentManagerProps) {
                     Status
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Sort Order
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
@@ -481,6 +502,9 @@ export default function AdminAgentManager({ onClose }: AdminAgentManagerProps) {
                       }`}>
                         {agent.is_active ? 'Active' : 'Inactive'}
                       </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {agent.sort_order}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
