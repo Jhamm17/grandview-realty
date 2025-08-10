@@ -7,6 +7,8 @@ import { ClientPropertyService } from '@/lib/client-property-service';
 import { AuthUser } from '@/lib/supabase';
 import { Property } from '@/lib/mred/types';
 import { cleanStatusText } from '@/lib/utils';
+import AdminAgentManager from '@/components/AdminAgentManager';
+import AdminOfficeStaffManager from '@/components/AdminOfficeStaffManager';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -27,6 +29,8 @@ export default function AdminDashboard() {
   const [refreshing, setRefreshing] = useState(false);
   const [properties, setProperties] = useState<Property[]>([]);
   const [underContractProperties, setUnderContractProperties] = useState<Property[]>([]);
+  const [showAgentManager, setShowAgentManager] = useState(false);
+  const [showOfficeStaffManager, setShowOfficeStaffManager] = useState(false);
 
   useEffect(() => {
     try {
@@ -276,6 +280,28 @@ export default function AdminDashboard() {
           </div>
         </div>
 
+        {/* Team Management */}
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-semibold">Team Management</h2>
+            <div className="space-x-2">
+              <button
+                onClick={() => setShowAgentManager(true)}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 font-medium"
+              >
+                Manage Agents
+              </button>
+              <button
+                onClick={() => setShowOfficeStaffManager(true)}
+                className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 font-medium"
+              >
+                Manage Office Staff
+              </button>
+            </div>
+          </div>
+          <p className="text-gray-600">Add, edit, or remove agents and office staff members from the website.</p>
+        </div>
+
         {/* Cache Management */}
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
           <div className="flex justify-between items-center mb-6">
@@ -402,6 +428,15 @@ export default function AdminDashboard() {
               </table>
             </div>
           </div>
+        )}
+
+        {/* Team Management Modals */}
+        {showAgentManager && (
+          <AdminAgentManager onClose={() => setShowAgentManager(false)} />
+        )}
+
+        {showOfficeStaffManager && (
+          <AdminOfficeStaffManager onClose={() => setShowOfficeStaffManager(false)} />
         )}
       </div>
     </div>

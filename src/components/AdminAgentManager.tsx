@@ -1,0 +1,471 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+
+interface Agent {
+  id: string;
+  slug: string;
+  name: string;
+  title: string;
+  image_url?: string;
+  logo_url?: string;
+  phone?: string;
+  email?: string;
+  specialties: string[];
+  experience?: string;
+  service_area?: string;
+  description?: string;
+  is_active: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+interface AdminAgentManagerProps {
+  onClose: () => void;
+}
+
+export default function AdminAgentManager({ onClose }: AdminAgentManagerProps) {
+  const [agents, setAgents] = useState<Agent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
+  const [formData, setFormData] = useState({
+    slug: '',
+    name: '',
+    title: '',
+    image_url: '',
+    logo_url: '',
+    phone: '',
+    email: '',
+    specialties: [] as string[],
+    experience: '',
+    service_area: '',
+    description: '',
+    sort_order: 0,
+    is_active: true
+  });
+
+  const specialtyOptions = [
+    'Buyers', 'Sellers', 'Investors', 'REO', 'Corporate', 'Operations', 'Family', 'Renters'
+  ];
+
+  useEffect(() => {
+    fetchAgents();
+  }, []);
+
+  const fetchAgents = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/admin/agents');
+      if (!response.ok) {
+        throw new Error('Failed to fetch agents');
+      }
+      const data = await response.json();
+      setAgents(data.agents);
+    } catch (error) {
+      setError('Failed to load agents');
+      console.error('Error fetching agents:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const url = editingAgent 
+        ? `/api/admin/agents/${editingAgent.id}`
+        : '/api/admin/agents';
+      
+      const method = editingAgent ? 'PUT' : 'POST';
+      
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save agent');
+      }
+
+      await fetchAgents();
+      resetForm();
+    } catch (error) {
+      setError((error as Error).message);
+    }
+  };
+
+  const handleDelete = async (agentId: string) => {
+    if (!confirm('Are you sure you want to delete this agent?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/agents/${agentId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete agent');
+      }
+
+      await fetchAgents();
+    } catch (error) {
+      setError('Failed to delete agent');
+    }
+  };
+
+  const handleEdit = (agent: Agent) => {
+    setEditingAgent(agent);
+    setFormData({
+      slug: agent.slug,
+      name: agent.name,
+      title: agent.title,
+      image_url: agent.image_url || '',
+      logo_url: agent.logo_url || '',
+      phone: agent.phone || '',
+      email: agent.email || '',
+      specialties: agent.specialties,
+      experience: agent.experience || '',
+      service_area: agent.service_area || '',
+      description: agent.description || '',
+      sort_order: agent.sort_order,
+      is_active: agent.is_active
+    });
+    setShowAddForm(true);
+  };
+
+  const resetForm = () => {
+    setFormData({
+      slug: '',
+      name: '',
+      title: '',
+      image_url: '',
+      logo_url: '',
+      phone: '',
+      email: '',
+      specialties: [],
+      experience: '',
+      service_area: '',
+      description: '',
+      sort_order: 0,
+      is_active: true
+    });
+    setEditingAgent(null);
+    setShowAddForm(false);
+  };
+
+  const handleSpecialtyChange = (specialty: string, checked: boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      specialties: checked 
+        ? [...prev.specialties, specialty]
+        : prev.specialties.filter(s => s !== specialty)
+    }));
+  };
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white p-6 rounded-lg">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-2 text-gray-600">Loading agents...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6 border-b">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold">Manage Agents</h2>
+            <div className="space-x-2">
+              <button
+                onClick={() => setShowAddForm(true)}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              >
+                Add Agent
+              </button>
+              <button
+                onClick={onClose}
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {error && (
+          <div className="p-4 bg-red-50 border border-red-200 text-red-700">
+            {error}
+            <button
+              onClick={() => setError(null)}
+              className="ml-2 text-red-500 hover:text-red-700"
+            >
+              ×
+            </button>
+          </div>
+        )}
+
+        {showAddForm && (
+          <div className="p-6 border-b">
+            <h3 className="text-lg font-semibold mb-4">
+              {editingAgent ? 'Edit Agent' : 'Add New Agent'}
+            </h3>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Slug *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.slug}
+                    onChange={(e) => setFormData({...formData, slug: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Name *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Title *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.title}
+                    onChange={(e) => setFormData({...formData, title: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Phone
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Experience
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.experience}
+                    onChange={(e) => setFormData({...formData, experience: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Service Area
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.service_area}
+                    onChange={(e) => setFormData({...formData, service_area: e.target.value})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Sort Order
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.sort_order}
+                    onChange={(e) => setFormData({...formData, sort_order: parseInt(e.target.value) || 0})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Image URL
+                </label>
+                <input
+                  type="text"
+                  value={formData.image_url}
+                  onChange={(e) => setFormData({...formData, image_url: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Logo URL
+                </label>
+                <input
+                  type="text"
+                  value={formData.logo_url}
+                  onChange={(e) => setFormData({...formData, logo_url: e.target.value})}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Specialties
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  {specialtyOptions.map((specialty) => (
+                    <label key={specialty} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={formData.specialties.includes(specialty)}
+                        onChange={(e) => handleSpecialtyChange(specialty, e.target.checked)}
+                        className="mr-2"
+                      />
+                      {specialty}
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description
+                </label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  rows={4}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="is_active"
+                  checked={formData.is_active}
+                  onChange={(e) => setFormData({...formData, is_active: e.target.checked})}
+                  className="mr-2"
+                />
+                <label htmlFor="is_active" className="text-sm font-medium text-gray-700">
+                  Active
+                </label>
+              </div>
+
+              <div className="flex space-x-2">
+                <button
+                  type="submit"
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  {editingAgent ? 'Update Agent' : 'Add Agent'}
+                </button>
+                <button
+                  type="button"
+                  onClick={resetForm}
+                  className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        <div className="p-6">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Agent
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Contact
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {agents.map((agent) => (
+                  <tr key={agent.id}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div>
+                        <div className="text-sm font-medium text-gray-900">{agent.name}</div>
+                        <div className="text-sm text-gray-500">{agent.title}</div>
+                        <div className="text-xs text-gray-400">{agent.slug}</div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{agent.phone}</div>
+                      <div className="text-sm text-gray-500">{agent.email}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                        agent.is_active 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-red-100 text-red-800'
+                      }`}>
+                        {agent.is_active ? 'Active' : 'Inactive'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <button
+                        onClick={() => handleEdit(agent)}
+                        className="text-blue-600 hover:text-blue-900 mr-3"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(agent.id)}
+                        className="text-red-600 hover:text-red-900"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+} 

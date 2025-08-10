@@ -1,0 +1,72 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
+import { AdminAuthService } from '@/lib/admin-auth';
+
+export async function GET(request: NextRequest) {
+  try {
+    // Verify admin authentication
+    const authResult = await AdminAuthService.verifyRequest(request);
+    if (!authResult.success) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { data: officeStaff, error } = await supabase
+      .from('office_staff')
+      .select('*')
+      .order('sort_order', { ascending: true });
+
+    if (error) {
+      console.error('Error fetching office staff:', error);
+      return NextResponse.json({ error: 'Failed to fetch office staff' }, { status: 500 });
+    }
+
+    return NextResponse.json({ officeStaff });
+  } catch (error) {
+    console.error('Error in GET /api/admin/office-staff:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    // Verify admin authentication
+    const authResult = await AdminAuthService.verifyRequest(request);
+    if (!authResult.success) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const { name, title, image_url, phone, email, responsibilities, experience, description, sort_order } = body;
+
+    // Validate required fields
+    if (!name || !title) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    const { data: staff, error } = await supabase
+      .from('office_staff')
+      .insert({
+        name,
+        title,
+        image_url,
+        phone,
+        email,
+        responsibilities: responsibilities || [],
+        experience,
+        description,
+        sort_order: sort_order || 0
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error creating office staff:', error);
+      return NextResponse.json({ error: 'Failed to create office staff' }, { status: 500 });
+    }
+
+    return NextResponse.json({ staff });
+  } catch (error) {
+    console.error('Error in POST /api/admin/office-staff:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+} 
