@@ -20,7 +20,7 @@ interface Agent {
 
 async function getAgents(): Promise<Agent[]> {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/agents`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'https://grandview-realty.vercel.app'}/api/agents`, {
       next: { revalidate: 3600 } // Revalidate every hour
     });
     
