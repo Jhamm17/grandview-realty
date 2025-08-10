@@ -39,7 +39,7 @@ async function createDefaultAdmin() {
       .from('admin_users')
       .insert([{
         email: 'admin@grandviewsells.com',
-        password_hash: 'admin123', // In production, this should be hashed
+        password: 'admin123', // In production, this should be hashed
         role: 'admin'
       }])
       .select()
