@@ -15,7 +15,7 @@ interface OfficeStaff {
 async function getOfficeStaff(): Promise<OfficeStaff[]> {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'https://grandview-realty.vercel.app'}/api/office-staff`, {
-      next: { revalidate: 3600 } // Revalidate every hour
+      next: { revalidate: 60 } // Revalidate every minute
     });
     
     if (!response.ok) {

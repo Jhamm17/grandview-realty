@@ -95,7 +95,18 @@ export default function AdminOfficeStaffManager({ onClose }: AdminOfficeStaffMan
         throw new Error(errorData.error || 'Failed to save office staff');
       }
 
+      // Refresh the office staff list
       await fetchOfficeStaff();
+      
+      // Invalidate cache to update the public pages
+      await fetch('/api/admin/invalidate-cache', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ path: '/team/office-staff' }),
+      });
+      
       resetForm();
     } catch (error) {
       setError((error as Error).message);
@@ -116,7 +127,17 @@ export default function AdminOfficeStaffManager({ onClose }: AdminOfficeStaffMan
         throw new Error('Failed to delete office staff');
       }
 
+      // Refresh the office staff list
       await fetchOfficeStaff();
+      
+      // Invalidate cache to update the public pages
+      await fetch('/api/admin/invalidate-cache', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ path: '/team/office-staff' }),
+      });
     } catch (error) {
       setError('Failed to delete office staff');
     }
@@ -188,6 +209,12 @@ export default function AdminOfficeStaffManager({ onClose }: AdminOfficeStaffMan
                 className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
               >
                 Add Staff Member
+              </button>
+              <button
+                onClick={fetchOfficeStaff}
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              >
+                Refresh
               </button>
               <button
                 onClick={onClose}

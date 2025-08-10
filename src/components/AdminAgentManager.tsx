@@ -95,7 +95,18 @@ export default function AdminAgentManager({ onClose }: AdminAgentManagerProps) {
         throw new Error(errorData.error || 'Failed to save agent');
       }
 
+      // Refresh the agents list
       await fetchAgents();
+      
+      // Invalidate cache to update the public pages
+      await fetch('/api/admin/invalidate-cache', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ path: '/team/agents' }),
+      });
+      
       resetForm();
     } catch (error) {
       setError((error as Error).message);
@@ -116,7 +127,17 @@ export default function AdminAgentManager({ onClose }: AdminAgentManagerProps) {
         throw new Error('Failed to delete agent');
       }
 
+      // Refresh the agents list
       await fetchAgents();
+      
+      // Invalidate cache to update the public pages
+      await fetch('/api/admin/invalidate-cache', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ path: '/team/agents' }),
+      });
     } catch (error) {
       setError('Failed to delete agent');
     }
@@ -194,6 +215,12 @@ export default function AdminAgentManager({ onClose }: AdminAgentManagerProps) {
                 className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
               >
                 Add Agent
+              </button>
+              <button
+                onClick={fetchAgents}
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              >
+                Refresh
               </button>
               <button
                 onClick={onClose}
