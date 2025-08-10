@@ -6,7 +6,7 @@ export default async function LookingToSell() {
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative h-[50vh] min-h-[400px] flex items-center"
+      <section className="relative h-[50vh] min-h-[400px] flex items-center">
         <div className="absolute inset-0 z-0">
           <div className="relative w-full h-full">
             <Image
