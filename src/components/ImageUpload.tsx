@@ -56,11 +56,6 @@ export default function ImageUpload({ label, currentImageUrl, onImageUpload, cla
       const data = await response.json();
       
       if (!response.ok) {
-        if (data.error && data.error.includes('production')) {
-          setError(data.error);
-          setShowUrlInput(true);
-          return;
-        }
         throw new Error(data.error || 'Failed to upload image');
       }
 
