@@ -21,7 +21,7 @@ interface Agent {
 async function getAgents(): Promise<Agent[]> {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/agents`, {
-      cache: 'no-store'
+      next: { revalidate: 3600 } // Revalidate every hour
     });
     
     if (!response.ok) {

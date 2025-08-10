@@ -15,7 +15,7 @@ interface OfficeStaff {
 async function getOfficeStaff(): Promise<OfficeStaff[]> {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/office-staff`, {
-      cache: 'no-store'
+      next: { revalidate: 3600 } // Revalidate every hour
     });
     
     if (!response.ok) {
