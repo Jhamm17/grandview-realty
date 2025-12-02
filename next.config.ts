@@ -2,10 +2,33 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
     images: {
-        domains: [
-            'api.mred.com', // Add actual MRED image domains
-            'cdn.mred.com',
-            'photos.mred.com'
+        unoptimized: true, // Disable Vercel image optimization to avoid hitting free tier limits
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'api.mlsgrid.com',
+                pathname: '/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'cdn.mred.com',
+                pathname: '/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'photos.mred.com',
+                pathname: '/**',
+            },
+            {
+                protocol: 'https',
+                hostname: '*.supabase.co',
+                pathname: '/storage/v1/object/public/images/**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'grandview-realty.jphamm2001.workers.dev',
+                pathname: '/proxy/**',
+            }
         ],
         deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
         imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
