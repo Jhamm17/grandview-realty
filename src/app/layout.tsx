@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { Header } from "./components/Navigation";
 import ConditionalFooter from "./components/ConditionalFooter";
@@ -100,6 +101,7 @@ export default function RootLayout({
           {children}
         </main>
         <ConditionalFooter />
+        <Analytics />
       </body>
     </html>
   );
