@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import JobApplicationForm from '@/components/JobApplicationForm';
+import MarkdownText from '@/components/MarkdownText';
 
 interface Career {
   id: string;
@@ -110,7 +111,9 @@ export default function Careers() {
                         </span>
                       )}
                     </div>
-                    <p className="text-gray-600 mb-4 description-text">{position.description}</p>
+                    <div className="text-gray-600 mb-4">
+                      <MarkdownText content={position.description} />
+                    </div>
                     
                     {/* Requirements */}
                     {position.requirements && position.requirements.length > 0 && (

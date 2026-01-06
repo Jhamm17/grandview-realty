@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import AgentListings from '@/components/AgentListings';
 import { AgentCacheService } from '@/lib/agent-cache';
+import MarkdownText from '@/components/MarkdownText';
 
 // Force dynamic rendering - no static generation to avoid API calls during build
 export const dynamic = 'force-dynamic';
@@ -151,7 +152,9 @@ export default async function AgentPage({ params }: { params: { id: string } }) 
           {agent.description && (
             <div className="mb-8">
               <h4 className="font-semibold text-gray-800 mb-3">About</h4>
-              <p className="text-gray-600 leading-relaxed" style={{ whiteSpace: 'pre-wrap' }}>{agent.description}</p>
+              <div className="text-gray-600 leading-relaxed">
+                <MarkdownText content={agent.description} />
+              </div>
             </div>
           )}
 
@@ -159,7 +162,9 @@ export default async function AgentPage({ params }: { params: { id: string } }) 
           {agent.bio && (
             <div className="mb-8">
               <h4 className="font-semibold text-gray-800 mb-3">Bio</h4>
-              <p className="text-gray-600 leading-relaxed" style={{ whiteSpace: 'pre-wrap' }}>{agent.bio}</p>
+              <div className="text-gray-600 leading-relaxed">
+                <MarkdownText content={agent.bio} />
+              </div>
             </div>
           )}
 

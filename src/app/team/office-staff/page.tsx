@@ -1,3 +1,5 @@
+import MarkdownText from '@/components/MarkdownText';
+
 export const dynamic = 'force-dynamic';
 
 interface OfficeStaff {
@@ -121,7 +123,9 @@ export default async function OfficeStaffPage() {
 
               {/* Description */}
               {member.description && (
-                <p className="text-gray-600 leading-relaxed" style={{ whiteSpace: 'pre-wrap' }}>{member.description}</p>
+                <div className="text-gray-600 leading-relaxed">
+                  <MarkdownText content={member.description} />
+                </div>
               )}
             </div>
           </div>
