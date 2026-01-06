@@ -1,6 +1,8 @@
-import Image from 'next/image';
+'use client';
 
-export const runtime = 'edge';
+import Image from 'next/image';
+import { useState, useEffect } from 'react';
+import JobApplicationForm from '@/components/JobApplicationForm';
 
 interface Career {
   id: string;
@@ -15,41 +17,59 @@ interface Career {
   sort_order: number;
 }
 
-async function getCareers(): Promise<Career[]> {
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'https://grandview-realty.vercel.app'}/api/careers`, {
-      next: { revalidate: 10 } // Revalidate every 10 seconds
-    });
-    
-    if (!response.ok) {
-      console.error('Failed to fetch careers');
-      return [];
-    }
-    
-    const data = await response.json();
-    return data.careers || [];
-  } catch (error) {
-    console.error('Error fetching careers:', error);
-    return [];
-  }
-}
+export default function Careers() {
+  const [openPositions, setOpenPositions] = useState<Career[]>([]);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedJob, setSelectedJob] = useState<string>('');
+  const [loading, setLoading] = useState(true);
 
-export default async function Careers() {
-  const openPositions = await getCareers();
+  useEffect(() => {
+    async function fetchCareers() {
+      try {
+        console.log('Fetching careers from API...');
+        const response = await fetch('/api/careers', {
+          cache: 'no-store'
+        });
+        
+        if (!response.ok) {
+          console.error('Failed to fetch careers:', response.status, response.statusText);
+          return;
+        }
+        
+        const data = await response.json();
+        console.log('Careers API response:', data);
+        setOpenPositions(data.careers || []);
+      } catch (error) {
+        console.error('Error fetching careers:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchCareers();
+  }, []);
+
+  const handleApplyClick = (jobTitle: string) => {
+    setSelectedJob(jobTitle);
+    setIsFormOpen(true);
+  };
+
+  const handleCloseForm = () => {
+    setIsFormOpen(false);
+    setSelectedJob('');
+  };
 
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative h-[40vh] min-h-[300px] flex items-center">
+      <section className="relative h-[30vh] min-h-[250px] flex items-center">
         <div className="absolute inset-0 z-0">
           <div className="relative w-full h-full">
-            <Image
+            <img
               src="/careersbg.jpg"
               alt="Join Our Team"
-              fill
-              style={{ objectFit: "cover" }}
-              priority
-              quality={90}
+              className="w-full h-full object-cover"
+              style={{ objectPosition: "left center" }}
             />
             <div className="absolute inset-0 bg-[#2C5282]/60" />
           </div>
@@ -90,7 +110,7 @@ export default async function Careers() {
                         </span>
                       )}
                     </div>
-                    <p className="text-gray-600 mb-4">{position.description}</p>
+                    <p className="text-gray-600 mb-4 description-text">{position.description}</p>
                     
                     {/* Requirements */}
                     {position.requirements && position.requirements.length > 0 && (
@@ -121,7 +141,10 @@ export default async function Careers() {
                     )}
                   </div>
                   <div className="md:ml-6 mt-4 md:mt-0">
-                    <button className="btn-primary whitespace-nowrap">
+                    <button 
+                      onClick={() => handleApplyClick(position.title)}
+                      className="btn-primary whitespace-nowrap"
+                    >
                       Apply Now
                     </button>
                   </div>
@@ -137,6 +160,13 @@ export default async function Careers() {
           </div>
         </div>
       </section>
+
+      {/* Job Application Form */}
+      <JobApplicationForm
+        jobTitle={selectedJob}
+        isOpen={isFormOpen}
+        onClose={handleCloseForm}
+      />
     </div>
   );
 } 
