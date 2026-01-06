@@ -115,13 +115,37 @@ export function PropertyGrid({ city, minPrice, maxPrice, beds, baths, propertyTy
                     {/* Property Image */}
                     <div className="relative h-48 bg-gray-200">
                         {property.Media && property.Media.length > 0 ? (
-                            <Image
-                                src={property.Media[0].MediaURL}
-                                alt={property.UnparsedAddress || 'Property'}
-                                fill
-                                className="object-cover"
-                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            />
+                            <>
+                                {(() => {
+                                    // Sort media by Order to ensure proper sequence, then get the first image
+                                    const sortedMedia = property.Media.sort((a, b) => (a.Order || 0) - (b.Order || 0));
+                                    const firstImage = sortedMedia[0];
+                                    
+                                    // Preload the first image for better performance
+                                    if (firstImage?.MediaURL && typeof window !== 'undefined') {
+                                        const preloadImg = new (window as any).Image();
+                                        preloadImg.src = firstImage.MediaURL;
+                                    }
+                                    
+                                    return firstImage?.MediaURL.startsWith('https://grandview-realty.jphamm2001.workers.dev/proxy') ? (
+                                        <img
+                                            src={firstImage.MediaURL}
+                                            alt={property.UnparsedAddress || 'Property'}
+                                            className="w-full h-full object-cover"
+                                            loading="lazy"
+                                        />
+                                    ) : (
+                                        <Image
+                                            src={firstImage.MediaURL}
+                                            alt={property.UnparsedAddress || 'Property'}
+                                            fill
+                                            className="object-cover"
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                            loading="lazy"
+                                        />
+                                    );
+                                })()}
+                            </>
                         ) : (
                             <div className="absolute inset-0 flex items-center justify-center">
                                 <div className="text-gray-400 text-center">
@@ -149,10 +173,10 @@ export function PropertyGrid({ city, minPrice, maxPrice, beds, baths, propertyTy
                         <p className="text-gray-600 text-sm mb-3">
                             {property.City}, {property.StateOrProvince}
                         </p>
-                        <div className="flex justify-between text-sm text-gray-500">
-                            <span>{property.BedroomsTotal} beds</span>
-                            <span>{property.BathroomsTotalInteger} baths</span>
-                            <span>{property.LivingArea?.toLocaleString()} sqft</span>
+                        <div className="flex justify-between text-sm text-gray-500 flex-nowrap gap-2">
+                            <span className="whitespace-nowrap">{property.BedroomsTotal} beds</span>
+                            <span className="whitespace-nowrap">{property.BathroomsTotalInteger} baths</span>
+                            <span className="whitespace-nowrap">{property.LivingArea?.toLocaleString()} sqft</span>
                         </div>
                     </div>
                 </Link>
