@@ -67,6 +67,16 @@ export interface Property {
   AssociationFeeFrequency?: string;
   TaxAnnualAmount?: number;
   TaxYear?: number;
+
+  // Agent Information
+  ListAgentFullName?: string;
+  ListAgentEmail?: string;
+  ListAgentDirectPhone?: string;
+  ListAgentMlsId?: string;
+  ListAgentKey?: string;
+  ListOfficeName?: string;
+  ListOfficeMlsId?: string;
+  ListOfficeKey?: string;
 }
 
 export interface PropertyPhoto {
