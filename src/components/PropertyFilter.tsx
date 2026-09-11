@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { Property } from '@/lib/mred/types';
-import Image from 'next/image';
 import Link from 'next/link';
 import { cleanStatusText } from '@/lib/utils';
+import { getProxiedMediaUrl } from '@/lib/media-url';
 
 interface FilterProps {
   initialProperties: Property[];
@@ -266,12 +266,11 @@ export default function PropertyFilter({ initialProperties }: FilterProps) {
                   if (firstImage?.MediaURL) {
                     return (
                       <>
-                        <Image
-                          src={firstImage.MediaURL}
+                        <img
+                          src={getProxiedMediaUrl(firstImage.MediaURL)}
                           alt={`${property.UnparsedAddress || 'Property'} in ${property.City}`}
-                          fill
-                          style={{ objectFit: "cover" }}
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className="w-full h-full object-cover"
+                          loading="lazy"
                         />
                         {/* Status Badge */}
                         <div className={`absolute bottom-0 left-0 text-white px-2 py-1 text-lg font-black tracking-wider ${getStatusBadgeStyle(property.StandardStatus)}`} style={{ borderRadius: '0' }}>

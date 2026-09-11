@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { Property } from '@/lib/mred/types';
+import { getProxiedMediaUrl } from '@/lib/media-url';
 
 interface AgentListingsProps {
   agentId: string;
@@ -111,26 +111,22 @@ export default function AgentListings({ agentId, agentName, listings: preFetched
                       const sortedMedia = listing.Media.sort((a, b) => (a.Order || 0) - (b.Order || 0));
                       const firstImage = sortedMedia[0];
                       
-                      // Preload the first image for better performance
-                      if (firstImage?.MediaURL && typeof window !== 'undefined') {
-                        const preloadImg = new (window as any).Image();
-                        preloadImg.src = firstImage.MediaURL;
+                      if (!firstImage?.MediaURL) {
+                        return (
+                          <div className="flex items-center justify-center h-full text-gray-400">
+                            <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                            </svg>
+                          </div>
+                        );
                       }
-                      
-                      return firstImage?.MediaURL.startsWith('https://grandview-realty.jphamm2001.workers.dev/proxy') ? (
+
+                      const imageUrl = getProxiedMediaUrl(firstImage.MediaURL);
+                      return (
                         <img
-                          src={firstImage.MediaURL}
+                          src={imageUrl}
                           alt={listing.UnparsedAddress || 'Property'}
                           className="w-full h-full object-cover"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <Image
-                          src={firstImage.MediaURL}
-                          alt={listing.UnparsedAddress || 'Property'}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           loading="lazy"
                         />
                       );

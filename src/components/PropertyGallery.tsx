@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { getProxiedMediaUrl } from '@/lib/media-url';
 
 interface GalleryImage {
   MediaURL: string;
@@ -27,10 +28,15 @@ export default function PropertyGallery({ images, propertyAddress }: PropertyGal
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
 
-  // Filter out images that don't have valid URLs, keeping MLS photo order
+  // Filter out images that don't have valid URLs, keeping MLS photo order.
+  // Always serve through the Cloudflare proxy — browsers get 429s from media.mlsgrid.com.
   const validImages = [...images]
     .filter(img => img.MediaURL && img.MediaURL.trim() !== '')
-    .sort((a, b) => (a.Order || 0) - (b.Order || 0));
+    .sort((a, b) => (a.Order || 0) - (b.Order || 0))
+    .map(img => ({
+      ...img,
+      MediaURL: getProxiedMediaUrl(img.MediaURL)
+    }));
 
   const handleImageError = useCallback((url: string) => {
     setFailedUrls(prev => {
