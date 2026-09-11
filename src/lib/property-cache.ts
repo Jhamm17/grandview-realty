@@ -32,18 +32,14 @@ export class PropertyCacheService {
       }
 
       if (cachedProperty) {
-        const lastUpdated = new Date(cachedProperty.last_updated).getTime();
-        const now = Date.now();
-        
-        // Check if cache is still fresh
-        if (now - lastUpdated < this.CACHE_DURATION) {
-          console.log(`[Cache] Serving cached property: ${listingId}`);
-          return cachedProperty.property_data;
-        }
+        // Individual pages should remain available between scheduled bulk refreshes.
+        // Never discard a valid row just because its timestamp is old.
+        console.log(`[Cache] Serving cached property: ${listingId}`);
+        return cachedProperty.property_data;
       }
 
-      // Cache miss or stale, fetch from API
-      console.log(`[Cache] Fetching property from API: ${listingId}`);
+      // Only call MLS for a genuine cache miss.
+      console.log(`[Cache] Cache miss; fetching property from API: ${listingId}`);
       const property = await this.fetchPropertyFromAPI(listingId);
       
       if (property) {
@@ -54,7 +50,7 @@ export class PropertyCacheService {
       return property;
     } catch (error) {
       console.error('Error in getProperty:', error);
-      return null;
+      throw error;
     }
   }
 
@@ -167,37 +163,33 @@ export class PropertyCacheService {
 
   // Fetch a single property from the MLS API
   private static async fetchPropertyFromAPI(listingId: string): Promise<Property | null> {
-    try {
-      const queryParams = new URLSearchParams({
-        '$filter': `ListingId eq '${listingId}'`,
-        '$expand': 'Media'
-      });
+    const escapedListingId = listingId.replace(/'/g, "''");
+    const queryParams = new URLSearchParams({ '$expand': 'Media' });
+    const url = `${MRED_CONFIG.API_BASE_URL}/Property('${escapedListingId}')?${queryParams.toString()}`;
+    
+    if (!MRED_CONFIG.ACCESS_TOKEN) {
+      throw new Error('Access token not configured');
+    }
 
-      const url = `${MRED_CONFIG.API_BASE_URL}/Property?${queryParams.toString()}`;
-      
-      if (!MRED_CONFIG.ACCESS_TOKEN) {
-        throw new Error('Access token not configured');
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Accept-Encoding': 'gzip'
       }
+    });
 
-      const response = await fetch(url, {
-        headers: {
-          'Authorization': `Bearer ${MRED_CONFIG.ACCESS_TOKEN}`,
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Accept-Encoding': 'gzip'
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error(`API request failed: ${response.status}`);
-      }
-
-      const data = await response.json();
-      return data.value?.[0] || null;
-    } catch (error) {
-      console.error('Error fetching property from API:', error);
+    if (response.status === 404) {
+      console.log(`[API] Property not found: ${listingId}`);
       return null;
     }
+
+    if (!response.ok) {
+      throw new Error(`Property API request failed: ${response.status}`);
+    }
+
+    return response.json();
   }
 
   // Fetch all properties from the MLS API

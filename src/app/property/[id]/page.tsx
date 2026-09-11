@@ -508,6 +508,6 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
     );
   } catch (error) {
     console.error('Error loading property page:', error);
-    notFound();
+    throw error;
   }
 } 
