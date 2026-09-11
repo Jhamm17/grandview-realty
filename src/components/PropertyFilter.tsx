@@ -299,7 +299,7 @@ export default function PropertyFilter({ initialProperties }: FilterProps) {
                 </h3>
                 <p className="text-gray-600 mb-4 text-lg">{property.City}</p>
                 <p className="text-black font-bold text-2xl mb-4">
-                  ${property.ListPrice.toLocaleString()}
+                  ${property.ListPrice ? property.ListPrice.toLocaleString() : 'Price not available'}
                 </p>
                 <div className="border-t border-gray-200 pt-4">
                   <div className="flex justify-between text-gray-500 text-sm">
