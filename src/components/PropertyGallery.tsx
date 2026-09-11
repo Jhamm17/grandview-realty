@@ -1,15 +1,17 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import Image from 'next/image';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
+interface GalleryImage {
+  MediaURL: string;
+  MediaCategory?: string;
+  MediaDescription?: string;
+  Order?: number;
+}
+
 interface PropertyGalleryProps {
-  images: Array<{
-    MediaURL: string;
-    MediaCategory?: string;
-    MediaDescription?: string;
-  }>;
+  images: Array<GalleryImage>;
   propertyAddress: string;
 }
 
@@ -20,12 +22,24 @@ export default function PropertyGallery({ images, propertyAddress }: PropertyGal
   const [dragOffset, setDragOffset] = useState(0);
   const [showThumbnails, setShowThumbnails] = useState(true); // Changed to true to show thumbnails by default
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [failedUrls, setFailedUrls] = useState<Set<string>>(new Set());
   
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
 
-  // Filter out images that don't have valid URLs
-  const validImages = images.filter(img => img.MediaURL && img.MediaURL.trim() !== '');
+  // Filter out images that don't have valid URLs, keeping MLS photo order
+  const validImages = [...images]
+    .filter(img => img.MediaURL && img.MediaURL.trim() !== '')
+    .sort((a, b) => (a.Order || 0) - (b.Order || 0));
+
+  const handleImageError = useCallback((url: string) => {
+    setFailedUrls(prev => {
+      if (prev.has(url)) return prev;
+      const next = new Set(prev);
+      next.add(url);
+      return next;
+    });
+  }, []);
 
   const nextImage = useCallback(() => {
     if (isTransitioning) return;
@@ -163,17 +177,24 @@ export default function PropertyGallery({ images, propertyAddress }: PropertyGal
                 : 'transform 0.2s ease-out'
           }}
         >
-          <Image
-            src={currentImage.MediaURL}
-            alt={currentImage.MediaDescription || `${propertyAddress} - Image ${currentIndex + 1}`}
-            fill
-            className="object-cover"
-            priority={currentIndex === 0}
-            sizes="(max-width: 768px) 100vw, 50vw"
-            style={{
-              transition: isTransitioning ? 'opacity 0.3s ease-in-out' : 'opacity 0.2s ease-out'
-            }}
-          />
+          {failedUrls.has(currentImage.MediaURL) ? (
+            <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm">
+              Photo unavailable
+            </div>
+          ) : (
+            <img
+              key={currentImage.MediaURL}
+              src={currentImage.MediaURL}
+              alt={currentImage.MediaDescription || `${propertyAddress} - Image ${currentIndex + 1}`}
+              className="absolute inset-0 h-full w-full object-cover select-none"
+              draggable={false}
+              fetchPriority={currentIndex === 0 ? 'high' : 'auto'}
+              onError={() => handleImageError(currentImage.MediaURL)}
+              style={{
+                transition: isTransitioning ? 'opacity 0.3s ease-in-out' : 'opacity 0.2s ease-out'
+              }}
+            />
+          )}
         </div>
 
         {/* Image Counter */}
@@ -236,13 +257,18 @@ export default function PropertyGallery({ images, propertyAddress }: PropertyGal
                     : 'border-gray-300 hover:border-gray-400 hover:shadow-md'
                 }`}
               >
-                <Image
-                  src={image.MediaURL}
-                  alt={`${propertyAddress} - Thumbnail ${index + 1}`}
-                  fill
-                  className="object-cover"
-                  sizes="80px"
-                />
+                {failedUrls.has(image.MediaURL) ? (
+                  <div className="absolute inset-0 bg-gray-200" />
+                ) : (
+                  <img
+                    src={image.MediaURL}
+                    alt={`${propertyAddress} - Thumbnail ${index + 1}`}
+                    className="absolute inset-0 h-full w-full object-cover"
+                    loading="lazy"
+                    draggable={false}
+                    onError={() => handleImageError(image.MediaURL)}
+                  />
+                )}
                 {index === currentIndex && (
                   <div className="absolute inset-0 bg-blue-500 bg-opacity-30 flex items-center justify-center">
                     <div className="w-3 h-3 bg-blue-500 rounded-full shadow-lg animate-pulse"></div>

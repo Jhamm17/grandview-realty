@@ -140,7 +140,12 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
           <div className="lg:col-span-1">
             <PropertyGallery 
               images={property.Media || []}
-              propertyAddress={property.UnparsedAddress || 'Property'}
+              propertyAddress={
+                property.UnparsedAddress ||
+                (property.StreetNumber && property.StreetName
+                  ? `${property.StreetNumber} ${property.StreetName} ${property.StreetSuffix || ''}`.trim()
+                  : 'Property')
+              }
             />
           </div>
 
