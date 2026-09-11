@@ -24,6 +24,7 @@ export default function PropertyGallery({ images, propertyAddress }: PropertyGal
   const [showThumbnails, setShowThumbnails] = useState(true); // Changed to true to show thumbnails by default
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [failedUrls, setFailedUrls] = useState<Set<string>>(new Set());
+  const [retryCounts, setRetryCounts] = useState<Record<string, number>>({});
   
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
@@ -39,11 +40,19 @@ export default function PropertyGallery({ images, propertyAddress }: PropertyGal
     }));
 
   const handleImageError = useCallback((url: string) => {
-    setFailedUrls(prev => {
-      if (prev.has(url)) return prev;
-      const next = new Set(prev);
-      next.add(url);
-      return next;
+    setRetryCounts(prev => {
+      const retries = prev[url] || 0;
+      if (retries < 2) {
+        return { ...prev, [url]: retries + 1 };
+      }
+
+      setFailedUrls(current => {
+        if (current.has(url)) return current;
+        const next = new Set(current);
+        next.add(url);
+        return next;
+      });
+      return prev;
     });
   }, []);
 
@@ -189,12 +198,15 @@ export default function PropertyGallery({ images, propertyAddress }: PropertyGal
             </div>
           ) : (
             <img
-              key={currentImage.MediaURL}
-              src={currentImage.MediaURL}
+              key={`${currentImage.MediaURL}-${retryCounts[currentImage.MediaURL] || 0}`}
+              src={
+                retryCounts[currentImage.MediaURL]
+                  ? `${currentImage.MediaURL}&r=${retryCounts[currentImage.MediaURL]}`
+                  : currentImage.MediaURL
+              }
               alt={currentImage.MediaDescription || `${propertyAddress} - Image ${currentIndex + 1}`}
               className="absolute inset-0 h-full w-full object-cover select-none"
               draggable={false}
-              fetchPriority={currentIndex === 0 ? 'high' : 'auto'}
               onError={() => handleImageError(currentImage.MediaURL)}
               style={{
                 transition: isTransitioning ? 'opacity 0.3s ease-in-out' : 'opacity 0.2s ease-out'
